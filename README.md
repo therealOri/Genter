@@ -1,5 +1,5 @@
 # Passgen
-A strong password generator made with python!
+A strong password generator made with python3!
 
 
 This will create a very strong password that is pretty long and randomized.
