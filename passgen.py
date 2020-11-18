@@ -34,4 +34,4 @@ for x in range(amount):
     with open('pass.txt', 'w') as f: #This will replace the text in pass.txt each time a password is generated. Make sure to save the password to a new file or write it down.
         print(f'Your new password: {password}', file=f)
     print(f"Here is your newly generated random password: {password}")
-    print("\n Your password has been saved to pass.txt. Please make sure to write it down or hash/encrypt the password into a new text file before running this again.")
+    print("\nYour password has been saved to pass.txt. Please make sure to write it down or hash/encrypt the password into a new text file before running this again.")
