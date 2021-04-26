@@ -5,12 +5,13 @@ uppercase_letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
 lowercase_letters = uppercase_letters.lower() #uppercase_letters.lower() lowercases everything in uppercase_letters and uses that instead of just writing out another list.
 symbols = "!@#$%^&*()[]{},.;:-_/\\+?*|`~"
 digits = "0123456789"
+korean = "ㅂㅋㅎㅭㅱㅶㅹㅺㅿㆁㆄㆅ"
 #Example |  new_list = "WHATERVER YOU WANT HERE"  | This can be named whatever you can think of, doesn't have to be "new_list". It's just what I am using for this example.
 #You can add more and make it even more complex. Just make sure to update the rest of the code below.
 
 
 #Here we would add "new" to the line below with one more True. | the word doesn't have to be "new", it can be anything you want. It's just what I am using for this example.
-upper, lower, nums, syms = True, True, True, True #All are true so everything will be used in genrating your password. Setting one or more to False will exculde the False one(s) fron the generation.
+upper, lower, nums, syms, kor = True, True, True, True, True #All are true so everything will be used in genrating your password. Setting one or more to False will exculde the False one(s) fron the generation.
 
 all = ""
 
@@ -22,16 +23,26 @@ if nums:
     all += digits
 if syms:
     all += symbols
+if kor:
+    all += korean
 #if new:
 #    all += new_list
 #The above here is an example of what you would do if you wanted to add more.
 
-length = 40 #How long you want the password to be. (Longer and more complex, the better) You may need to change this depending on the limits some websites have for how long a password should be.
-amount = 1 #How many passwords you want generated.
 
-for x in range(amount):
-    password = "".join(random.sample(all, length))
-    with open('pass.txt', 'w') as f: #This will replace the text in pass.txt each time a password is generated. Make sure to save the password to a new file or write it down.
+print('Note: Your password(s) will be saved to pass.txt.\nPlease make sure to write it/them down or hash/encrypt the password(s) into a new text file before running this script again. \n')
+print('\n')
+
+with open('pass.txt', 'w'): pass #Clears txt file contents before writing into it with new passwords..or password.
+
+length = input('How long do you want your password(s)?: ') #How long you want the password to be. (Longer and more complex, the better) You may need to change this depending on the limits some websites have for how long a password should be.
+amount = input('How many do you want generated?: ') #How many passwords you want generated.
+
+print('\n')
+
+for x in range(int(amount)):
+    password = "".join(random.sample(all, int(length))) #"int" was added/specified for it to know the variables are numbers/integers. And won't work if you type/use strings when given the option to type.
+    with open('pass.txt', 'a') as f:
         print(f'Your new password: {password}', file=f)
     print(f"Here is your newly generated random password: {password}")
-    print("\nYour password has been saved to pass.txt. Please make sure to write it down or hash/encrypt the password into a new text file before running this again.")
+
