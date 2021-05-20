@@ -6,12 +6,13 @@ lowercase_letters = uppercase_letters.lower() #uppercase_letters.lower() lowerca
 symbols = "!@#$%^&*()[]{},.;:-_/\\+?*|`~"
 digits = "0123456789"
 korean = "ㅂㅋㅎㅭㅱㅶㅹㅺㅿㆁㆄㆅ"
+russian = "БГДЁЖИЙЛПФфЦЧШЩЪЫЬЭЮЯ"
 #Example |  new_list = "WHATERVER YOU WANT HERE"  | This can be named whatever you can think of, doesn't have to be "new_list". It's just what I am using for this example.
 #You can add more and make it even more complex. Just make sure to update the rest of the code below.
 
 
 #Here we would add "new" to the line below with one more True. | the word doesn't have to be "new", it can be anything you want. It's just what I am using for this example.
-upper, lower, nums, syms, kor = True, True, True, True, True #All are true so everything will be used in genrating your password. Setting one or more to False will exculde the False one(s) fron the generation.
+upper, lower, nums, syms, kor, rus = True, True, True, True, True, True #All are true so everything will be used in genrating your password. Setting one or more to False will exculde the False one(s) fron the generation.
 
 all = ""
 
@@ -25,6 +26,8 @@ if syms:
     all += symbols
 if kor:
     all += korean
+if rus:
+    all += russian
 #if new:
 #    all += new_list
 #The above here is an example of what you would do if you wanted to add more.
