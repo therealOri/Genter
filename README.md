@@ -13,3 +13,9 @@ You can change up what is used, add more stuff, or remove some things if you wis
 `cd PassGen`
 
 You may need to type `pip3 install sys` and `pip3 install random` if it gives you a module not found error.
+#
+
+# Extra
+If you don't have python3, then you can find, download, and install it from [here](https://www.python.org/downloads/). (Or from your package manager of choice).
+
+If you are on windows 10 use this: [download](https://www.python.org/ftp/python/3.9.5/python-3.9.5-amd64.exe). (Pip3 comes with it)
