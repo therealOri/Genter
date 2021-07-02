@@ -4,7 +4,7 @@ A strong password generator made with python3!
 
 This will create a very strong password that is pretty long and randomized.
 You can change up what is used, add more stuff, or remove some things if you wish. You can also change the length of the password and how many you want to generate too.
-#
+__ __
 
 # Installation
 
@@ -12,8 +12,8 @@ You can change up what is used, add more stuff, or remove some things if you wis
 
 `cd PassGen`
 
-You may need to type `pip3 install sys` and `pip3 install random` if it gives you a module not found error.
-#
+You may need to type `pip3 install secrets` if it gives you a module not found error.
+__ __
 
 # Extra
 If you don't have python3, then you can find, download, and install it from [here](https://www.python.org/downloads/). (Or from your package manager of choice).
