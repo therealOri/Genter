@@ -47,19 +47,14 @@ if rus:
 print('Note: Your password(s) will be saved to pass.txt.\nPlease make sure to write it/them down or hash/encrypt the password(s) into a new text file before running this script again. \n')
 print('\n')
 
-with open('pass.txt', 'w') as p:
-    p.close() #Clears txt file contents before apending/writing into it with new passwords. 
-              #Still working on how to do this during the code below, So I can just open pass.txt once rather than twice.
-
 
 length = int(input('How long do you want your password(s)?: ')) #How long you want the password to be. (Longer and more complex, the better) You may need to change this depending on the limits some websites have for how long a password should be.
 amount = int(input('How many do you want generated?: ')) #How many passwords you want generated.
 
 print('\n')
 
-for x in range(amount):
-    password = ''.join(secrets.choice(all) for i in range(length))
-    with open('pass.txt', 'a') as f:
+with open('pass.txt', 'w') as f:
+    for x in range(amount):
+        password = ''.join(secrets.choice(all) for i in range(length))
         print(password, file=f)
-        f.close()
-    print(f"Here is your newly generated random password: {password}")
+        print("Here is your newly generated random password:", password)
