@@ -46,6 +46,6 @@ print('\n')
 for x in range(int(amount)):
     password = "".join(random.sample(all, int(length))) #"int" was added/specified for it to know the variables are numbers/integers. And won't work if you type/use strings when given the option to type.
     with open('pass.txt', 'a') as f:
-        print(f'Your new password: {password}', file=f)
+        print(f'{password}', file=f)
     print(f"Here is your newly generated random password: {password}")
 
