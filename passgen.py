@@ -48,8 +48,21 @@ print('Note: Your password(s) will be saved to pass.txt.\nPlease make sure to wr
 print('\n')
 
 
-length = int(input('How long do you want your password(s)?: ')) #How long you want the password to be. (Longer and more complex, the better) You may need to change this depending on the limits some websites have for how long a password should be.
-amount = int(input('How many do you want generated?: ')) #How many passwords you want generated.
+# These Try blocks are to catch any errors such as not entering a number/integer.
+try:
+    length = int(input('How long do you want your password(s)?: '))
+except Exception as e:
+    print(f'\nOops..The value you gave me is not a number/integer.\n[Error]: {e}')
+    quit()
+    
+    
+try:
+    amount = int(input('How many do you want generated?: '))
+except Exception as e:
+    print(f'\nOops..The value you gave me is not a number/integer.\n[Error]: {e}')
+    quit()
+
+
 
 print('\n')
 
