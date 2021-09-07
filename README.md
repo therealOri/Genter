@@ -18,4 +18,4 @@ __ __
 # Extra
 If you don't have python3, then you can find, download, and install it from [here](https://www.python.org/downloads/). (Or from your package manager of choice).
 
-If you are on windows 10 use this: [download](https://www.python.org/ftp/python/3.9.6/python-3.9.6-amd64.exe). (Pip3 comes with it)
+If you are on windows 10 use this: [download](https://www.python.org/ftp/python/3.9.7/python-3.9.7-amd64.exe). (Pip3 comes with it)
