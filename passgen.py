@@ -22,7 +22,7 @@ syms = True
 kor = True
 rus = True
 GU = True
-GL =True
+GL = True
 
 
 all = ""
