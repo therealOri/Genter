@@ -3,10 +3,12 @@ from string import ascii_lowercase, ascii_uppercase, digits
 
 uppercase_letters = ascii_uppercase
 lowercase_letters = ascii_lowercase
-symbols = "!=<>'@#$%^&*()[]{},.;:-_/\\+?*|`~"
+symbols = "!=<>'@#$%^&*()[]{},.;:-_/\\+?|`~"
 numbers = digits
 korean = "ㅂㅋㅎㅭㅱㅶㅹㅺㅿㆁㆄㆅ"
 russian = "БГДЁЖИЙЛПФфЦЧШЩЪЫЬЭЮЯ"
+greekU = "ΓΔΘΛΞΠΣΦΨΩ" # Greek Uppercase.
+greekL = "αβγδεζηθικλμνξπρστυφχψω" # Greek Lowercase.
 #Example |  new_list = "WHATERVER YOU WANT HERE"  | This can be named whatever you can think of, doesn't have to be "new_list". It's just what I am using for this example.
 #You can add more and make it even more complex. Just make sure to update the rest of the code below.
 
@@ -19,7 +21,8 @@ nums = True
 syms = True
 kor = True
 rus = True
-
+GU = True
+GL =True
 
 
 all = ""
@@ -36,6 +39,10 @@ if kor:
     all += korean
 if rus:
     all += russian
+if GU:
+    all += greekU
+if GL:
+    all += greekL
 #if new:
 #    all += new_list
 #The above here is an example of what you would do if you wanted to add more.
