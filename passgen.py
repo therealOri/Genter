@@ -1,14 +1,17 @@
 import secrets
-from string import ascii_lowercase, ascii_uppercase, digits 
+from string import ascii_lowercase, ascii_uppercase, digits
+import os
 
 uppercase_letters = ascii_uppercase
 lowercase_letters = ascii_lowercase
-symbols = "!=<>'@#$%^&*()[]{},.;:-_/\\+?|`~"
+symbols = "!=<>'@#$%^&*()[]{},.;:-_/\\+?|`~€"
 numbers = digits
 korean = "ㅂㅋㅎㅭㅱㅶㅹㅺㅿㆁㆄㆅ"
 russian = "БГДЁЖИЙЛПФфЦЧШЩЪЫЬЭЮЯ"
 greekU = "ΓΔΘΛΞΠΣΦΨΩ" # Greek Uppercase.
 greekL = "αβγδεζηθικλμνξπρστυφχψω" # Greek Lowercase.
+portugueseL = "ãáàâçéêíõóôúü"
+portugueseU = "ÃÁÀÂÇÉÊÍÕÓÔÚÜ"
 #Example |  new_list = "WHATERVER YOU WANT HERE"  | This can be named whatever you can think of, doesn't have to be "new_list". It's just what I am using for this example.
 #You can add more and make it even more complex. Just make sure to update the rest of the code below.
 
@@ -23,6 +26,8 @@ kor = True
 rus = True
 GU = True
 GL = True
+PL = True
+PU = True
 
 
 all = ""
@@ -43,6 +48,10 @@ if GU:
     all += greekU
 if GL:
     all += greekL
+if PL:
+    all += portugueseL
+if PU:
+    all += portugueseU
 #if new:
 #    all += new_list
 #The above here is an example of what you would do if you wanted to add more.
@@ -50,7 +59,7 @@ if GL:
 
 
 
-
+os.system('clr||clear')
 print('Note: Your password(s) will be saved to pass.txt.\nPlease make sure to write it/them down or hash/encrypt the password(s) into a new text file before running this script again. \n')
 print('\n')
 
