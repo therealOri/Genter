@@ -4,7 +4,7 @@ import os
 
 uppercase_letters = ascii_uppercase
 lowercase_letters = ascii_lowercase
-symbols = "!=<>'@#$%^&*()[]{},.;:-_/\\+?|`~€"
+symbols = "!=<>'@#$%^&*()[]{},.;:-_/\\+?|`€"
 numbers = digits
 korean = "ㅂㅋㅎㅭㅱㅶㅹㅺㅿㆁㆄㆅ"
 russian = "БГДЁЖИЙЛПФфЦЧШЩЪЫЬЭЮЯ"
