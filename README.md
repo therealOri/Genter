@@ -14,7 +14,8 @@ Update | 1/3/2022:
 > 
 > Note: Hashing library being used is blake2b instead of sha256. I'd use blake3 but hashlib only has blake2 right now..
 
-[blake2 documentation](https://www.blake2.net)
+- [blake2 documentation](https://www.blake2.net)
+- [hashlib documentation](https://docs.python.org/3/library/hashlib.html)
 __ __
 
 <br />
