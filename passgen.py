@@ -38,7 +38,7 @@ def clear():
     os.system('cls||clear')
 
 
-# Check Hash
+# Hashing
 def hash(password: str):
     alphabet = uppercase_letters + lowercase_letters + numbers
 
@@ -55,21 +55,23 @@ def hash(password: str):
     if option == 1:
         clear()
         c_key = input('Enter/Load key to use for hashing: ')
+        salt = bytes(input('Enter phrase for salting: '), 'utf-8')
         clear()
-        h = blake2b(key=bytes(c_key, 'utf-8'), digest_size=30)
+        h = blake2b(key=bytes(c_key, 'utf-8'), salt=salt, digest_size=30)
         h.update(bytes(password, 'utf-8'))
         result1 = h.hexdigest()
-        print(f'Key: {c_key} (Save me for later, to use when hashing.)\nPassword: {password}\nHash: {result1}')
+        print(f'Key: {c_key} (Save me for later, to use when hashing.)\nSalt: {salt.decode()}\nPassword: {password}\nHash: {result1}')
         return result1
 
 
     if option == 2:
         clear()
         gen_key = ''.join(secrets.choice(alphabet) for i in range(16))
-        h = blake2b(key=bytes(gen_key, 'utf-8'), digest_size=30)
+        salt = bytes(''.join(secrets.choice(alphabet) for i in range(16)), 'utf-8')
+        h = blake2b(key=bytes(gen_key, 'utf-8'), salt=salt, digest_size=30)
         h.update(bytes(password, 'utf-8'))
         result2 = h.hexdigest()
-        print(f'Key: {gen_key} (Save me for later, to use when hashing.)\nPassword: {password}\nHash: {result2}')
+        print(f'Key: {gen_key} (Save me for later, to use when hashing.)\nSalt: {salt.decode()} (Save me for later, to use when hashing.)\nPassword: {password}\nHash: {result2}')
         return result2
 
 
@@ -87,33 +89,35 @@ def compare(phash):
     clear()
     pword = input('Password: ')
     h_key = input("Hash Key: ")
+    salt = bytes(input('Salt: '), 'utf-8')
 
-    h = blake2b(key=bytes(h_key, 'utf-8'), digest_size=30)
+    h = blake2b(key=bytes(h_key, 'utf-8'), salt=salt, digest_size=30)
     h.update(bytes(pword, 'utf-8'))
     result = h.hexdigest()
 
 
     if phash == result:
         clear()
-        return print(f"The hash you provided matches!\n\n[INFO]\nKey: {h_key}\nPassword: {pword}\nYour Provided Hash - (blake2b): {phash}\nHash of Password - (blake2b): {result}")
+        return print(f"The hash you provided matches!\n\n[INFO]\nKey: {h_key}\nSalt: {salt.decode()}\nPassword: {pword}\nYour Provided Hash - (blake2b): {phash}\nHash of Password - (blake2b): {result}")
 
     else:
         clear()
-        return print(f"The hash you provided does not match!\n\n[INFO]\nKey: {h_key}\nPassword: {pword}\nYour Provided Hash - (blake2b): {phash}\nHash of Password - (blake2b): {result}")
+        return print(f"The hash you provided does not match!\n\n[INFO]\nKey: {h_key}\nSalt: {salt.decode()}\nPassword: {pword}\nYour Provided Hash - (blake2b): {phash}\nHash of Password - (blake2b): {result}")
 # End Compare hash
 
 
 
 
 # This will always use the default key. (For when you generate passwords instead of hashing an already existing password.)
-# You could also generate a key and use it here instead if you want. Or change it to whatever. Either way, it is reccomended to change the default_key.
+# You could also generate a key and use it here instead if you want. Or change it to whatever. Either way, it is reccomended to change the default_key and salt.
 def d_conv(password):
     clear()
-    default_key = 'vGb2ZPk0tsfxWy1B' 
-    h = blake2b(key=bytes(default_key, 'utf-8'), digest_size=30)
+    default_key = 'vGb2ZPk0tsfxWy1B'
+    salt = bytes('fehNc4L2GnU53RTF', 'utf-8')
+    h = blake2b(key=bytes(default_key, 'utf-8'), salt=salt, digest_size=30)
     h.update(bytes(password, 'utf-8'))
     result = h.hexdigest()
-    return result
+    return result, salt, default_key
 
 
 
@@ -178,7 +182,7 @@ def main():
     with open('pass.txt', 'w') as f:
         for x in range(amount):
             password = ''.join(secrets.choice(all) for i in range(length))
-            print(f'Pass: {password}  |  Hash: {d_conv(password)}', file=f)
+            print(f'Pass: {password}  |  Hash: {d_conv(password)[0]}\nSalt: {d_conv(password)[1].decode()}  |  Key: {d_conv(password)[2]}\n', file=f)
             print('Your newly generated random password(s) can be found in "pass.txt".')
 
 ##-------------- ^^ Functions End ^^ --------------##
@@ -189,7 +193,7 @@ def main():
 if __name__ == '__main__':
     clear()
     try:
-        option = int(input(f"{banner()}\n\nWhat would you like to do?\n\n1. Make a password?\n2. Get hash for a password?\n3. Compare Hashes?\n\nEnter: "))
+        option = int(input(f"{banner()}\n\nWhat would you like to do?\n\n1. Make a password?\n2. Get hash for a password?\n3. Compare hashes?\n\nEnter: "))
     except Exception as e:
         clear()
         print(f'Value given is not an integer.\nError: {e}\n\n')
