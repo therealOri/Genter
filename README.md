@@ -8,9 +8,9 @@ __ __
 
 <br />
 
-Update | 1/2/2022:
-> - Added a hashing algorithm, a way to compare said hashes, and a way to hash your paswords and whatnot without even making passwords.
-> - Updated code to look better in the terminal/cmd window. (🔥 Fancy lookin banner 🔥)
+Update | 1/3/2022:
+> - Added salting for hashes! Makin them even more secure!
+> - Updated the way in which passwords and info gets printed to pass,txt.
 > 
 > Note: Hashing library being used is blake2b instead of sha256. I'd use blake3 but hashlib only has blake2 right now..
 
