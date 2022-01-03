@@ -7,6 +7,17 @@ You can change up what is used, add more stuff, or remove some things if you wis
 __ __
 
 <br />
+
+Update | 1/2/2022:
+> - Added a hashing algorithm, a way to compare said hashes, and a way to hash your paswords and whatnot without even making passwords.
+> - Updated code to look better in the terminal/cmd window. (🔥 Fancy lookin banner 🔥)
+> 
+> Note: Hashing library being used is blake2b instead of sha256. I'd use blake3 but hashlib only has blake2 right now..
+
+[blake2 documentation](https://www.blake2.net)
+__ __
+
+<br />
 <br />
   
 # Installation
@@ -14,6 +25,7 @@ __ __
 ```bash
 git clone https://github.com/therealOri/PassGen.git
 cd PassGen
+python3 passgen.py
 ```
 
 You may need to type `pip3 install secrets` if it gives you a module not found error.
