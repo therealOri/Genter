@@ -1,0 +1,5 @@
+Format (How it will look when passwords are made) | This will all dissaper when you make a password.
+
+Pass: pasword_would_go_here  |  Hash: hash_value_would_go_here
+Pass: pasword_would_go_here  |  Hash: hash_value_would_go_here
+Pass: pasword_would_go_here  |  Hash: hash_value_would_go_here
