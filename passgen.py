@@ -1,6 +1,8 @@
 import secrets
 from string import ascii_lowercase, ascii_uppercase, digits
 import os
+from hashlib import blake2b
+
 
 uppercase_letters = ascii_uppercase
 lowercase_letters = ascii_lowercase
@@ -16,74 +18,211 @@ portugueseU = "ÃÁÀÂÇÉÊÍÕÓÔÚÜ"
 #You can add more and make it even more complex. Just make sure to update the rest of the code below.
 
 
-#Here we would add "new" to the line below with one more True. | the word doesn't have to be "new", it can be anything you want. It's just what I am using for this example.
-#All are true so everything will be used in genrating your password. Setting one or more to False will exculde the False one(s) fron the generation.
-upper = True
-lower = True
-nums = True
-syms = True
-kor = True
-rus = True
-GU = True
-GL = True
-PL = True
-PU = True
+
+##-------------- Functions --------------##
+def banner():
+    banner = """
+        ██████╗  █████╗ ███████╗███████╗ ██████╗ ███████╗███╗   ██╗
+        ██╔══██╗██╔══██╗██╔════╝██╔════╝██╔════╝ ██╔════╝████╗  ██║
+        ██████╔╝███████║███████╗███████╗██║  ███╗█████╗  ██╔██╗ ██║
+        ██╔═══╝ ██╔══██║╚════██║╚════██║██║   ██║██╔══╝  ██║╚██╗██║
+        ██║     ██║  ██║███████║███████║╚██████╔╝███████╗██║ ╚████║
+        ╚═╝     ╚═╝  ╚═╝╚══════╝╚══════╝ ╚═════╝ ╚══════╝╚═╝  ╚═══╝
+                                                           
+      Made by Ori#6338 | @therealOri_ | https://github.com/therealOri
+    """
+    return banner
 
 
-all = ""
-
-if upper:
-    all += uppercase_letters #if upper = True it will be used and will add letters to all = "". Same for the others below.
-if lower:
-    all += lowercase_letters
-if nums:
-    all += numbers
-if syms:
-    all += symbols
-if kor:
-    all += korean
-if rus:
-    all += russian
-if GU:
-    all += greekU
-if GL:
-    all += greekL
-if PL:
-    all += portugueseL
-if PU:
-    all += portugueseU
-#if new:
-#    all += new_list
-#The above here is an example of what you would do if you wanted to add more.
+def clear():
+    os.system('cls||clear')
 
 
+# Check Hash
+def hash(password: str):
+    alphabet = uppercase_letters + lowercase_letters + numbers
+
+    try:
+        option = int(input(f"{banner()}\n\nHow do you want to make a key for hashing?\n\n1. Custom Key?\n2. Generate Key?\n\nEnter: "))
+    except Exception as e:
+        clear()
+        print(f'Value given is not an integer.\nError: {e}\n\n')
+        input('Press enter to quit...')
+        clear()
+        quit()
 
 
-os.system('clr||clear')
-print('Note: Your password(s) will be saved to pass.txt.\nPlease make sure to write it/them down or hash/encrypt the password(s) into a new text file before running this script again. \n')
-print('\n')
+    if option == 1:
+        clear()
+        c_key = input('Enter/Load key to use for hashing: ')
+        clear()
+        h = blake2b(key=bytes(c_key, 'utf-8'), digest_size=30)
+        h.update(bytes(password, 'utf-8'))
+        result1 = h.hexdigest()
+        print(f'Key: {c_key} (Save me for later, to use when hashing.)\nPassword: {password}\nHash: {result1}')
+        return result1
 
 
-# These Try blocks are to catch any errors such as not entering a number/integer.
-try:
-    length = int(input('How long do you want your password(s)?: '))
-except Exception as e:
-    print(f'\nOops..The value you gave me is not a number/integer.\n[Error]: {e}')
-    quit()
+    if option == 2:
+        clear()
+        gen_key = ''.join(secrets.choice(alphabet) for i in range(16))
+        h = blake2b(key=bytes(gen_key, 'utf-8'), digest_size=30)
+        h.update(bytes(password, 'utf-8'))
+        result2 = h.hexdigest()
+        print(f'Key: {gen_key} (Save me for later, to use when hashing.)\nPassword: {password}\nHash: {result2}')
+        return result2
+
+
+    elif option == 0 or option > 2:
+        clear()
+        print("Incorrect value given. Please choose a valid option from the menu/list.\n\n")
+        input('Press enter to quit...')
+        clear()
+        quit()
+# End of Hashing
+
+
+# Compare hash
+def compare(phash):
+    clear()
+    pword = input('Password: ')
+    h_key = input("Hash Key: ")
+
+    h = blake2b(key=bytes(h_key, 'utf-8'), digest_size=30)
+    h.update(bytes(pword, 'utf-8'))
+    result = h.hexdigest()
+
+
+    if phash == result:
+        clear()
+        return print(f"The hash you provided matches!\n\n[INFO]\nKey: {h_key}\nPassword: {pword}\nYour Provided Hash - (blake2b): {phash}\nHash of Password - (blake2b): {result}")
+
+    else:
+        clear()
+        return print(f"The hash you provided does not match!\n\n[INFO]\nKey: {h_key}\nPassword: {pword}\nYour Provided Hash - (blake2b): {phash}\nHash of Password - (blake2b): {result}")
+# End Compare hash
+
+
+
+
+# This will always use the default key. (For when you generate passwords instead of hashing an already existing password.)
+# You could also generate a key and use it here instead if you want. Or change it to whatever. Either way, it is reccomended to change the default_key.
+def d_conv(password):
+    clear()
+    default_key = 'vGb2ZPk0tsfxWy1B' 
+    h = blake2b(key=bytes(default_key, 'utf-8'), digest_size=30)
+    h.update(bytes(password, 'utf-8'))
+    result = h.hexdigest()
+    return result
+
+
+
+def main():
+    upper = True
+    lower = True
+    nums = True
+    syms = True
+    kor = True
+    rus = True
+    GU = True
+    GL = True
+    PL = True
+    PU = True
+
+    all = ""
+
+    if upper:
+        all += uppercase_letters
+    if lower:
+        all += lowercase_letters
+    if nums:
+        all += numbers
+    if syms:
+        all += symbols
+    if kor:
+        all += korean
+    if rus:
+        all += russian
+    if GU:
+        all += greekU
+    if GL:
+        all += greekL
+    if PL:
+        all += portuL
+    if PU:
+        all += portuU
+
+    clear()
+    print('Note: Please make sure to write your password(s) down or save the password(s) into a new text file before running this script again. \n\n')
+
+
+
+    try:
+        length = int(input('How long do you want your password(s)?: '))
+    except Exception as e:
+        print(f'\nOops..The value you gave me is not a number/integer.\n[Error]: {e}')
+        quit()
+        
+        
+    try:
+        amount = int(input('How many do you want generated?: '))
+    except Exception as e:
+        print(f'\nOops..The value you gave me is not a number/integer.\n[Error]: {e}')
+        quit()
+
+
+
+    print('\n')
+
+
+    with open('pass.txt', 'w') as f:
+        for x in range(amount):
+            password = ''.join(secrets.choice(all) for i in range(length))
+            print(f'Pass: {password}  |  Hash: {d_conv(password)}', file=f)
+            print('Your newly generated random password(s) can be found in "pass.txt".')
+
+##-------------- ^^ Functions End ^^ --------------##
+
+
+
+
+if __name__ == '__main__':
+    clear()
+    try:
+        option = int(input(f"{banner()}\n\nWhat would you like to do?\n\n1. Make a password?\n2. Get hash for a password?\n3. Compare Hashes?\n\nEnter: "))
+    except Exception as e:
+        clear()
+        print(f'Value given is not an integer.\nError: {e}\n\n')
+        input('Press enter to quit...')
+        clear()
+        quit()
     
+
+    if option == 1:
+        clear()
+        main()
+
+
+    if option == 2:
+        clear()
+        pword = input('What would you like to hash?: ')
+        clear()
+        hash(pword)
     
-try:
-    amount = int(input('How many do you want generated?: '))
-except Exception as e:
-    print(f'\nOops..The value you gave me is not a number/integer.\n[Error]: {e}')
+
+    if option == 3:
+        clear()
+        phash = input('Hash - (blake2b): ')
+        clear()
+        compare(phash)
+
+
+    elif option == 0 or option > 3:
+        clear()
+        print("Incorrect value given. Please choose a valid option from the menu/list.\n\n")
+        input('Press enter to quit...')
+        clear()
+        quit()
+
+    input('\n\nPress enter to quit...')
     quit()
-
-
-
-print('\n')
-
-with open('pass.txt', 'w') as f:
-    for x in range(amount):
-        password = ''.join(secrets.choice(all) for i in range(length))
-        print(password, file=f)
-        print("Here is your newly generated random password:", password)
