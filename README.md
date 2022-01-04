@@ -19,8 +19,12 @@ Update | 1/3/2022:
 __ __
 
 <br />
+
+![passterminal](https://user-images.githubusercontent.com/45724082/147999295-ea668365-dc40-4c16-8df3-442148c898a9.png)
+
 <br />
-  
+<br />
+
 # Installation
 
 ```bash
