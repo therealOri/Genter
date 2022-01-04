@@ -7,6 +7,7 @@ from hashlib import blake2b
 uppercase_letters = ascii_uppercase
 lowercase_letters = ascii_lowercase
 symbols = "!=<>'@#$%^&*()[]{},.;:-_/\\+?|`€"
+unicode = "¡¢£¤¥¦§¨©ª«¬®¯°±²³´µ¶·¸¹º»¼½¾¿×Ø÷øÞß"
 numbers = digits
 korean = "ㅂㅋㅎㅭㅱㅶㅹㅺㅿㆁㆄㆅ"
 russian = "БГДЁЖИЙЛПФфЦЧШЩЪЫЬЭЮЯ"
@@ -132,6 +133,7 @@ def main():
     GL = True
     PL = True
     PU = True
+    spec = True
 
     all = ""
 
@@ -155,6 +157,9 @@ def main():
         all += portuL
     if PU:
         all += portuU
+    if spec:
+        all += unicode
+        
 
     clear()
     print('Note: Please make sure to write your password(s) down or save the password(s) into a new text file before running this script again. \n\n')
