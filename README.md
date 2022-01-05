@@ -1,8 +1,5 @@
 # Passgen
-A strong password generator with a built in password manager made with python3!
-
-
-This will create a very/crazy strong password that will also be randomized.
+Passgen will allow you to create a very/crazy strong password that will also be randomized.
 You can change up what is used, add more stuff, or remove some things if you wish. You can also change the length of the password and how many you want to generate too.
 __ __
 
