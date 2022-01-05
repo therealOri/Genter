@@ -8,32 +8,38 @@ __ __
 
 <br />
 
-Update | 1/3/2022:
-> - Added salting for hashes! Makin them even more secure!
-> - Updated the way in which passwords and info gets printed to pass,txt.
+Update | 1/5/2022:
+> - Added a password manager for your passwords! (All stored locally).
+> - AES salted encryption is what is being used to store the passwords.
+> - The AES encryption is also being encoded before storrage.
 > 
-> Note: Hashing library being used is blake2b instead of sha256. I'd use blake3 but hashlib only has blake2 right now..
 
-- [blake2 documentation](https://www.blake2.net)
-- [hashlib documentation](https://docs.python.org/3/library/hashlib.html)
 __ __
 
 <br />
 
-![passterminal](https://user-images.githubusercontent.com/45724082/147999295-ea668365-dc40-4c16-8df3-442148c898a9.png)
+![passterminal](https://user-images.githubusercontent.com/45724082/148269910-184c510b-18c8-4832-b951-0296f4c11840.png)
+
 
 <br />
 <br />
 
-# Installation
+# Installation/Links
 
 ```bash
 git clone https://github.com/therealOri/PassGen.git
 cd PassGen
+pip3 install -r requirements.txt
 python3 passgen.py
 ```
 
-You may need to type `pip3 install secrets` if it gives you a module not found error.
+<br />
+<br />
+
+- [Git Download](https://git-scm.com/downloads)
+- [Database Browser for pwords.pgen](https://sqlitebrowser.org/dl/)
+- [Blake2 Documentation](https://www.blake2.net)
+- [Hashlib Documentation](https://docs.python.org/3/library/hashlib.html)
 __ __
 
 <br />
