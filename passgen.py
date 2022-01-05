@@ -2,6 +2,28 @@ import secrets
 from string import ascii_lowercase, ascii_uppercase, digits
 import os
 from hashlib import blake2b
+import sqlite3
+import base64 as b64
+
+
+
+from Crypto.Random import get_random_bytes
+from Crypto.Protocol.KDF import PBKDF2
+
+from Crypto.Cipher import AES
+from Crypto.Util.Padding import pad, unpad
+
+
+# CHANGE SALT AND PASSWORD  |  I will eventually change how these 2 variables will be stored.
+# Make a salt by using "key = get_random_bytes(1024)" and  "print(key)". Then copy those bytes here.
+# EXAMPLE (32 byte.): salt = b'@\xd7P\xf1\xa0<\x19\x83\xb2\xf1\xd3B\xd5\xa2\xce&+\xe8\x88=\x80\x9b\n^\xdc\x99\t\xed\xc6\x95\xc23'
+salt = '' 
+password = 'vGb2ZPk0tsfxWy1B' #Anything can go here really..
+
+
+key = PBKDF2(password, salt, dkLen=32)
+cipher = AES.new(key, AES.MODE_CBC)
+
 
 
 uppercase_letters = ascii_uppercase
@@ -37,6 +59,61 @@ def banner():
 
 def clear():
     os.system('cls||clear')
+  
+
+    
+def cipherE(password):
+    msg = bytes(password, 'unicode_escape')
+    cipher_data = cipher.encrypt(pad(msg, AES.block_size))
+    cipher_bcode = b64.b64encode(cipher_data)
+
+    with open('.ecr.bin', 'wb') as f:
+        f.write(cipher.iv)
+    return cipher_bcode.decode()
+
+
+
+def read_data(web):
+    database = sqlite3.connect('pwords.pgen')
+    c = database.cursor()
+    c.execute(f"SELECT passwd FROM pwd_tables WHERE website LIKE '{web}'")
+
+    
+    b64passwd = c.fetchone() # get base64 string from DB.
+    if not b64passwd:
+        print('Oof..nothing here but us foxos...\n')
+        input('Press enter to quit...')
+        quit()
+    else:
+        passwdE = b64.b64decode(b64passwd[0]) # Decoding the base64 bytes and giving me the aes data to decrypt.
+
+        with open('.ecr.bin', 'rb') as f:
+            iv = f.read(16)
+        
+        cipher = AES.new(key, AES.MODE_CBC, iv=iv)
+        original = unpad(cipher.decrypt(passwdE), AES.block_size)
+        return print(f"Password for {web}: {original.decode('unicode_escape')}")
+
+
+
+def add_data(website, passwd):
+    database = sqlite3.connect('pwords.pgen')
+    c = database.cursor()
+
+    c.execute(f"INSERT INTO pwd_tables VALUES ('{website}', '{cipherE(passwd)}')")
+    database.commit()
+    database.close()
+    return print(f'"{website}" and your password has been stored/saved to the database!')
+
+
+def rmv_data(website):
+    database = sqlite3.connect('pwords.pgen')
+    c = database.cursor()
+
+    c.execute(f"DELETE FROM pwd_tables WHERE website LIKE '{website}'")
+    database.commit()
+    database.close()
+    return print(f'"{website}" has been removed from the database!')
 
 
 # Hashing
@@ -198,7 +275,7 @@ def main():
 if __name__ == '__main__':
     clear()
     try:
-        option = int(input(f"{banner()}\n\nWhat would you like to do?\n\n1. Make a password?\n2. Get hash for a password?\n3. Compare hashes?\n\nEnter: "))
+        option = int(input(f"{banner()}\n\nWhat would you like to do?\n\n1. Make a password?\n2. Get hash for a password?\n3. Compare hashes?\n4. Manage passwords?\n\nEnter: "))
     except Exception as e:
         clear()
         print(f'Value given is not an integer.\nError: {e}\n\n')
@@ -224,9 +301,54 @@ if __name__ == '__main__':
         phash = input('Hash - (blake2b): ')
         clear()
         compare(phash)
+        
+        
+    if option == 4:
+        clear()
+        try:
+            sub_option = int(input(f"{banner()}\n\nWhat do you want to manage?\n\n1. Add password?\n2. Remove password?\n3. View password?\n\nEnter: "))
+        except Exception as e:
+            clear()
+            print(f'Value given is not an integer.\nError: {e}\n\n')
+            input('Press enter to quit...')
+            clear()
+            quit()
+
+        if sub_option == 1: # Add passwords
+            clear()
+            web = input('What is the website/domain name you would like to store in the Database?: ')
+            passwd = input('Password to save?: ')
+            clear()
+
+            add_data(web.lower(), passwd)
+
+        if sub_option == 2: # Remove passwords
+            clear()
+            web_to_rmv = input('What is the website/domain name you would like to remove from the Database?: ')
+            print('(This will remove the password for the website as well)')
+            clear()
+
+            rmv_data(web_to_rmv.lower())
+
+        if sub_option == 3: # View/get passwords
+            clear()
+            web_to_get = input('Website domain/name for password: ')
+            clear()
+            read_data(web_to_get.lower())
 
 
-    elif option == 0 or option > 3:
+
+        elif sub_option == 0 or sub_option > 3:
+            clear()
+            print("Incorrect value given. Please choose a valid option from the menu/list.\n\n")
+            input('Press enter to quit...')
+            clear()
+            quit()
+    
+    
+
+
+    elif option == 0 or option > 4:
         clear()
         print("Incorrect value given. Please choose a valid option from the menu/list.\n\n")
         input('Press enter to quit...')
