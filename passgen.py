@@ -18,10 +18,10 @@ from Crypto.Util.Padding import pad, unpad
 # CHANGE SALT AND PASSWORD
 # Make a salt by using "key = get_random_bytes(1024)" and  "print(key)". Then copy those bytes into the .env file.
 # EXAMPLE (32 byte. [You should use 1024]): SALT=b'@\xd7P\xf1\xa0<\x19\x83\xb2\xf1\xd3B\xd5\xa2\xce&+\xe8\x88=\x80\x9b\n^\xdc\x99\t\xed\xc6\x95\xc23'
-# I'm soring these variables in a .env file so it allows you to do whatever you want to the .env file. (Like encrypting the .env file, idk).
+# I'm storing these variables in a .env file so it allows you to do whatever you want to the .env file. (Like encrypting the .env file, encoding then decoding teh stored values, idk) to make things more secure.
 load_dotenv()
 salt = os.getenv("SALT")
-password = os.getenv("PASSWORD") #Anything can be a password really..
+password = os.getenv("PASS") #Anything can be a password really..
 
 
 key = PBKDF2(password, salt, dkLen=32)
