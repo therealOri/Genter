@@ -12,6 +12,7 @@ Update | 1/5/2022:
 > - Added a password manager for your passwords! (All stored locally).
 > - AES salted encryption is what is being used to store the passwords.
 > - The AES encryption is also being encoded before storrage.
+> - Storing certain variables in a .env file for you to make things more secure. (Both salt and password need to be changed)
 > 
 
 __ __
