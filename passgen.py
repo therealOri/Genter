@@ -136,12 +136,12 @@ def hash(password: str):
     if option == 1:
         clear()
         c_key = input('Enter/Load key to use for hashing: ')
-        salt = bytes(input('Enter phrase for salting: '), 'utf-8')
+        salt = bytes(input('Enter phrase for salting (16 letters max): '), 'utf-8')
         clear()
         h = blake2b(key=bytes(c_key, 'utf-8'), salt=salt, digest_size=30)
         h.update(bytes(password, 'utf-8'))
         result1 = h.hexdigest()
-        print(f'Key: {c_key} (Save me for later, to use when hashing.)\nSalt: {salt.decode()}\nPassword: {password}\nHash: {result1}')
+        print(f'Password: {password}  |  Hash: {result1}\nSalt: {salt.decode()}  |  Key: {c_key}\n')
         return result1
 
 
@@ -152,7 +152,7 @@ def hash(password: str):
         h = blake2b(key=bytes(gen_key, 'utf-8'), salt=salt, digest_size=30)
         h.update(bytes(password, 'utf-8'))
         result2 = h.hexdigest()
-        print(f'Key: {gen_key} (Save me for later, to use when hashing.)\nSalt: {salt.decode()} (Save me for later, to use when hashing.)\nPassword: {password}\nHash: {result2}')
+        print(f'Password: {password}  |  Hash: {result2}\nSalt: {salt.decode()}  |  Key: {gen_key}\n')
         return result2
 
 
