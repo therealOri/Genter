@@ -234,9 +234,9 @@ def main():
     if GL:
         all += greekL
     if PL:
-        all += portuL
+        all += portugueseL
     if PU:
-        all += portuU
+        all += portugueseU
     if spec:
         all += unicode
         
