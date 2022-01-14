@@ -5,7 +5,7 @@ from hashlib import blake2b
 import sqlite3
 import base64 as b64
 from dotenv import load_dotenv
-
+import datetime
 
 
 from Crypto.Random import get_random_bytes
@@ -203,6 +203,10 @@ def d_conv(password):
 
 
 def main():
+    date_time = datetime.datetime.now()
+    time_stamp = date_time.strftime("%I%M%S")
+    
+    
     upper = True
     lower = True
     nums = True
@@ -264,11 +268,14 @@ def main():
     print('\n')
 
 
-    with open('pass.txt', 'w') as f:
+    with open(f'pass{time_stamp}.txt', 'w') as f:
         for x in range(amount):
             password = ''.join(secrets.choice(all) for i in range(length))
             print(f'Pass: {password}  |  Hash: {d_conv(password)[0]}\nSalt: {d_conv(password)[1].decode()}  |  Key: {d_conv(password)[2]}\n', file=f)
-            print('Your newly generated random password(s) can be found in "pass.txt".')
+            
+            #Gotta print it out to the terminal aswell, just for convenience sake.
+            print(f'Pass: {password}  |  Hash: {d_conv(password)[0]}\nSalt: {d_conv(password)[1].decode()}  |  Key: {d_conv(password)[2]}\n')
+            print(f'Your newly generated random password(s) and hash info has been saved in "pass{time_stamp}.txt".')
 
 ##-------------- ^^ Functions End ^^ --------------##
 
