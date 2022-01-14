@@ -266,11 +266,8 @@ def main():
     with open(f'pass.txt', 'w') as f:
         for x in range(amount):
             password = ''.join(secrets.choice(all) for i in range(length))
-            print(f'Pass: {password}  |  Hash: {d_conv(password)[0]}\nSalt: {d_conv(password)[1].decode()}  |  Key: {d_conv(password)[2]}\n', file=f)
-            
-            #Gotta print it out to the terminal aswell, just for convenience sake.
-            print(f'Pass: {password}  |  Hash: {d_conv(password)[0]}\nSalt: {d_conv(password)[1].decode()}  |  Key: {d_conv(password)[2]}\n')
-            print('Your newly generated random password(s) and hash info has been saved to "pass.txt".')
+            print(f'Pass: {password}  |  Hash: {d_conv(password)[0]}\nSalt: {d_conv(password)[1].decode()}  |  Key: {d_conv(password)[2]}\n', file=f)    
+        print('Your newly generated random password(s) and hash info has been saved to "pass.txt".')
 
 ##-------------- ^^ Functions End ^^ --------------##
 
