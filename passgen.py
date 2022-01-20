@@ -68,9 +68,6 @@ def cipherE(password):
     msg = bytes(password, 'unicode_escape')
     cipher_data = cipher.encrypt(pad(msg, AES.block_size))
     cipher_bcode = b64.b64encode(cipher_data)
-
-    with open('.ecr.bin', 'wb') as f:
-        f.write(cipher.iv)
     return cipher_bcode.decode()
 
 
@@ -89,20 +86,24 @@ def read_data(web):
     else:
         passwdE = b64.b64decode(b64passwd[0]) # Decoding the base64 bytes and giving me the aes data to decrypt.
 
-        with open('.ecr.bin', 'rb') as f:
-            iv = f.read(16)
+        c.execute(f"SELECT iv FROM pwd_tables WHERE website LIKE '{web}'")
+        ivD = c.fetchone()
+        iv = b64.b64decode(ivD[0])
         
         cipher = AES.new(key, AES.MODE_CBC, iv=iv)
         original = unpad(cipher.decrypt(passwdE), AES.block_size)
         return print(f"Password for {web}: {original.decode('unicode_escape')}")
 
 
-
 def add_data(website, passwd):
+    iv = cipher.iv
+    b64iv = b64.b64encode(iv)
+    b64iv = b64iv.decode('unicode_escape')
+
     database = sqlite3.connect('pwords.pgen')
     c = database.cursor()
 
-    c.execute(f"INSERT INTO pwd_tables VALUES ('{website}', '{cipherE(passwd)}')")
+    c.execute(f"INSERT INTO pwd_tables VALUES ('{website}', '{cipherE(passwd)}', '{b64iv}')")
     database.commit()
     database.close()
     return print(f'"{website}" and your password has been stored/saved to the database!')
