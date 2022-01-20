@@ -5,11 +5,13 @@ __ __
 
 <br />
 
-Update | 1/5/2022:
-> - Added a password manager for your passwords! (All stored locally).
-> - AES salted encryption is what is being used to store the passwords.
-> - The AES encryption is also being encoded before storrage.
-> - Storing certain variables in a .env file for you to make things more secure. (Both salt and password need to be changed)
+Update | 1/20/2022:
+# Critical
+If you have an older version of this project, You should update to the current version now.
+
+> - Fixed a critical flaw/error with how the IVs were being stored.
+> - IVs no longer get overwritten when storing passwords in the DB.
+> - IVs now get stored in the DB with the corresponding password.
 > 
 
 __ __
