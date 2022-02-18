@@ -27,7 +27,7 @@ __ __
 # Installation/Links
 
 ```zsh
-pip install virtualenv
+pip3 install virtualenv
 git clone https://github.com/therealOri/PassGen.git
 cd PassGen
 virtualenv pgenENV
