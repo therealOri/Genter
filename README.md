@@ -5,14 +5,13 @@ __ __
 
 <br />
 
-Update | 1/20/2022:
-# Critical
-If you have an older version of this project, You should update to the current version now.
+Update | 2/18/2022:
+# Auto .env setup update
+If you have an older version of this project, You should update to the current version now!.
 
-> - Fixed a critical flaw/error with how the IVs were being stored.
-> - IVs no longer get overwritten when storing passwords in the DB.
-> - IVs now get stored in the DB with the corresponding password.
-> 
+> - On passgen.py's first time being ran, it'll check the .env file for "FLAG=#src". If it is found, it'll automatically set up the file for you with a SALT and PASS credentials. (removing the FLAG variable as well). And On passgen.py's 2nd run and any after, it'll check the .env file and find that "FLAG=#src" isn't there and skip to the normal functions and code like usual.
+
+In the very odd chance that you would like new .env credentials, all you will need to do is add FLAG=#src back to the .env file and then run passgen.py again.
 
 __ __
 
