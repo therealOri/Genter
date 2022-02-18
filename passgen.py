@@ -276,40 +276,25 @@ def main():
 
 
 if __name__ == '__main__':
-    clear()
-    try:
-        option = int(input(f"{banner()}\n\nWhat would you like to do?\n\n1. Make a password?\n2. Get hash for a password?\n3. Compare hashes?\n4. Manage passwords?\n\nEnter: "))
-    except Exception as e:
+    if os.getenv("FLAG") == '#src':
+        alphabet = uppercase_letters + lowercase_letters + numbers
+        print('The .env file that is needed for passgen.py has not been set up yet. Setting up the file now!...')
+        time.sleep(5)
         clear()
-        print(f'Value given is not an integer.\nError: {e}\n\n')
-        input('Press enter to quit...')
-        clear()
-        quit()
-    
+        SALT = get_random_bytes(1024)
+        PASS = ''.join(secrets.choice(alphabet) for i in range(16))
 
-    if option == 1:
+        with open(".env", "w") as f:
+            f.write(f"SALT={SALT}\n")
+            f.write(f"PASS={PASS}")
+            f.close()
+        print("The .env file should now be all set up!")
+        input('Press enter to exit...')
         clear()
-        main()
-
-
-    if option == 2:
-        clear()
-        pword = input('What would you like to hash?: ')
-        clear()
-        hash(pword)
-    
-
-    if option == 3:
-        clear()
-        phash = input('Hash - (blake2b): ')
-        clear()
-        compare(phash)
-        
-        
-    if option == 4:
+    else:
         clear()
         try:
-            sub_option = int(input(f"{banner()}\n\nWhat do you want to manage?\n\n1. Add password?\n2. Remove password?\n3. View password?\n\nEnter: "))
+            option = int(input(f"{banner()}\n\nWhat would you like to do?\n\n1. Make a password?\n2. Get hash for a password?\n3. Compare hashes?\n4. Manage passwords?\n\nEnter: "))
         except Exception as e:
             clear()
             print(f'Value given is not an integer.\nError: {e}\n\n')
@@ -317,46 +302,77 @@ if __name__ == '__main__':
             clear()
             quit()
 
-        if sub_option == 1: # Add passwords
+
+        if option == 1:
             clear()
-            web = input('What is the website/domain name you would like to store in the Database?: ')
-            passwd = input('Password to save?: ')
+            main()
+
+
+        if option == 2:
             clear()
-
-            add_data(web.lower(), passwd)
-
-        if sub_option == 2: # Remove passwords
+            pword = input('What would you like to hash?: ')
             clear()
-            web_to_rmv = input('What is the website/domain name you would like to remove from the Database?: ')
-            print('(This will remove the password for the website as well)')
+            hash(pword)
+
+
+        if option == 3:
             clear()
-
-            rmv_data(web_to_rmv.lower())
-
-        if sub_option == 3: # View/get passwords
+            phash = input('Hash - (blake2b): ')
             clear()
-            web_to_get = input('Website domain/name for password: ')
+            compare(phash)
+
+
+        if option == 4:
             clear()
-            read_data(web_to_get.lower())
+            try:
+                sub_option = int(input(f"{banner()}\n\nWhat do you want to manage?\n\n1. Add password?\n2. Remove password?\n3. View password?\n\nEnter: "))
+            except Exception as e:
+                clear()
+                print(f'Value given is not an integer.\nError: {e}\n\n')
+                input('Press enter to quit...')
+                clear()
+                quit()
+
+            if sub_option == 1: # Add passwords
+                clear()
+                web = input('What is the website/domain name you would like to store in the Database?: ')
+                passwd = input('Password to save?: ')
+                clear()
+
+                add_data(web.lower(), passwd)
+
+            if sub_option == 2: # Remove passwords
+                clear()
+                web_to_rmv = input('What is the website/domain name you would like to remove from the Database?: ')
+                print('(This will remove the password for the website as well)')
+                clear()
+
+                rmv_data(web_to_rmv.lower())
+
+            if sub_option == 3: # View/get passwords
+                clear()
+                web_to_get = input('Website domain/name for password: ')
+                clear()
+                read_data(web_to_get.lower())
 
 
 
-        elif sub_option == 0 or sub_option > 3:
+            elif sub_option == 0 or sub_option > 3:
+                clear()
+                print("Incorrect value given. Please choose a valid option from the menu/list.\n\n")
+                input('Press enter to quit...')
+                clear()
+                quit()
+
+
+
+
+        elif option == 0 or option > 4:
             clear()
             print("Incorrect value given. Please choose a valid option from the menu/list.\n\n")
             input('Press enter to quit...')
             clear()
             quit()
-    
-    
 
-
-    elif option == 0 or option > 4:
-        clear()
-        print("Incorrect value given. Please choose a valid option from the menu/list.\n\n")
-        input('Press enter to quit...')
-        clear()
+        input('\n\nPress enter to quit...')
         quit()
-
-    input('\n\nPress enter to quit...')
-    quit()
