@@ -26,11 +26,24 @@ __ __
 
 # Installation/Links
 
-```bash
+```zsh
 git clone https://github.com/therealOri/PassGen.git
 cd PassGen
 pip3 install -r requirements.txt
 python3 passgen.py
+```
+<br />
+
+# Termux Install - (Android/Mobile)
+
+```zsh
+pip install virtualenv
+git clone https://github.com/therealOri/PassGen.git
+cd PassGen
+virtualenv pgenENV
+source pgenENV/bin/activate
+pip install -r requirements.txt
+python passgen.py
 ```
 
 <br />
