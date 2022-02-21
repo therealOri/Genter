@@ -28,8 +28,10 @@ cipher = AES.new(key, AES.MODE_CBC)
 
 uppercase_letters = ascii_uppercase
 lowercase_letters = ascii_lowercase
-symbols = "!=<>'@#$%^&*()[]{},.;:-_/\\+?|`€"
-unicode = "¡¢£¤¥¦§¨©ª«¬®¯°±²³´µ¶·¸¹º»¼½¾¿×Ø÷øÞß"
+symbols = "!=<>'@#$%^&*()[]{},.;:-_/\\+?*|`€≡‗"
+unicode = "¡¢£¤¥¦§¨©ª«¬®¯°±²³´µ¶·¸¹º»¼½¾¿×Ø÷øÞßƒðÐı"
+boxes = "░▒▓█▄▀■"
+ascii_draw_box = "╣╗╝┴┬╩╦═╬"
 numbers = digits
 korean = "ㅂㅋㅎㅭㅱㅶㅹㅺㅿㆁㆄㆅ"
 russian = "БГДЁЖИЙЛПФфЦЧШЩЪЫЬЭЮЯ"
@@ -93,6 +95,7 @@ def read_data(web):
         return print(f"Password for {web}: {original.decode('unicode_escape')}")
 
 
+    
 def add_data(website, passwd):
     iv = cipher.iv
     b64iv = b64.b64encode(iv)
@@ -107,6 +110,7 @@ def add_data(website, passwd):
     return print(f'"{website}" and your password has been stored/saved to the database!')
 
 
+
 def rmv_data(website):
     database = sqlite3.connect('pwords.pgen')
     c = database.cursor()
@@ -115,6 +119,7 @@ def rmv_data(website):
     database.commit()
     database.close()
     return print(f'"{website}" has been removed from the database!')
+
 
 
 # Hashing
@@ -201,18 +206,126 @@ def d_conv(password):
 
 
 def main():
-    upper = True
-    lower = True
-    nums = True
-    syms = True
-    kor = True
-    rus = True
-    GU = True
-    GL = True
-    PL = True
-    PU = True
-    spec = True
+    #Set this flag to False if you want to use the manual way on lines 309 - 321.
+    options_FLAG = True
 
+    #Please god let there be a better way to do this....
+    #(Help wanted)
+    try:
+        if options_FLAG == True:
+            answers = ['TRUE', 'True', 'true', 'YES', 'Yes', 'yes', 'Y', 'y']
+            print('Note: Pressing "Enter" will just skip and set the arguments as Fasle.\n')
+            upper = input("(1/13) - Want to use uppercase letters? (y/n): ")
+            if upper in answers:
+                upper = True
+            else:
+                if not upper in answers:
+                    upper = False
+
+            lower = input("2/13) - Want to use lowercase letters? (y/n): ")
+            if lower in answers:
+                lower = True
+            else:
+                if not lower in answers:
+                    lower = False
+
+            nums = input("3/13) - Want to use numbers? (y/n): ")
+            if nums in answers:
+                nums = True
+            else:
+                if not nums in answers:
+                    nums = False
+
+            syms = input("4/13) - Want to use symbols? (y/n): ")
+            if syms in answers:
+                syms = True
+            else:
+                if not syms in answers:
+                    syms = False
+
+            kor = input("5/13) - Want to use korean characters? (y/n): ")
+            if kor in answers:
+                kor = True
+            else:
+                if not kor in answers:
+                    kor = False
+
+            rus = input("6/13) - Want to use russian characters? (y/n): ")
+            if rus in answers:
+                rus = True
+            else:
+                if not rus in answers:
+                    rus = False
+
+            GU = input("7/13) - Want to use uppercase greek letters? (y/n): ")
+            if GU in answers:
+                GU = True
+            else:
+                if not GU in answers:
+                    GU = False
+
+            GL = input("8/13) - Want to use lowercase greek letters? (y/n): ")
+            if GL in answers:
+                GL = True
+            else:
+                if not GL in answers:
+                    GL = False
+
+            PL = input("9/13) - Want to use lowercase portuguese letters? (y/n): ")
+            if PL in answers:
+                PL = True
+            else:
+                if not PL in answers:
+                    PL = False
+
+            PU = input("10/13) - Want to use uppercase portuguese letters? (y/n): ")
+            if PU in answers:
+                PU = True
+            else:
+                if not PU in answers:
+                    PU = False
+
+            spec = input("11/13) - Want to use unicode characters? (y/n): ")
+            if spec in answers:
+                spec = True
+            else:
+                if not spec in answers:
+                    spec = False
+
+            block = input("12/13) - Want to use ascii blocks? (y/n): ")
+            if block in answers:
+                block = True
+            else:
+                if not block in answers:
+                    block = False
+
+            a_box = input("13/13) - Want to use ascii boxes? (y/n): ")
+            if a_box in answers:
+                a_box = True
+            else:
+                if not a_box in answers:
+                    a_box = False
+        else:
+            upper = True
+            lower = True
+            nums = True
+            syms = True
+            kor = True
+            rus = True
+            GU = True
+            GL = True
+            PL = True
+            PU = True
+            spec = True
+            block = True
+            a_box = True
+
+    except Exception as e:
+        print(f"Oops! Something went wrong...\nERROR: {e}")
+        quit()
+        
+        
+        
     all = ""
 
     if upper:
@@ -237,6 +350,10 @@ def main():
         all += portugueseU
     if spec:
         all += unicode
+    if block:
+        all += boxes
+    if a_box:
+        all += ascii_draw_box
         
 
     clear()
