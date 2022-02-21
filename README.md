@@ -5,13 +5,15 @@ __ __
 
 <br />
 
-Update | 2/18/2022:
-# Auto .env setup update
+Update | 2/21/2022:
+# CLI Options Configuration
 If you have an older version of this project, You should update to the current version now!.
 
-> - On passgen.py's first time being ran, it'll check the .env file for "FLAG=#src". If it is found, it'll automatically set up the file for you with a SALT and PASS credentials. (removing the FLAG variable as well). And On passgen.py's 2nd run and any after, it'll check the .env file and find that "FLAG=#src" isn't there and skip to the normal functions and code like usual.
+> - Testing out an in terminal/cmd window way of configuring the True/False options. (This can be enabled or disabled via `options_FLAG`). 
+> - Added ways to set True/False variables in the terminal instead of manually in the file.
+> - Added More symbols and Ascii characters!
 
-In the very odd chance that you would like new .env credentials, all you will need to do is add FLAG=#src back to the .env file and then run passgen.py again.
+If you have a better way to achieve what I'm trying to do here and it could be faster and simpler..then please, by all means, make a pull request and show me your changes. <3
 
 __ __
 
