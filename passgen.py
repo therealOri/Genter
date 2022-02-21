@@ -37,8 +37,8 @@ korean = "ㅂㅋㅎㅭㅱㅶㅹㅺㅿㆁㆄㆅ"
 russian = "БГДЁЖИЙЛПФфЦЧШЩЪЫЬЭЮЯ"
 greekU = "ΓΔΘΛΞΠΣΦΨΩ" # Greek Uppercase.
 greekL = "αβγδεζηθικλμνξπρστυφχψω" # Greek Lowercase.
-portugueseL = "ãáàâçéêíõóôúü"
-portugueseU = "ÃÁÀÂÇÉÊÍÕÓÔÚÜ"
+portuL = "ãáàâçéêíõóôúü"
+portuU = "ÃÁÀÂÇÉÊÍÕÓÔÚÜ"
 #Example |  new_list = "WHATERVER YOU WANT HERE"  | This can be named whatever you can think of, doesn't have to be "new_list". It's just what I am using for this example.
 #You can add more and make it even more complex. Just make sure to update the rest of the code below.
 
@@ -345,9 +345,9 @@ def main():
     if GL:
         all += greekL
     if PL:
-        all += portugueseL
+        all += portuL
     if PU:
-        all += portugueseU
+        all += portuU
     if spec:
         all += unicode
     if block:
