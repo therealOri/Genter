@@ -30,7 +30,7 @@ uppercase_letters = ascii_uppercase
 lowercase_letters = ascii_lowercase
 symbols = "!=<>'@#$%^&*()[]{},.;:-_/\\+?*|`€≡‗"
 unicode = "¡¢£¤¥¦§¨©ª«¬®¯°±²³´µ¶·¸¹º»¼½¾¿×Ø÷øÞßƒðÐı"
-boxes = "░▒▓█▄▀■"
+ascii_boxes = "░▒▓█▄▀■"
 ascii_draw_box = "╣╗╝┴┬╩╦═╬"
 numbers = digits
 korean = "ㅂㅋㅎㅭㅱㅶㅹㅺㅿㆁㆄㆅ"
@@ -351,7 +351,7 @@ def main():
     if spec:
         all += unicode
     if block:
-        all += boxes
+        all += ascii_boxes
     if a_box:
         all += ascii_draw_box
         
