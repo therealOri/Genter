@@ -204,7 +204,7 @@ def d_conv(password):
 
 
 def main():
-    #Set this flag to False if you want to use the manual way on lines 309 - 321.
+    #Set this flag to False if you want to use the manual way on lines 256 - 268.
     options_FLAG = True
 
     #Please god let there be a better way to do this....
@@ -215,28 +215,40 @@ def main():
             print('Note: Pressing "Enter" will just skip and set the arguments as Fasle.\n')
             upper = input("(1/13) - Want to use uppercase letters? (y/n): ")
             upper = upper in answers
+            
             lower = input("(2/13) - Want to use lowercase letters? (y/n): ")
             lower = lower in answers
+            
             nums = input("(3/13) - Want to use numbers? (y/n): ")
             nums = nums in answers
+            
             syms = input("(4/13) - Want to use symbols? (y/n): ")
             syms = syms in answers
+            
             kor = input("(5/13) - Want to use korean characters? (y/n): ")
             kor = kor in answers
+            
             rus = input("(6/13) - Want to use russian characters? (y/n): ")
             rus = rus in answers
+            
             GU = input("(7/13) - Want to use uppercase greek letters? (y/n): ")
             GU = GU in answers
+            
             GL = input("(8/13) - Want to use lowercase greek letters? (y/n): ")
             GL = GL in answers
+            
             PL = input("(9/13) - Want to use lowercase portuguese letters? (y/n): ")
             PL = PL in answers
+            
             PU = input("(10/13) - Want to use uppercase portuguese letters? (y/n): ")
             PU = PU in answers
+            
             spec = input("(11/13) - Want to use unicode characters? (y/n): ")
             spec = spec in answers
+            
             block = input("(12/13) - Want to use ascii blocks? (y/n): ")
             block = block in answers
+            
             a_box = input("(13/13) - Want to use ascii boxes? (y/n): ")
             a_box = a_box in answers
         else:
