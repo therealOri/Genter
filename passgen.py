@@ -46,7 +46,7 @@ portuU = "ÃÁÀÂÇÉÊÍÕÓÔÚÜ"
 
 ##-------------- Functions --------------##
 def banner():
-    banner = """
+    return """
         ██████╗  █████╗ ███████╗███████╗ ██████╗ ███████╗███╗   ██╗
         ██╔══██╗██╔══██╗██╔════╝██╔════╝██╔════╝ ██╔════╝████╗  ██║
         ██████╔╝███████║███████╗███████╗██║  ███╗█████╗  ██╔██╗ ██║
@@ -56,7 +56,6 @@ def banner():
                                                            
       Made by Ori#6338 | @therealOri_ | https://github.com/therealOri
     """
-    return banner
 
 
 def clear():
@@ -77,22 +76,21 @@ def read_data(web):
     c = database.cursor()
     c.execute(f"SELECT passwd FROM pwd_tables WHERE website LIKE '{web}'")
 
-    
-    b64passwd = c.fetchone() # get base64 string from DB.
-    if not b64passwd:
-        print('Oof..nothing here but us foxos...\n')
-        input('Press enter to quit...')
-        quit()
-    else:
+
+    if b64passwd := c.fetchone():
         passwdE = b64.b64decode(b64passwd[0]) # Decoding the base64 bytes and giving me the aes data to decrypt.
 
         c.execute(f"SELECT iv FROM pwd_tables WHERE website LIKE '{web}'")
         ivD = c.fetchone()
         iv = b64.b64decode(ivD[0])
-        
+
         cipher = AES.new(key, AES.MODE_CBC, iv=iv)
         original = unpad(cipher.decrypt(passwdE), AES.block_size)
         return print(f"Password for {web}: {original.decode('unicode_escape')}")
+    else:
+        print('Oof..nothing here but us foxos...\n')
+        input('Press enter to quit...')
+        quit()
 
 
     
@@ -150,8 +148,8 @@ def hash(password: str):
 
     if option == 2:
         clear()
-        gen_key = ''.join(secrets.choice(alphabet) for i in range(16))
-        salt = bytes(''.join(secrets.choice(alphabet) for i in range(16)), 'utf-8')
+        gen_key = ''.join(secrets.choice(alphabet) for _ in range(16))
+        salt = bytes(''.join(secrets.choice(alphabet) for _ in range(16)), 'utf-8')
         h = blake2b(key=bytes(gen_key, 'utf-8'), salt=salt, digest_size=30)
         h.update(bytes(password, 'utf-8'))
         result2 = h.hexdigest()
@@ -206,105 +204,53 @@ def d_conv(password):
 
 
 def main():
-    #Set this flag to False if you want to use the manual way on lines 309 - 321.
+    #Set this flag to False if you want to use the manual way on lines 256 - 268.
     options_FLAG = True
 
     #Please god let there be a better way to do this....
     #(Help wanted)
     try:
-        if options_FLAG == True:
+        if options_FLAG:
             answers = ['TRUE', 'True', 'true', 'YES', 'Yes', 'yes', 'Y', 'y']
             print('Note: Pressing "Enter" will just skip and set the arguments as Fasle.\n')
             upper = input("(1/13) - Want to use uppercase letters? (y/n): ")
-            if upper in answers:
-                upper = True
-            else:
-                if not upper in answers:
-                    upper = False
-
+            upper = upper in answers
+            
             lower = input("(2/13) - Want to use lowercase letters? (y/n): ")
-            if lower in answers:
-                lower = True
-            else:
-                if not lower in answers:
-                    lower = False
-
+            lower = lower in answers
+            
             nums = input("(3/13) - Want to use numbers? (y/n): ")
-            if nums in answers:
-                nums = True
-            else:
-                if not nums in answers:
-                    nums = False
-
+            nums = nums in answers
+            
             syms = input("(4/13) - Want to use symbols? (y/n): ")
-            if syms in answers:
-                syms = True
-            else:
-                if not syms in answers:
-                    syms = False
-
+            syms = syms in answers
+            
             kor = input("(5/13) - Want to use korean characters? (y/n): ")
-            if kor in answers:
-                kor = True
-            else:
-                if not kor in answers:
-                    kor = False
-
+            kor = kor in answers
+            
             rus = input("(6/13) - Want to use russian characters? (y/n): ")
-            if rus in answers:
-                rus = True
-            else:
-                if not rus in answers:
-                    rus = False
-
+            rus = rus in answers
+            
             GU = input("(7/13) - Want to use uppercase greek letters? (y/n): ")
-            if GU in answers:
-                GU = True
-            else:
-                if not GU in answers:
-                    GU = False
-
+            GU = GU in answers
+            
             GL = input("(8/13) - Want to use lowercase greek letters? (y/n): ")
-            if GL in answers:
-                GL = True
-            else:
-                if not GL in answers:
-                    GL = False
-
+            GL = GL in answers
+            
             PL = input("(9/13) - Want to use lowercase portuguese letters? (y/n): ")
-            if PL in answers:
-                PL = True
-            else:
-                if not PL in answers:
-                    PL = False
-
+            PL = PL in answers
+            
             PU = input("(10/13) - Want to use uppercase portuguese letters? (y/n): ")
-            if PU in answers:
-                PU = True
-            else:
-                if not PU in answers:
-                    PU = False
-
+            PU = PU in answers
+            
             spec = input("(11/13) - Want to use unicode characters? (y/n): ")
-            if spec in answers:
-                spec = True
-            else:
-                if not spec in answers:
-                    spec = False
-
+            spec = spec in answers
+            
             block = input("(12/13) - Want to use ascii blocks? (y/n): ")
-            if block in answers:
-                block = True
-            else:
-                if not block in answers:
-                    block = False
-
+            block = block in answers
+            
             a_box = input("(13/13) - Want to use ascii boxes? (y/n): ")
-            if a_box in answers:
-                a_box = True
-            else:
-                if not a_box in answers:
-                    a_box = False
+            a_box = a_box in answers
         else:
             upper = True
             lower = True
@@ -323,9 +269,9 @@ def main():
     except Exception as e:
         print(f"Oops! Something went wrong...\nERROR: {e}")
         quit()
-        
-        
-        
+
+
+
     all = ""
 
     if upper:
@@ -354,7 +300,7 @@ def main():
         all += ascii_boxes
     if a_box:
         all += ascii_draw_box
-        
+
 
     clear()
     print('Note: Please make sure to write your password(s) down or save the password(s) into a new text file before running this script again. \n\n')
@@ -366,8 +312,8 @@ def main():
     except Exception as e:
         print(f'\nOops..The value you gave me is not a number/integer.\n[Error]: {e}')
         quit()
-        
-        
+
+
     try:
         amount = int(input('How many do you want generated?: '))
     except Exception as e:
@@ -379,10 +325,10 @@ def main():
     print('\n')
 
 
-    with open(f'pass.txt', 'w') as f:
-        for x in range(amount):
-            password = ''.join(secrets.choice(all) for i in range(length))
-            print(f'Pass: {password}  |  Hash: {d_conv(password)[0]}\nSalt: {d_conv(password)[1].decode()}  |  Key: {d_conv(password)[2]}\n', file=f)    
+    with open('pass.txt', 'w') as f:
+        for _ in range(amount):
+            password = ''.join(secrets.choice(all) for _ in range(length))
+            print(f'Pass: {password}  |  Hash: {d_conv(password)[0]}\nSalt: {d_conv(password)[1].decode()}  |  Key: {d_conv(password)[2]}\n', file=f)
         print('Your newly generated random password(s) and hash info has been saved to "pass.txt".')
 
 ##-------------- ^^ Functions End ^^ --------------##
@@ -397,7 +343,7 @@ if __name__ == '__main__':
         time.sleep(5)
         clear()
         SALT = get_random_bytes(1024)
-        PASS = ''.join(secrets.choice(alphabet) for i in range(16))
+        PASS = ''.join(secrets.choice(alphabet) for _ in range(16))
 
         with open(".env", "w") as f:
             f.write(f"SALT={SALT}\n")
