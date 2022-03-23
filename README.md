@@ -48,5 +48,5 @@ __ __
 
 # Extra/Notes
 > - If you don't have python3, then you can find, download, and install it from [here](https://www.python.org/downloads/). (Or from your package manager of choice).
-> - If you are on windows 10 use this: [download](https://www.python.org/ftp/python/3.10.1/python-3.10.1-amd64.exe). (Pip3 comes with it)
+> - If you are on windows 10 use this: [download](https://www.python.org/ftp/python/3.10.3/python-3.10.3-amd64.exe). (Pip3 comes with it)
 > - The hashing feature of this script can be completly ignorred if you are just making passwords. Hashing is for if you want to store them in a server somewhere, so they aren't just sat around as plaintext.
