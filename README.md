@@ -5,15 +5,12 @@ __ __
 
 <br />
 
-Update | 2/21/2022:
+Update | 3/23/2022:
 # CLI Options Configuration
 If you have an older version of this project, You should update to the current version now!.
-
-> - Testing out an in terminal/cmd window way of configuring the True/False options. (This can be enabled or disabled via `options_FLAG`). 
-> - Added ways to set True/False variables in the terminal instead of manually in the file.
-> - Added More symbols and Ascii characters!
-
-If you have a better way to achieve what I'm trying to do here and it could be faster and simpler..then please, by all means, make a pull request and show me your changes. <3
+> Added: 
+> - Hindi
+> - Arabic
 
 __ __
 
