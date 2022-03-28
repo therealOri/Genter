@@ -6,17 +6,23 @@ __ __
 <br />
 
 Update | 3/23/2022:
-# CLI Options Configuration
+# Menu Overhaul & More features.
 If you have an older version of this project, You should update to the current version now!.
-> Added: 
-> - Hindi
-> - Arabic
+
+- Added some SUS characters to the unicode list.
+- Added emoji list.
+- Re did the menus and it now flows and acts like a menu. (Instead of just quitting/stopping the script if something breaks.)
+- Removed the "Compare Hashes" function. (I didn't see it needing to be a thing and would be more appropriate for files.)
+- Added options to the menus to go back and to quit.
+- Added a way for you to view the contents of "pass.txt" without having to close the script.
+- Changed the generation of keys for hash values. It will now randomly assign a key and salt each time a hash is made. Instead of you having to "change the default key and salt". (If you want, you can just set the "default_key" and "salt" variables to whatever you want if you do not like how it is being done now.)
 
 __ __
 
 <br />
 
-![passterminal](https://user-images.githubusercontent.com/45724082/148269910-184c510b-18c8-4832-b951-0296f4c11840.png)
+![image](https://user-images.githubusercontent.com/45724082/160468057-cacc5a76-822a-4e9b-a079-d203375f6b11.png)
+
 
 
 <br />
