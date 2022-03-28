@@ -29,7 +29,8 @@ cipher = AES.new(key, AES.MODE_CBC)
 uppercase_letters = ascii_uppercase
 lowercase_letters = ascii_lowercase
 symbols = "!=<>'@#$%^&*()[]{},.;:-_/\\+?*|`€≡‗"
-unicode = "¡¢£¤¥¦§¨©ª«¬®¯°±²³´µ¶·¸¹º»¼½¾¿×Ø÷øÞßƒðÐı"
+unicode = "¡¢£¤¥¦§¨©ª«¬®™️¯°±²³´µ¶·¸¹º»¼½¾¿×Ø÷øÞßƒðÐıæ𐐘𐑀ඞඕᔕ"
+emojis = "⚔☣️⚛️〰️🗝️🔒⛓️"
 ascii_boxes = "░▒▓█▄▀■"
 ascii_draw_box = "╣╗╝┴┬╩╦═╬"
 numbers = digits
@@ -90,9 +91,7 @@ def read_data(web):
         original = unpad(cipher.decrypt(passwdE), AES.block_size)
         return print(f"Password for {web}: {original.decode('unicode_escape')}")
     else:
-        print('Oof..nothing here but us foxos...\n')
-        input('Press enter to quit...')
-        quit()
+        print('Oof..nothing here but us foxos...')
 
 
     
@@ -125,97 +124,74 @@ def rmv_data(website):
 # Hashing
 def hash(password: str):
     alphabet = uppercase_letters + lowercase_letters + numbers
-
-    try:
-        option = int(input(f"{banner()}\n\nHow do you want to make a key for hashing?\n\n1. Custom Key?\n2. Generate Key?\n\nEnter: "))
-    except Exception as e:
-        clear()
-        print(f'Value given is not an integer.\nError: {e}\n\n')
-        input('Press enter to quit...')
-        clear()
-        quit()
-
-
-    if option == 1:
-        clear()
-        c_key = input('Enter/Load key to use for hashing: ')
-        salt = bytes(input('Enter phrase for salting (16 letters max): '), 'utf-8')
-        clear()
-        h = blake2b(key=bytes(c_key, 'utf-8'), salt=salt, digest_size=30)
-        h.update(bytes(password, 'utf-8'))
-        result1 = h.hexdigest()
-        print(f'Password: {password}  |  Hash: {result1}\nSalt: {salt.decode()}  |  Key: {c_key}\n')
-        return result1
+    
+    while True:
+        try:
+            option = int(input(f"{banner()}\n\nHow do you want to make a key for hashing?\n\n1. Custom Key?\n2. Generate Key?\n\nEnter: "))
+        except Exception as e:
+            clear()
+            print(f'Value given is not an integer.\nError: {e}\n\n')
+            input('Press enter to continue...')
+            clear()
+            continue
 
 
-    if option == 2:
-        clear()
-        gen_key = ''.join(secrets.choice(alphabet) for _ in range(16))
-        salt = bytes(''.join(secrets.choice(alphabet) for _ in range(16)), 'utf-8')
-        h = blake2b(key=bytes(gen_key, 'utf-8'), salt=salt, digest_size=30)
-        h.update(bytes(password, 'utf-8'))
-        result2 = h.hexdigest()
-        print(f'Password: {password}  |  Hash: {result2}\nSalt: {salt.decode()}  |  Key: {gen_key}\n')
-        return result2
+        if option == 1:
+            clear()
+            c_key = input('Enter/Load key to use for hashing: ')
+            salt = bytes(input('Enter phrase for salting (16 letters max): '), 'utf-8')
+            clear()
+            result1 = blake2b(bytes(password, 'utf-8'), key=bytes(c_key, 'utf-8'), salt=salt, digest_size=32).hexdigest()
+
+            print(f'Password: {password}  |  Hash: {result1}\nSalt: {salt.decode()}  |  Key: {c_key}\n')
+            return result1
 
 
-    elif option == 0 or option > 2:
-        clear()
-        print("Incorrect value given. Please choose a valid option from the menu/list.\n\n")
-        input('Press enter to quit...')
-        clear()
-        quit()
+        if option == 2:
+            clear()
+            gen_key = ''.join(secrets.choice(alphabet) for _ in range(25))
+            salt = bytes(''.join(secrets.choice(alphabet) for _ in range(16)), 'utf-8')
+            
+            result2 = blake2b(bytes(password, 'utf-8'), key=bytes(gen_key, 'utf-8'), salt=salt, digest_size=32).hexdigest()
+            print(f'Password: {password}  |  Hash: {result2}\nSalt: {salt.decode()}  |  Key: {gen_key}\n')
+            return result2
+
+
+        elif option == 0 or option > 2:
+            clear()
+            print("Incorrect value given. Please choose a valid option from the menu/list.\n\n")
+            input('Press enter to continue...')
+            clear()
 # End of Hashing
 
 
-# Compare hash
-def compare(phash):
-    clear()
-    pword = input('Password: ')
-    h_key = input("Hash Key: ")
-    salt = bytes(input('Salt: '), 'utf-8')
-
-    h = blake2b(key=bytes(h_key, 'utf-8'), salt=salt, digest_size=30)
-    h.update(bytes(pword, 'utf-8'))
-    result = h.hexdigest()
 
 
-    if phash == result:
-        clear()
-        return print(f"The hash you provided matches!\n\n[INFO]\nKey: {h_key}\nSalt: {salt.decode()}\nPassword: {pword}\nYour Provided Hash - (blake2b): {phash}\nHash of Password - (blake2b): {result}")
-
-    else:
-        clear()
-        return print(f"The hash you provided does not match!\n\n[INFO]\nKey: {h_key}\nSalt: {salt.decode()}\nPassword: {pword}\nYour Provided Hash - (blake2b): {phash}\nHash of Password - (blake2b): {result}")
-# End Compare hash
-
-
-
-
-# This will always use the default key. (For when you generate passwords instead of hashing an already existing password.)
-# You could also generate a key and use it here instead if you want. Or change it to whatever. Either way, it is reccomended to change the default_key and salt.
+# This if for when you generate passwords.
 def d_conv(password):
+    alphabet = uppercase_letters + lowercase_letters + numbers
     clear()
-    default_key = 'vGb2ZPk0tsfxWy1B'
-    salt = bytes('fehNc4L2GnU53RTF', 'utf-8')
-    h = blake2b(key=bytes(default_key, 'utf-8'), salt=salt, digest_size=30)
-    h.update(bytes(password, 'utf-8'))
-    result = h.hexdigest()
+    
+    default_key = ''.join(secrets.choice(alphabet) for _ in range(25)) #Can be as long as you want.
+    salt = bytes(''.join(secrets.choice(alphabet) for _ in range(16)), 'utf-8') #MUST be 16 or less.
+    
+    result = blake2b(bytes(password, 'utf-8'), key=bytes(default_key, 'utf-8'), salt=salt, digest_size=32).hexdigest()
     return result, salt, default_key
 
 
 
 def main():
-    #Set this flag to False if you want to use the manual way on lines 256 - 268.
-    options_FLAG = True
+    #Set this flag to False if you want to use the manual way on lines 244 - 259.
+    options_FLAG = False
 
     #Please god let there be a better way to do this....
     #(Help wanted)
+    # Something, perhaps am unput with 15 variables that you can set via yynnynnyyyyynyn..Idk
     try:
         if options_FLAG:
             answers = ['TRUE', 'True', 'true', 'YES', 'Yes', 'yes', 'Y', 'y']
             print('Note: Pressing "Enter" will just skip and set the arguments as Fasle.\n')
-            
+
             upper = input("(1/15) - Want to use uppercase letters? (y/n): ")
             upper = upper in answers
 
@@ -260,6 +236,9 @@ def main():
             
             arab = input("(15/15) - Want to use arabic letters? (y/n): ")
             arab = arab in answers
+            
+            emote = input("(15/15) - Want to use arabic letters? (y/n): ")
+            emote = emote in answers
         else:
             upper = True
             lower = True
@@ -276,11 +255,11 @@ def main():
             a_box = True
             hin = True
             arab = True
-
+            emote = True
+            
     except Exception as e:
         print(f"Oops! Something went wrong...\nERROR: {e}")
         quit()
-
 
 
     all = ""
@@ -315,7 +294,8 @@ def main():
         all += hindi
     if arab:
         all += arabic
-
+    if emote:
+        all += emojis
 
     clear()
     print('Note: Please make sure to write your password(s) down or save the password(s) into a new text file before running this script again. \n\n')
@@ -344,7 +324,19 @@ def main():
         for _ in range(amount):
             password = ''.join(secrets.choice(all) for _ in range(length))
             print(f'Pass: {password}  |  Hash: {d_conv(password)[0]}\nSalt: {d_conv(password)[1].decode()}  |  Key: {d_conv(password)[2]}\n', file=f)
-        print('Your newly generated random password(s) and hash info has been saved to "pass.txt".')
+        print('Your newly generated random password(s) and hash info has been saved to "pass.txt".\n\n\n')
+        input('Press enter to continue...')
+        clear()
+        
+        
+
+def show_pass():
+    clear()
+    with open('pass.txt', 'r') as f:
+        result = f.read()
+        return print(result)
+        
+        
 
 ##-------------- ^^ Functions End ^^ --------------##
 
@@ -368,87 +360,98 @@ if __name__ == '__main__':
         input('Press enter to exit...')
         clear()
     else:
-        clear()
-        try:
-            option = int(input(f"{banner()}\n\nWhat would you like to do?\n\n1. Make a password?\n2. Get hash for a password?\n3. Compare hashes?\n4. Manage passwords?\n\nEnter: "))
-        except Exception as e:
-            clear()
-            print(f'Value given is not an integer.\nError: {e}\n\n')
-            input('Press enter to quit...')
-            clear()
-            quit()
-
-
-        if option == 1:
-            clear()
-            main()
-
-
-        if option == 2:
-            clear()
-            pword = input('What would you like to hash?: ')
-            clear()
-            hash(pword)
-
-
-        if option == 3:
-            clear()
-            phash = input('Hash - (blake2b): ')
-            clear()
-            compare(phash)
-
-
-        if option == 4:
+        while True:
             clear()
             try:
-                sub_option = int(input(f"{banner()}\n\nWhat do you want to manage?\n\n1. Add password?\n2. Remove password?\n3. View password?\n\nEnter: "))
+                option = int(input(f"{banner()}\n\nWhat would you like to do?\n\n1. Make a password?\n2. Get hash for a password?\n3. Manage passwords?\n4. Show pass.txt?\n5. Quit?\n\nEnter: "))
             except Exception as e:
                 clear()
                 print(f'Value given is not an integer.\nError: {e}\n\n')
-                input('Press enter to quit...')
+                input('Press enter to continue...')
+                clear()
+                continue
+
+
+            if option == 1:
+                clear()
+                main()
+
+
+            if option == 2:
+                clear()
+                pword = input('What would you like to hash?: ')
+                clear()
+                hash(pword)
+                input('Press enter to continue...')
+                clear()
+
+
+            if option == 3:
+                clear()
+                while True:
+                    try:
+                        sub_option = int(input(f"{banner()}\n\nWhat do you want to manage?\n\n1. Add password?\n2. Remove password?\n3. View password?\n4. Back?\n\nEnter: "))
+                    except Exception as e:
+                        clear()
+                        print(f'Value given is not an integer.\nError: {e}\n\n')
+                        input('Press enter to continue...')
+                        clear()
+                        continue
+
+                    if sub_option == 1: # Add passwords
+                        clear()
+                        web = input('What is the website/domain name you would like to store in the Database?: ')
+                        passwd = input('Password to save?: ')
+                        clear()
+                        add_data(web.lower(), passwd)
+                        input('\n\nPress enter to continue...')
+                        clear()
+
+                    if sub_option == 2: # Remove passwords
+                        clear()
+                        web_to_rmv = input('What is the website/domain name you would like to remove from the Database?: ')
+                        print('(This will remove the password for the website as well)')
+                        clear()
+
+                        rmv_data(web_to_rmv.lower())
+                        input('\n\nPress enter to continue...')
+                        clear()
+
+                    if sub_option == 3: # View/get passwords
+                        clear()
+                        web_to_get = input('Website domain/name for password: ')
+                        clear()
+                        read_data(web_to_get.lower())
+                        input('\n\nPress enter to continue...')
+                        clear()
+
+                    if sub_option == 4:
+                        break
+
+
+                    elif sub_option == 0 or sub_option > 4:
+                        clear()
+                        print("Incorrect value given. Please choose a valid option from the menu/list.\n\n")
+                        input('Press enter to quit...')
+                        clear()
+                        
+
+
+
+            
+            if option == 4:
+                show_pass()
+                input('Press enter to continue...')
+                clear()            
+            
+            if option == 5:
                 clear()
                 quit()
 
-            if sub_option == 1: # Add passwords
-                clear()
-                web = input('What is the website/domain name you would like to store in the Database?: ')
-                passwd = input('Password to save?: ')
-                clear()
-
-                add_data(web.lower(), passwd)
-
-            if sub_option == 2: # Remove passwords
-                clear()
-                web_to_rmv = input('What is the website/domain name you would like to remove from the Database?: ')
-                print('(This will remove the password for the website as well)')
-                clear()
-
-                rmv_data(web_to_rmv.lower())
-
-            if sub_option == 3: # View/get passwords
-                clear()
-                web_to_get = input('Website domain/name for password: ')
-                clear()
-                read_data(web_to_get.lower())
-
-
-
-            elif sub_option == 0 or sub_option > 3:
+            
+            elif option == 0 or option > 5:
                 clear()
                 print("Incorrect value given. Please choose a valid option from the menu/list.\n\n")
-                input('Press enter to quit...')
+                input('Press enter to continue...')
                 clear()
-                quit()
-
-
-
-
-        elif option == 0 or option > 4:
-            clear()
-            print("Incorrect value given. Please choose a valid option from the menu/list.\n\n")
-            input('Press enter to quit...')
-            clear()
-            quit()
-
-        input('\n\nPress enter to quit...')
-        quit()
+                
