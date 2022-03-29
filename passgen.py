@@ -335,8 +335,12 @@ def show_pass():
     with open('pass.txt', 'r') as f:
         result = f.read()
         return print(result)
-        
-        
+
+    
+def clr_pass():
+    clear()
+    with open('pass.txt', 'r+') as f:
+        f.truncate(0)        
 
 ##-------------- ^^ Functions End ^^ --------------##
 
@@ -363,7 +367,7 @@ if __name__ == '__main__':
         while True:
             clear()
             try:
-                option = int(input(f"{banner()}\n\nWhat would you like to do?\n\n1. Make a password?\n2. Get hash for a password?\n3. Manage passwords?\n4. Show pass.txt?\n5. Quit?\n\nEnter: "))
+                option = int(input(f"{banner()}\n\nWhat would you like to do?\n\n1. Make a password?\n2. Get hash for a password?\n3. Manage passwords?\n4. Show pass.txt?\n5. Clear pass.txt?\n6. Quit?\n\nEnter: "))
             except Exception as e:
                 clear()
                 print(f'Value given is not an integer.\nError: {e}\n\n')
@@ -445,11 +449,17 @@ if __name__ == '__main__':
                 clear()            
             
             if option == 5:
+                clr_pass()
+                print("pass.txt has been wiped clean.\n\n")
+                input('Press enter to continue...')
+                clear()
+             
+            if option == 6:
                 clear()
                 quit()
 
             
-            elif option == 0 or option > 5:
+            elif option == 0 or option > 6:
                 clear()
                 print("Incorrect value given. Please choose a valid option from the menu/list.\n\n")
                 input('Press enter to continue...')
