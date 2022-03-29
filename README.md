@@ -5,23 +5,18 @@ __ __
 
 <br />
 
-Update | 3/23/2022:
+Update | 3/29/2022:
 # Menu Overhaul & More features.
 If you have an older version of this project, You should update to the current version now!.
 
-- Added some SUS characters to the unicode list.
-- Added emoji list.
-- Re did the menus and it now flows and acts like a menu. (Instead of just quitting/stopping the script if something breaks.)
-- Removed the "Compare Hashes" function. (I didn't see it needing to be a thing and would be more appropriate for files.)
-- Added options to the menus to go back and to quit.
-- Added a way for you to view the contents of "pass.txt" without having to close the script.
-- Changed the generation of keys for hash values. It will now randomly assign a key and salt each time a hash is made. Instead of you having to "change the default key and salt". (If you want, you can just set the "default_key" and "salt" variables to whatever you want if you do not like how it is being done now.)
+> - Added a new function to clear the contents of "pass.txt" in the menu. (For after you make a password so it doesn't just sit there in the file)
 
 __ __
 
 <br />
 
-![image](https://user-images.githubusercontent.com/45724082/160468057-cacc5a76-822a-4e9b-a079-d203375f6b11.png)
+![image](https://user-images.githubusercontent.com/45724082/160675150-74ad8fa4-c7ea-4305-a1c2-2dd78ead89c4.png)
+
 
 
 
