@@ -5,17 +5,24 @@ __ __
 
 <br />
 
-Update | 3/29/2022:
-# Menu Overhaul & More features.
+Update | 4/6/2022:
+# New Features.
 If you have an older version of this project, You should update to the current version now!.
 
-> - Added a new function to clear the contents of "pass.txt" in the menu. (For after you make a password so it doesn't just sit there in the file)
+Added:
+> - Functions to lock and unlock the database file and added a way to do that in the menu.
+> - New way to encrypt the passwords. No longer needs an IV. (Also means less being stored in the database)
+> - New way to show saved domains in the database.
+
+Changed:
+> - The names a of a few functions. cipherE >to> stringE and read_data() >to> stringD()
 
 __ __
 
 <br />
 
-![image](https://user-images.githubusercontent.com/45724082/160675150-74ad8fa4-c7ea-4305-a1c2-2dd78ead89c4.png)
+![image](https://user-images.githubusercontent.com/45724082/162041412-537d797a-0fa4-4d9e-8e9f-f3635b19e160.png)
+
 
 
 
