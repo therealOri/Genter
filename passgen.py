@@ -6,23 +6,19 @@ import sqlite3
 import base64 as b64
 from dotenv import load_dotenv
 import time
+from ocryptor import oCrypt
 
 
 from Crypto.Random import get_random_bytes
 from Crypto.Protocol.KDF import PBKDF2
-
 from Crypto.Cipher import AES
 from Crypto.Util.Padding import pad, unpad
 
 
-# I'm storing these variables in a .env file so it allows you to do whatever you want to the .env file. (Like encrypting the .env file, encoding then decoding teh stored values, idk) to make things more secure.
+
+# I'm storing these variables in a .env file so it allows you to do whatever you want to the .env file. 
+# (Like encrypting the .env file, encoding then decoding teh stored values, idk) to make things more secure.
 load_dotenv()
-salt = os.getenv("SALT")
-password = os.getenv("PASS") #Anything can be a password really..
-
-
-key = PBKDF2(password, salt, dkLen=32)
-cipher = AES.new(key, AES.MODE_CBC)
 
 
 
@@ -65,50 +61,48 @@ def clear():
     os.system('cls||clear')
   
 
-    
-def cipherE(password):
-    msg = bytes(password, 'unicode_escape')
-    cipher_data = cipher.encrypt(pad(msg, AES.block_size))
-    cipher_bcode = b64.b64encode(cipher_data)
-    return cipher_bcode.decode()
+
+def stringE(password):
+    salt = os.getenv("SALT")
+    ev_password = os.getenv("PASS")
+
+    key = PBKDF2(ev_password, salt, dkLen=32)
+    rb = get_random_bytes(AES.block_size)
+    cipher = AES.new(key, AES.MODE_CBC, rb)
+    cipher_data = b64.b64encode(rb + cipher.encrypt(pad(password.encode('unicode_escape'), AES.block_size)))
+    return cipher_data.decode()
 
 
+def stringD(web):
+    salt = os.getenv("SALT")
+    ev_password = os.getenv("PASS")
 
-def read_data(web):
     database = sqlite3.connect('pwords.pgen')
     c = database.cursor()
     c.execute(f"SELECT passwd FROM pwd_tables WHERE website LIKE '{web}'")
 
-
     if b64passwd := c.fetchone():
         passwdE = b64.b64decode(b64passwd[0]) # Decoding the base64 bytes and giving me the aes data to decrypt.
-
-        c.execute(f"SELECT iv FROM pwd_tables WHERE website LIKE '{web}'")
-        ivD = c.fetchone()
-        iv = b64.b64decode(ivD[0])
-
-        cipher = AES.new(key, AES.MODE_CBC, iv=iv)
-        original = unpad(cipher.decrypt(passwdE), AES.block_size)
-        return print(f"Password for {web}: {original.decode('unicode_escape')}")
+        try:
+            key = PBKDF2(ev_password, salt, dkLen=32)
+            cipher = AES.new(key, AES.MODE_CBC, passwdE[:AES.block_size])
+            d_cipher_data = unpad(cipher.decrypt(passwdE[AES.block_size:]), AES.block_size)
+        except Exception as e:
+            strd_e = f'The provided credentials do not match what was was used to encrypt the data...\nError: {e}'
+            raise Exception(strd_e) from None
+        return print(f"Password for {web}: {d_cipher_data.decode('unicode-escape')}")
     else:
         print('Oof..nothing here but us foxos...')
 
 
-    
-def add_data(website, passwd):
-    iv = cipher.iv
-    b64iv = b64.b64encode(iv)
-    b64iv = b64iv.decode('unicode_escape')
 
+def add_data(website, passwd):
     database = sqlite3.connect('pwords.pgen')
     c = database.cursor()
-
-    c.execute(f"INSERT INTO pwd_tables VALUES ('{website}', '{cipherE(passwd)}', '{b64iv}')")
+    c.execute(f"INSERT INTO pwd_tables VALUES ('{website}', '{stringE(passwd)}')")
     database.commit()
     database.close()
     return print(f'"{website}" and your password has been stored/saved to the database!')
-
-
 
 def rmv_data(website):
     database = sqlite3.connect('pwords.pgen')
@@ -167,7 +161,8 @@ def hash(password: str):
 
 
 
-# This if for when you generate passwords.
+# This will always use the default key. (For when you generate passwords instead of hashing an already existing password.)
+# You could also generate a key and use it here instead if you want. Or change it to whatever. Either way, it is reccomended to change the default_key and salt.
 def d_conv(password):
     alphabet = uppercase_letters + lowercase_letters + numbers
     clear()
@@ -181,12 +176,11 @@ def d_conv(password):
 
 
 def main():
-    #Set this flag to False if you want to use the manual way on lines 244 - 259.
+    #Set this flag to False if you want to use the manual way.
     options_FLAG = False
 
     #Please god let there be a better way to do this....
     #(Help wanted)
-    # Something, perhaps am unput with 15 variables that you can set via yynnynnyyyyynyn..Idk
     try:
         if options_FLAG:
             answers = ['TRUE', 'True', 'true', 'YES', 'Yes', 'yes', 'Y', 'y']
@@ -335,12 +329,31 @@ def show_pass():
     with open('pass.txt', 'r') as f:
         result = f.read()
         return print(result)
-
-    
+        
 def clr_pass():
     clear()
     with open('pass.txt', 'r+') as f:
-        f.truncate(0)        
+        f.truncate(0)
+
+
+def domains():
+    database = sqlite3.connect('pwords.pgen')
+    c = database.cursor()
+    c.execute(f"SELECT website FROM pwd_tables")
+    sites = c.fetchall()
+    ldb = str(sites).replace("(", "").replace(",)", "").replace("'", "")
+    dlist = ldb.strip('][').split(', ')
+
+    for _ in dlist:
+        with open('.lst', 'a') as f:
+            f.writelines(f"{_}\n")
+
+
+def lock(key, salt, file, enc_salt):
+    oCrypt().file_encrypt(key, salt, file, enc_salt)
+
+def unlock(key2, salt2, file2, enc_salt2):
+    oCrypt().file_decrypt(key2, salt2, file2, enc_salt2)
 
 ##-------------- ^^ Functions End ^^ --------------##
 
@@ -389,12 +402,12 @@ if __name__ == '__main__':
                 input('Press enter to continue...')
                 clear()
 
-
+            # Unlock and lock options. Error messages saying to unlock in order to do anything. A way to check if the file is locked or not.
             if option == 3:
                 clear()
                 while True:
                     try:
-                        sub_option = int(input(f"{banner()}\n\nWhat do you want to manage?\n\n1. Add password?\n2. Remove password?\n3. View password?\n4. Back?\n\nEnter: "))
+                        sub_option = int(input(f"{banner()}\n\nWhat do you want to manage?\n\n1. Add password?\n2. Remove password?\n3. Show saved websites\n4. Lock database?\n5. Unlock database?\n6. Back?\n\nEnter: "))
                     except Exception as e:
                         clear()
                         print(f'Value given is not an integer.\nError: {e}\n\n')
@@ -421,19 +434,51 @@ if __name__ == '__main__':
                         input('\n\nPress enter to continue...')
                         clear()
 
-                    if sub_option == 3: # View/get passwords
+                    if sub_option == 3:
                         clear()
-                        web_to_get = input('Website domain/name for password: ')
+                        domains()
+                        with open(".lst", "r+") as f:
+                            data = f.read()
+                            print(data)
+                            f.truncate(0)
+                            f.close()
+                        os.remove(".lst")
+                        
+                        web_to_get = input('-----------------------------------------------------\nWebsite domain/name for password: ')
                         clear()
-                        read_data(web_to_get.lower())
+                        stringD(web_to_get.lower())
                         input('\n\nPress enter to continue...')
                         clear()
 
+
+
                     if sub_option == 4:
+                        clear()
+                        print("Please provide credentials to lock the database. (Do NOT forget them as you will never be able to decrypt without them.)\n\n")
+                        key = input("Key?: ")
+                        salt = input("Salt?: ")
+                        enc_salt = input("Enc_Salt?: ")
+                        file_path = input("File path? - (Drag & drop): ").replace('\\ ', ' ').strip()
+                        lock(key, salt, file_path, enc_salt)
+                        clear()
+
+
+                    if sub_option == 5:
+                        clear()
+                        print("Please provide the correct credentials to unlock the database. (Do not forget them as you will NOT be able to decrypt without them.)\n\n")
+                        key2 = input("Key?: ")
+                        salt2 = input("Salt?: ")
+                        enc_salt2 = input("Enc_Salt?: ")
+                        file_path2 = input("File path? - (Drag & drop): ").replace('\\ ', ' ').strip()
+                        unlock(key2, salt2, file_path2, enc_salt2)
+                        clear()
+
+
+                    if sub_option == 6:
                         break
 
 
-                    elif sub_option == 0 or sub_option > 4:
+                    elif sub_option == 0 or sub_option > 6:
                         clear()
                         print("Incorrect value given. Please choose a valid option from the menu/list.\n\n")
                         input('Press enter to quit...')
@@ -453,7 +498,8 @@ if __name__ == '__main__':
                 print("pass.txt has been wiped clean.\n\n")
                 input('Press enter to continue...')
                 clear()
-             
+            
+            
             if option == 6:
                 clear()
                 quit()
