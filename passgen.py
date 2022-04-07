@@ -186,52 +186,52 @@ def main():
             answers = ['TRUE', 'True', 'true', 'YES', 'Yes', 'yes', 'Y', 'y']
             print('Note: Pressing "Enter" will just skip and set the arguments as Fasle.\n')
 
-            upper = input("(1/15) - Want to use uppercase letters? (y/n): ")
+            upper = input("(1/16) - Want to use uppercase letters? (y/n): ")
             upper = upper in answers
 
-            lower = input("(2/15) - Want to use lowercase letters? (y/n): ")
+            lower = input("(2/16) - Want to use lowercase letters? (y/n): ")
             lower = lower in answers
 
-            nums = input("(3/15) - Want to use numbers? (y/n): ")
+            nums = input("(3/16) - Want to use numbers? (y/n): ")
             nums = nums in answers
 
-            syms = input("(4/15) - Want to use symbols? (y/n): ")
+            syms = input("(4/16) - Want to use symbols? (y/n): ")
             syms = syms in answers
 
-            kor = input("(5/15) - Want to use korean characters? (y/n): ")
+            kor = input("(5/16) - Want to use korean characters? (y/n): ")
             kor = kor in answers
 
-            rus = input("(6/15) - Want to use russian characters? (y/n): ")
+            rus = input("(6/16) - Want to use russian characters? (y/n): ")
             rus = rus in answers
 
-            GU = input("(7/15) - Want to use uppercase greek letters? (y/n): ")
+            GU = input("(7/16) - Want to use uppercase greek letters? (y/n): ")
             GU = GU in answers
 
-            GL = input("(8/15) - Want to use lowercase greek letters? (y/n): ")
+            GL = input("(8/16) - Want to use lowercase greek letters? (y/n): ")
             GL = GL in answers
 
-            PL = input("(9/15) - Want to use lowercase portuguese letters? (y/n): ")
+            PL = input("(9/16) - Want to use lowercase portuguese letters? (y/n): ")
             PL = PL in answers
 
-            PU = input("(10/15) - Want to use uppercase portuguese letters? (y/n): ")
+            PU = input("(10/16) - Want to use uppercase portuguese letters? (y/n): ")
             PU = PU in answers
 
-            spec = input("(11/15) - Want to use unicode characters? (y/n): ")
+            spec = input("(11/16) - Want to use unicode characters? (y/n): ")
             spec = spec in answers
 
-            block = input("(12/15) - Want to use ascii blocks? (y/n): ")
+            block = input("(12/16) - Want to use ascii blocks? (y/n): ")
             block = block in answers
 
-            a_box = input("(13/15) - Want to use ascii boxes? (y/n): ")
+            a_box = input("(13/16) - Want to use ascii boxes? (y/n): ")
             a_box = a_box in answers
             
-            hin = input("(14/15) - Want to use hindi letters? (y/n): ")
+            hin = input("(14/16) - Want to use hindi letters? (y/n): ")
             hin = hin in answers
             
-            arab = input("(15/15) - Want to use arabic letters? (y/n): ")
+            arab = input("(15/16) - Want to use arabic letters? (y/n): ")
             arab = arab in answers
             
-            emote = input("(15/15) - Want to use arabic letters? (y/n): ")
+            emote = input("(16/16) - Want to use emojis? (y/n): ")
             emote = emote in answers
         else:
             upper = True
