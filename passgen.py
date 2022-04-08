@@ -7,6 +7,7 @@ import base64 as b64
 from dotenv import load_dotenv
 import time
 from ocryptor import oCrypt
+import json
 
 
 from Crypto.Random import get_random_bytes
@@ -174,15 +175,19 @@ def d_conv(password):
     return result, salt, default_key
 
 
+def j_load():
+    with open('config.json') as f:
+        data = json.load(f)
+        option = data['options_flag']
+    return option
+
 
 def main():
-    #Set this flag to False if you want to use the manual way.
-    options_FLAG = False
-
     #Please god let there be a better way to do this....
     #(Help wanted)
     try:
-        if options_FLAG:
+        #You can configure what you want to do in the config.json file.
+        if j_load() == True:
             answers = ['TRUE', 'True', 'true', 'YES', 'Yes', 'yes', 'Y', 'y']
             print('Note: Pressing "Enter" will just skip and set the arguments as Fasle.\n')
 
