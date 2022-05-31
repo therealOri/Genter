@@ -81,7 +81,7 @@ Then change directory back to the PassGen folder/directory, and run passgen.py a
 Command: cd ..
 Command: python passgen.py
 ```
-> If you did everything correctly, you should now have an env.pyd or env.so file in the PassGen folder/directory and when you run `passgen.py`, it should run with no errors.
+> If you did everything correctly, you should now have an `env.pyd` or `env.so` file in the PassGen folder/directory and when you run `passgen.py`, it should run with no errors.
 > If you do Have ANY issues, by all means, make an issue/report about it if you belive it to be a bug, etc. and or get in touch with me over in the [Discussions](https://github.com/therealOri/PassGen/discussions/10) page if you have questions or need help/guidence with troubleshooting stuff! <3
 __ __
 
