@@ -155,9 +155,6 @@ def hash(password: str):
 
 
 
-
-# This will always use the default key. (For when you generate passwords instead of hashing an already existing password.)
-# You could also generate a key and use it here instead if you want. Or change it to whatever. Either way, it is reccomended to change the default_key and salt.
 def d_conv(password):
     alphabet = uppercase_letters + lowercase_letters + numbers
     clear()
@@ -402,7 +399,7 @@ if __name__ == '__main__':
                 input('Press enter to continue...')
                 clear()
 
-            # Unlock and lock options. Error messages saying to unlock in order to do anything. A way to check if the file is locked or not.
+                
             if option == 3:
                 clear()
                 while True:
