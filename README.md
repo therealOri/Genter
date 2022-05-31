@@ -97,7 +97,7 @@ __ __
 <br />
 <br />
 
-# Support  |  Buy me a coffee <3
+# Support  |  Buy me a coffee <3  (God knows I need one xD)
 Donate to me here:
 > - Don't have Cashapp? [Sign Up](https://cash.app/app/TKWGCRT)
 
