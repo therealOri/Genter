@@ -5,17 +5,13 @@ __ __
 
 <br />
 
-Update | 4/6/2022:
+Update | 5/31/2022:
 # New Features.
 If you have an older version of this project, You should update to the current version now!.
 
 Added:
-> - Functions to lock and unlock the database file and added a way to do that in the menu.
-> - New way to encrypt the passwords. No longer needs an IV. (Also means less being stored in the database)
-> - New way to show saved domains in the database.
-
-Changed:
-> - The names a of a few functions. cipherE >to> stringE and read_data() >to> stringD()
+> - New way of storing our SALT and PASS variables using oriscate & cythonize.
+> - Some instructions below on how to se up the env.py file, obfuscate it, then cythonize it.
 
 __ __
 
