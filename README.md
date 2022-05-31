@@ -61,7 +61,7 @@ pip install -r requirements.txt
 
 
 # Obfuscate code.
-# Move the **env.py** file into the oriscate folder/directory.
+# Move the env.py file into the oriscate folder/directory.
 python main.py -i env.py -o env.py -s 100 -r
 
 
