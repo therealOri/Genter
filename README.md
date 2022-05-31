@@ -55,23 +55,24 @@ __ __
 > We are going to use [oriscate](https://github.com/therealOri/oriscate) for our obfuscation and stuff. This should be done **after** running PassGen.py **once** and setting up the env.py file.
 ```
 # Install oriscate
-git clone https://github.com/therealOri/oriscate.git
-cd oriscate
-pip install -r requirements.txt
+Command: git clone https://github.com/therealOri/oriscate.git
+Command: cd oriscate
+Command: pip install -r requirements.txt
 
 
 # Obfuscate code.
 # Move the env.py file into the oriscate folder/directory.
-python main.py -i env.py -o env.py -s 100 -r
+Command: python main.py -i env.py -o env.py -s 100 -r
 
 
 # Cythonize Code
 # env.py is what is being used in the setup.py file
-python setup.py build_ext --inplace
+# You can remove the "build" folder/directory, the "env.c" file and "env.py" file.
+Command: python setup.py build_ext --inplace
 
 
 # Final
-- Rename the .so/.pyd file to "env.so" OR "env.pyd" and leave it in the same directory as PassGen.py. That way when we "import env", it'll know what file to use. (that contains your SALT and PASS.
+Rename the newly made .so/.pyd file to "env.so" OR "env.pyd" and move it back into the same directory as PassGen.py. That way when we "import env", it'll know what file to use. (that contains your SALT and PASS.
 ```
 
 __ __
