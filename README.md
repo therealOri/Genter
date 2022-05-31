@@ -11,7 +11,7 @@ If you have an older version of this project, You should update to the current v
 
 Added:
 > - New way of storing our SALT and PASS variables using oriscate & cythonize.
-> - Some instructions below on how to se up the env.py file, obfuscate it, then cythonize it.
+> - Some instructions below on how to set up the env.py file, obfuscate it, then cythonize it.
 
 __ __
 
