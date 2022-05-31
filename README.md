@@ -41,6 +41,7 @@ source pgenENV/bin/activate
 pip3 install -r requirements.txt
 python3 passgen.py
 ```
+__ __
 
 <br />
 <br />
@@ -49,6 +50,33 @@ python3 passgen.py
 - [Database Browser for pwords.pgen](https://sqlitebrowser.org/dl/)
 - [Blake2 Documentation](https://www.blake2.net)
 - [Hashlib Documentation](https://docs.python.org/3/library/hashlib.html)
+__ __
+
+<br />
+<br />
+
+# Obfuscation & Cythonize instructions.
+> We are going to use [oriscate](https://github.com/therealOri/oriscate) for our obfuscation and stuff.
+```
+# Install oriscate
+git clone https://github.com/therealOri/oriscate.git
+cd oriscate
+pip install -r requirements.txt
+
+
+# Obfuscate code.
+python main.py -i env.py -o env.py -s 100 -r
+
+
+# Cythonize Code
+# env.py is what is being used in the setup.py file
+python setup.py build_ext --inplace
+
+
+# Final
+- Rename the .so/.pyd file to "env.so" OR "env.pyd" and leave it in the same directory as PassGen.py. That way when we "import env", it'll know what file to use. (that contains your SALT and PASS.
+```
+
 __ __
 
 <br />
