@@ -5,6 +5,7 @@ from hashlib import blake2b
 import sqlite3
 import base64 as b64
 from dotenv import load_dotenv
+import env
 import time
 from ocryptor import oCrypt
 import json
@@ -14,13 +15,6 @@ from Crypto.Random import get_random_bytes
 from Crypto.Protocol.KDF import PBKDF2
 from Crypto.Cipher import AES
 from Crypto.Util.Padding import pad, unpad
-
-
-
-# I'm storing these variables in a .env file so it allows you to do whatever you want to the .env file. 
-# (Like encrypting the .env file, encoding then decoding teh stored values, idk) to make things more secure.
-load_dotenv()
-
 
 
 uppercase_letters = ascii_uppercase
@@ -64,8 +58,8 @@ def clear():
 
 
 def stringE(password):
-    salt = os.getenv("SALT")
-    ev_password = os.getenv("PASS")
+    salt = str(env.SALT)
+    ev_password = str(env.PASS)
 
     key = PBKDF2(ev_password, salt, dkLen=32)
     rb = get_random_bytes(AES.block_size)
@@ -75,8 +69,8 @@ def stringE(password):
 
 
 def stringD(web):
-    salt = os.getenv("SALT")
-    ev_password = os.getenv("PASS")
+    salt = str(env.SALT)
+    ev_password = str(env.PASS)
 
     database = sqlite3.connect('pwords.pgen')
     c = database.cursor()
@@ -366,19 +360,20 @@ def unlock(key2, salt2, file2, enc_salt2):
 
 
 if __name__ == '__main__':
-    if os.getenv("FLAG") == '#src':
+    if env.FLAG == '#src':
         alphabet = uppercase_letters + lowercase_letters + numbers
-        print('The .env file that is needed for passgen.py has not been set up yet. Setting up the file now!...')
+        print('The env file that is needed for passgen.py has not been set up yet. Setting up the file now!...')
         time.sleep(5)
         clear()
         SALT = get_random_bytes(1024)
         PASS = ''.join(secrets.choice(alphabet) for _ in range(16))
 
-        with open(".env", "w") as f:
+        with open("env.py", "w") as f:
             f.write(f"SALT={SALT}\n")
-            f.write(f"PASS={PASS}")
+            f.write(f"PASS='{PASS}'\n")
+            f.write("FLAG='v1'")
             f.close()
-        print("The .env file should now be all set up!")
+        print("The env file should now be all set up!")
         input('Press enter to exit...')
         clear()
     else:
