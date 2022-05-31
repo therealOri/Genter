@@ -362,7 +362,7 @@ def unlock(key2, salt2, file2, enc_salt2):
 if __name__ == '__main__':
     if env.FLAG == '#src':
         alphabet = uppercase_letters + lowercase_letters + numbers
-        print('The env file that is needed for passgen.py has not been set up yet. Setting up the file now!...')
+        print('The env file that is needed for passgen.py has not been set up yet. Setting up the file now!...\nMake sure to obfuscate and cythonize the env.py file after!')
         time.sleep(5)
         clear()
         SALT = get_random_bytes(1024)
