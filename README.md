@@ -70,7 +70,7 @@ Command: python main.py -i env.py -o env.py -s 100 -r
 
 # Cythonize Code
 # env.py is what is being used in the setup.py file
-# You can remove the "build" folder/directory, the "env.c" file and "env.py" file.
+# You can remove the "build" folder/directory, the "env.c" file and "env.py" file AFTER running & completing the following command.
 Command: python setup.py build_ext --inplace
 
 
