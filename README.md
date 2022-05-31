@@ -56,7 +56,7 @@ __ __
 <br />
 
 # Obfuscation & Cythonize instructions.
-> We are going to use [oriscate](https://github.com/therealOri/oriscate) for our obfuscation and stuff.
+> We are going to use [oriscate](https://github.com/therealOri/oriscate) for our obfuscation and stuff. This should be done **after** running PassGen.py **once** and setting up the env.py file.
 ```
 # Install oriscate
 git clone https://github.com/therealOri/oriscate.git
