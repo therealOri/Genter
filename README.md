@@ -53,7 +53,7 @@ __ __
 
 # Obfuscation & Cythonize instructions.
 !! IMPORTANT !!: 
-- Do not change the env.py file contents or name of the file unless you know what you are doing. The passgen.py code/file uses and IMPORTS `env.py` for things and if you change env.py to anything else, you MUST do the same for wherever `env.py`, `env.FLAG`, & `env.SALT` is/are located at in passgen.py. Or else you'll likely get errors. You'll be better off not changing the name of the `env.py` file is all. You will also need to update the `setup.py` file later on when in the "Cythonize" part of the process to reflect the name change if you change the name of `env.py`.
+- Do not change the env.py file contents or name of the file unless you know what you are doing. The passgen.py code/file uses and IMPORTS `env.py` for things and if you change env.py to anything else, you MUST do the same for `import env` and also for wherever `env.py`, `env.FLAG`, & `env.SALT` is/are located at in passgen.py. Or else you'll likely get errors. You'll be better off not changing the name of the `env.py` file is all. You will also need to update the `setup.py` file later on when in the "Cythonize" part of the process to reflect the name change if you change the name of `env.py`.
 
 > We are going to use [oriscate](https://github.com/therealOri/oriscate) for our obfuscation and stuff. This should be done **after** running passgen.py **once** and setting up the env.py file.
 ```
@@ -75,7 +75,7 @@ Command: python setup.py build_ext --inplace
 
 
 # Final
-Rename the newly made .so/.pyd file to "env.so" OR "env.pyd" and move it back into the same directory as PassGen.py. 
+Rename the newly made .so/.pyd file to "env.so" OR "env.pyd" and move it back into the same directory as passgen.py. 
 That way when we "import env", it'll know what file to use. (that contains your SALT and PASS).
 Then change directory back to the PassGen folder/directory.
 Command: cd ..
