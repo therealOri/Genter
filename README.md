@@ -74,6 +74,9 @@ Command: python setup.py build_ext --inplace
 # Final
 Rename the newly made .so/.pyd file to "env.so" OR "env.pyd" and move it back into the same directory as PassGen.py. 
 That way when we "import env", it'll know what file to use. (that contains your SALT and PASS).
+Then change directory back to the PassGen folder/directory.
+Command: cd ..
+Command: python passgen.py
 ```
 
 __ __
