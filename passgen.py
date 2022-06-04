@@ -4,7 +4,6 @@ import os
 from hashlib import blake2b
 import sqlite3
 import base64 as b64
-from dotenv import load_dotenv
 import env
 import time
 from ocryptor import oCrypt
