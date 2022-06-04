@@ -1,3 +1,2 @@
-pycryptodome
-python-dotenv
-oCrypt0r
+pycryptodome==3.14.1
+oCrypt0r==1.0.7.post1
