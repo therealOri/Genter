@@ -5,13 +5,12 @@ __ __
 
 <br />
 
-Update | 5/31/2022:
+Update | 6/12/2022:
 # New Features.
 If you have an older version of this project, You should update to the current version now!.
 
 Added:
-> - New way of storing our SALT and PASS variables using oriscate & cythonize.
-> - Some instructions below on how to set up the env.py file, obfuscate it, then cythonize it.
+> - Amharic (Ethopian) alphabet.
 
 __ __
 
