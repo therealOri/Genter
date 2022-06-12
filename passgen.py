@@ -231,7 +231,7 @@ def main():
             emote = input("(16/17) - Want to use emojis? (y/n): ")
             emote = emote in answers
 
-            amha = input("(16/17) - Want to use emojis? (y/n): ")
+            amha = input("(17/17) - Want to use emojis? (y/n): ")
             amha = amha in answers
         else:
             upper = True
