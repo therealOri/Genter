@@ -91,6 +91,15 @@ __ __
 > - If you don't have python3, then you can find, download, and install it from [here](https://www.python.org/downloads/). (Or from your package manager of choice).
 > - If you are on windows 10 use this: [download](https://www.python.org/ftp/python/3.10.4/python-3.10.4-amd64.exe). (Pip3 comes with it)
 > - The hashing feature of this script can be completly ignorred if you are just making passwords. Hashing is for if you want to store them in a server somewhere, so they aren't just sat around as plaintext.
+__ __
+
+<br />
+<br />
+
+# Notice! 💢
+It is very important to keep backups of your so/pyd file as without it you CAN NOT decrypt your passwords. It is advised that you keep a backup of your password database and your so/pyd file as well on a USB or external SSD. If in the event of your so/pyd file getting compromized and you need to change it and your passwords that used it. For now you will just have to manually decrypt the password, save it with the email associated with it, delete the existing saved password record, then once you have everything decrypted..you can use the new so/pyd file you have made for encryption and start adding the passwords back into the database. At least until I can make a way to do this automatically...
+__ __
+
 
 <br />
 <br />
