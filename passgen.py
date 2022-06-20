@@ -4,10 +4,10 @@ import os
 from hashlib import blake2b
 import sqlite3
 import base64 as b64
-import env
 import time
 from ocryptor import oCrypt
 import json
+import env
 
 
 from Crypto.Random import get_random_bytes
@@ -52,45 +52,155 @@ def banner():
     """
 
 
+
+
+
+# CLEANING
+## ------------------------------------------------------------------------ ##
 def clear():
     os.system('cls||clear')
+
+
+# Cleaning up files.
+def cleanup():
+    # Remove current pwords.pgen db.
+    if os.path.isfile('pwords.pgen'):
+        os.remove('pwords.pgen')
+    else:
+        pass
+
+    # Rename new database to the name of the original database.
+    if os.path.isfile('pwords2.pgen'):
+        os.rename('pwords2.pgen', 'pwords.pgen')
+    else:
+        pass
+
+    # Renames vne.py to env.py.
+    if os.path.isfile('vne.py'):
+        os.rename('vne.py', 'env.py')
+        print("Please remove/delete your .so/.pyd file and use the new env.py file instead.\nYou can obfuscate and cythonize the new env.py file.")
+    else:
+        pass
+## ------------------------------------------------------------------------ ##
   
 
 
+
+
+
+# ENCRYPTION STUFF
+## ------------------------------------------------------------------------ ##
+#Decrypting old encrypted passwords in pasgen.pgen.
+def stringD_lst(passw):
+    import env
+    salt = str(env.SALT)
+    ev_password = str(env.PASS)
+
+    passwdE = b64.b64decode(passw) # Decoding the base64 bytes and giving me the aes data to decrypt.
+    try:
+        key = PBKDF2(ev_password, salt, dkLen=32)
+        cipher = AES.new(key, AES.MODE_CBC, passwdE[:AES.block_size])
+        d_cipher_data = unpad(cipher.decrypt(passwdE[AES.block_size:]), AES.block_size)
+    except Exception as e:
+        strd_e = f'The provided credentials do not match what was was used to encrypt the data...\nError: {e}'
+        raise Exception(strd_e) from None
+    return d_cipher_data.decode('unicode-escape')
+
+
+
+# Encrypting the passwords with new encryption before rename/cleanup.
+def stringE2(passw):
+    import vne
+    vne_salt = str(vne.SALT)
+    vne_ev_password = str(vne.PASS)
+
+    vne_key = PBKDF2(vne_ev_password, vne_salt, dkLen=32)
+    vne_rb = get_random_bytes(AES.block_size)
+    vne_cipher = AES.new(vne_key, AES.MODE_CBC, vne_rb)
+    vne_cipher_data = b64.b64encode(vne_rb + vne_cipher.encrypt(pad(passw.encode('unicode_escape'), AES.block_size)))
+    return vne_cipher_data.decode()
+
+
+
+# Encrypting the passwords with new encryption after rename/cleanup.
 def stringE(password):
-    salt = str(env.SALT)
-    ev_password = str(env.PASS)
+    import env
+    env_salt = str(env.SALT)
+    env_ev_password = str(env.PASS)
 
-    key = PBKDF2(ev_password, salt, dkLen=32)
-    rb = get_random_bytes(AES.block_size)
-    cipher = AES.new(key, AES.MODE_CBC, rb)
-    cipher_data = b64.b64encode(rb + cipher.encrypt(pad(password.encode('unicode_escape'), AES.block_size)))
-    return cipher_data.decode()
+    env_key = PBKDF2(env_ev_password, env_salt, dkLen=32)
+    env_rb = get_random_bytes(AES.block_size)
+    env_cipher = AES.new(env_key, AES.MODE_CBC, env_rb)
+    env_cipher_data = b64.b64encode(env_rb + env_cipher.encrypt(pad(password.encode('unicode_escape'), AES.block_size)))
+    return env_cipher_data.decode()
 
 
-def stringD(web):
-    salt = str(env.SALT)
-    ev_password = str(env.PASS)
 
-    database = sqlite3.connect('pwords.pgen')
+# Decrypting the new encryption before rename/cleanup.
+def stringD2(web):
+    import vne
+    vne_salt = str(vne.SALT)
+    vne_ev_password = str(vne.PASS)
+
+    database = sqlite3.connect('pwords2.pgen')
     c = database.cursor()
     c.execute(f"SELECT passwd FROM pwd_tables WHERE website LIKE '{web}'")
 
-    if b64passwd := c.fetchone():
-        passwdE = b64.b64decode(b64passwd[0]) # Decoding the base64 bytes and giving me the aes data to decrypt.
+    if vne_b64passwd := c.fetchone():
+        vne_passwdE = b64.b64decode(vne_b64passwd[0])
         try:
-            key = PBKDF2(ev_password, salt, dkLen=32)
-            cipher = AES.new(key, AES.MODE_CBC, passwdE[:AES.block_size])
-            d_cipher_data = unpad(cipher.decrypt(passwdE[AES.block_size:]), AES.block_size)
+            vne_key = PBKDF2(vne_ev_password, vne_salt, dkLen=32)
+            vne_cipher = AES.new(vne_key, AES.MODE_CBC, vne_passwdE[:AES.block_size])
+            vne_d_cipher_data = unpad(vne_cipher.decrypt(vne_passwdE[AES.block_size:]), AES.block_size)
         except Exception as e:
             strd_e = f'The provided credentials do not match what was was used to encrypt the data...\nError: {e}'
             raise Exception(strd_e) from None
-        return print(f"Password for {web}: {d_cipher_data.decode('unicode-escape')}")
+        return print(f"Password for {web}: {vne_d_cipher_data.decode('unicode-escape')}")
     else:
         print('Oof..nothing here but us foxos...')
 
 
 
+# Decrypting the new encryption after rename.
+def stringD2a(web):
+    import env
+    env_salt = str(env.SALT)
+    env_ev_password = str(env.PASS)
+
+    database = sqlite3.connect('pwords.pgen')
+    c = database.cursor()
+    c.execute(f"SELECT passwd FROM pwd_tables WHERE website LIKE '{web}'")
+
+    if env_b64passwd := c.fetchone():
+        env_passwdE = b64.b64decode(env_b64passwd[0])
+        try:
+            env_key = PBKDF2(env_ev_password, env_salt, dkLen=32)
+            env_cipher = AES.new(env_key, AES.MODE_CBC, env_passwdE[:AES.block_size])
+            env_d_cipher_data = unpad(env_cipher.decrypt(env_passwdE[AES.block_size:]), AES.block_size)
+        except Exception as e:
+            strd_e = f'The provided credentials do not match what was was used to encrypt the data...\nError: {e}'
+            raise Exception(strd_e) from None
+        return print(f"Password for {web}: {env_d_cipher_data.decode('unicode-escape')}")
+    else:
+        print('Oof..nothing here but us foxos...')
+
+
+
+# Changing encryption credentials
+def change():
+    alphabet = uppercase_letters + lowercase_letters + numbers
+    SALT = get_random_bytes(1024)
+    PASS = ''.join(secrets.choice(alphabet) for _ in range(16))
+
+    with open("vne.py", "w") as f:
+        f.write(f"SALT={SALT}\n")
+        f.write(f"PASS='{PASS}'\n")
+        f.write("FLAG='v1'")
+        f.close()
+
+
+
+# Add and remove data from database.
 def add_data(website, passwd):
     database = sqlite3.connect('pwords.pgen')
     c = database.cursor()
@@ -107,9 +217,14 @@ def rmv_data(website):
     database.commit()
     database.close()
     return print(f'"{website}" has been removed from the database!')
+## ------------------------------------------------------------------------ ##
 
 
 
+
+
+# OTHER STUFF
+## ------------------------------------------------------------------------ ##
 # Hashing
 def hash(password: str):
     alphabet = uppercase_letters + lowercase_letters + numbers
@@ -120,7 +235,7 @@ def hash(password: str):
         except Exception as e:
             clear()
             print(f'Value given is not an integer.\nError: {e}\n\n')
-            input('Press enter to continue...')
+            input('Press "enter" to continue...')
             clear()
             continue
 
@@ -149,13 +264,13 @@ def hash(password: str):
         elif option == 0 or option > 2:
             clear()
             print("Incorrect value given. Please choose a valid option from the menu/list.\n\n")
-            input('Press enter to continue...')
+            input('Press "enter" to continue...')
             clear()
-# End of Hashing
 
 
 
 
+# For automatically hashing the newly generated password in the main function.
 def d_conv(password):
     alphabet = uppercase_letters + lowercase_letters + numbers
     clear()
@@ -167,11 +282,129 @@ def d_conv(password):
     return result, salt, default_key
 
 
+# config.json file loading.
 def j_load():
     with open('config.json') as f:
         data = json.load(f)
         option = data['options_flag']
     return option
+
+
+# Showing contents of pass.txt and clearing it.
+def show_pass():
+    clear()
+    with open('pass.txt', 'r') as f:
+        result = f.read()
+        return print(result)
+        
+def clr_pass():
+    clear()
+    with open('pass.txt', 'r+') as f:
+        f.truncate(0)
+
+
+
+
+# Reading passwords functinality.
+def domains():
+    database = sqlite3.connect('pwords.pgen')
+    c = database.cursor()
+    c.execute(f"SELECT website FROM pwd_tables")
+    sites = c.fetchall()
+    ldb = str(sites).replace("(", "").replace(",)", "").replace("'", "")
+    dlist = ldb.strip('][').split(', ')
+
+    for _ in dlist:
+        with open('.lst', 'a') as f:
+            f.writelines(f"{_}\n")
+
+
+def read():
+    clear()
+    domains()
+    with open(".lst", "r+") as f:
+        data = f.read()
+        print(data)
+        f.truncate(0)
+        f.close()
+    os.remove(".lst")
+    
+    web_to_get = input('-----------------------------------------------------\nWebsite domain/name for password: ')
+    clear()
+    if os.path.isfile('vne.py'):
+        stringD2(web_to_get.lower())
+    else:
+        stringD2a(web_to_get.lower())
+
+
+
+
+# Locking and unlocking files.
+def lock(key, salt, file, enc_salt):
+    oCrypt().file_encrypt(key, salt, file, enc_salt)
+
+def unlock(key2, salt2, file2, enc_salt2):
+    oCrypt().file_decrypt(key2, salt2, file2, enc_salt2)
+
+
+
+# Making new DB for the following functions for changing your encryption.
+def make_db():
+    database = sqlite3.connect('pwords2.pgen')
+    c = database.cursor()
+    c.execute('''CREATE TABLE pwd_tables(website text, passwd text)''')
+    database.commit()
+    database.close()
+
+
+def change_creds():
+    if os.path.isfile('pwords2.pgen'):
+        os.remove('pwords2.pgen')
+        make_db()
+    else:
+        make_db()
+
+    database = sqlite3.connect('pwords.pgen')
+    c = database.cursor()
+    c.execute(f"SELECT website FROM pwd_tables")
+    sites = c.fetchall()
+    ldb = str(sites).replace("(", "").replace(",)", "").replace("'", "")
+    dlist = ldb.strip('][').split(', ')
+    
+
+    # Get list of passwords from original database.
+    database = sqlite3.connect('pwords.pgen')
+    c = database.cursor()
+    c.execute(f"SELECT passwd FROM pwd_tables")
+    words = c.fetchall()
+    lpw = str(words).replace("(", "").replace(",)", "").replace("'", "")
+    plist = lpw.strip('][').split(', ')
+
+
+    # Get all of the passwords in the list above and decrypt them. (env.so)
+    lst = []
+    for y in plist:
+        pwords = stringD_lst(y)
+        lst.append(pwords)
+    
+
+    # Get all of the passwords in lst and encrypt them using the new credentials. (vne.py)
+    lst2 = []
+    for z in lst:
+        vne_pwords = stringE2(z)
+        lst2.append(vne_pwords)
+
+
+    # Get all of the websites and all of the newly encrypted passwords and iterate through them both and then write to a new database file.
+    for a,b in zip(dlist, lst2):
+        database = sqlite3.connect('pwords2.pgen')
+        c = database.cursor()
+        c.execute(f"INSERT INTO pwd_tables VALUES ('{a}', '{b}')")
+        database.commit()
+        database.close()
+## ------------------------------------------------------------------------ ##
+
+
 
 
 def main():
@@ -231,7 +464,7 @@ def main():
             emote = input("(16/17) - Want to use emojis? (y/n): ")
             emote = emote in answers
 
-            amha = input("(17/17) - Want to use amharic (y/n): ")
+            amha = input("(17/17) - Want to use amharic? (y/n): ")
             amha = amha in answers
         else:
             upper = True
@@ -323,41 +556,9 @@ def main():
             password = ''.join(secrets.choice(all) for _ in range(length))
             print(f'Pass: {password}  |  Hash: {d_conv(password)[0]}\nSalt: {d_conv(password)[1].decode()}  |  Key: {d_conv(password)[2]}\n', file=f)
         print('Your newly generated random password(s) and hash info has been saved to "pass.txt".\n\n\n')
-        input('Press enter to continue...')
+        input('Press "enter" to continue...')
         clear()
-        
-        
 
-def show_pass():
-    clear()
-    with open('pass.txt', 'r') as f:
-        result = f.read()
-        return print(result)
-        
-def clr_pass():
-    clear()
-    with open('pass.txt', 'r+') as f:
-        f.truncate(0)
-
-
-def domains():
-    database = sqlite3.connect('pwords.pgen')
-    c = database.cursor()
-    c.execute(f"SELECT website FROM pwd_tables")
-    sites = c.fetchall()
-    ldb = str(sites).replace("(", "").replace(",)", "").replace("'", "")
-    dlist = ldb.strip('][').split(', ')
-
-    for _ in dlist:
-        with open('.lst', 'a') as f:
-            f.writelines(f"{_}\n")
-
-
-def lock(key, salt, file, enc_salt):
-    oCrypt().file_encrypt(key, salt, file, enc_salt)
-
-def unlock(key2, salt2, file2, enc_salt2):
-    oCrypt().file_decrypt(key2, salt2, file2, enc_salt2)
 
 ##-------------- ^^ Functions End ^^ --------------##
 
@@ -379,7 +580,7 @@ if __name__ == '__main__':
             f.write("FLAG='v1'")
             f.close()
         print("The env file should now be all set up!")
-        input('Press enter to exit...')
+        input('Press "enter" to exit...')
         clear()
     else:
         while True:
@@ -389,7 +590,7 @@ if __name__ == '__main__':
             except Exception as e:
                 clear()
                 print(f'Value given is not an integer.\nError: {e}\n\n')
-                input('Press enter to continue...')
+                input('Press "enter" to continue...')
                 clear()
                 continue
 
@@ -404,19 +605,19 @@ if __name__ == '__main__':
                 pword = input('What would you like to hash?: ')
                 clear()
                 hash(pword)
-                input('Press enter to continue...')
+                input('Press "enter" to continue...')
                 clear()
 
-            
+
             if option == 3:
                 clear()
                 while True:
                     try:
-                        sub_option = int(input(f"{banner()}\n\nWhat do you want to manage?\n\n1. Add password?\n2. Remove password?\n3. Show saved websites\n4. Lock database?\n5. Unlock database?\n6. Back?\n\nEnter: "))
+                        sub_option = int(input(f"{banner()}\n\nWhat do you want to manage?\n\n1. Add password?\n2. Remove password?\n3. Show saved websites\n4. Lock database?\n5. Unlock database?\n6. Change encryption?\n7. Back?\n\nEnter: "))
                     except Exception as e:
                         clear()
                         print(f'Value given is not an integer.\nError: {e}\n\n')
-                        input('Press enter to continue...')
+                        input('Press "enter" to continue...')
                         clear()
                         continue
 
@@ -426,7 +627,7 @@ if __name__ == '__main__':
                         passwd = input('Password to save?: ')
                         clear()
                         add_data(web.lower(), passwd)
-                        input('\n\nPress enter to continue...')
+                        input('\n\nPress "enter" to continue...')
                         clear()
 
                     if sub_option == 2: # Remove passwords
@@ -436,23 +637,13 @@ if __name__ == '__main__':
                         clear()
 
                         rmv_data(web_to_rmv.lower())
-                        input('\n\nPress enter to continue...')
+                        input('\n\nPress "enter" to continue...')
                         clear()
 
                     if sub_option == 3:
                         clear()
-                        domains()
-                        with open(".lst", "r+") as f:
-                            data = f.read()
-                            print(data)
-                            f.truncate(0)
-                            f.close()
-                        os.remove(".lst")
-                        
-                        web_to_get = input('-----------------------------------------------------\nWebsite domain/name for password: ')
-                        clear()
-                        stringD(web_to_get.lower())
-                        input('\n\nPress enter to continue...')
+                        read()
+                        input('\n\nPress "enter" to continue...')
                         clear()
 
 
@@ -478,15 +669,38 @@ if __name__ == '__main__':
                         unlock(key2, salt2, file_path2, enc_salt2)
                         clear()
 
-
                     if sub_option == 6:
+                        clear()
+
+                        print("Changing encryption credentials for the passwords in the database...")
+                        change()
+                        input('New credentials genreated and saved as "vne.py".\n\nPress "enter" to continue...')
+                        clear()
+
+                        print("Making new database for passwords...")
+                        make_db()
+                        print("New database created!")
+
+                        print("\n\nWorking my magic!...")
+                        change_creds()
+                        input('Credentials have been changed and all data is now usung the new encryption & credentials.\n\nPress "enter" to continue...')
+                        clear()
+
+                        print("Cleaning up!...\n")
+                        cleanup()
+                        input('\n\nFiles have been cleaned up!\nPress "enter" to quit/reload the passgen...')
+                        clear()
+                        quit()
+
+
+                    if sub_option == 7:
                         break
 
 
-                    elif sub_option == 0 or sub_option > 6:
+                    elif sub_option == 0 or sub_option > 7:
                         clear()
                         print("Incorrect value given. Please choose a valid option from the menu/list.\n\n")
-                        input('Press enter to quit...')
+                        input('Press "enter" to quit...')
                         clear()
                         
 
@@ -495,13 +709,13 @@ if __name__ == '__main__':
             
             if option == 4:
                 show_pass()
-                input('Press enter to continue...')
+                input('Press "enter" to continue...')
                 clear()            
             
             if option == 5:
                 clr_pass()
                 print("pass.txt has been wiped clean.\n\n")
-                input('Press enter to continue...')
+                input('Press "enter" to continue...')
                 clear()
             
             
@@ -513,6 +727,6 @@ if __name__ == '__main__':
             elif option == 0 or option > 6:
                 clear()
                 print("Incorrect value given. Please choose a valid option from the menu/list.\n\n")
-                input('Press enter to continue...')
+                input('Press "enter" to continue...')
                 clear()
                 
