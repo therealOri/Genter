@@ -5,12 +5,13 @@ __ __
 
 <br />
 
-Update | 6/12/2022:
+Update | 6/20/2022:
 # New Features.
 If you have an older version of this project, You should update to the current version now!.
 
 Added:
-> - Amharic (Ethopian) alphabet.
+> - New feature to change your password encryption credentials!
+> - Re worked some of the code and made it look a bit better.
 
 __ __
 
