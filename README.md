@@ -92,6 +92,7 @@ __ __
 > - If you don't have python3, then you can find, download, and install it from [here](https://www.python.org/downloads/). (Or from your package manager of choice).
 > - If you are on windows 10 use this: [download](https://www.python.org/ftp/python/3.10.4/python-3.10.4-amd64.exe). (Pip3 comes with it)
 > - The hashing feature of this script can be completly ignorred if you are just making passwords. Hashing is for if you want to store them in a server somewhere, so they aren't just sat around as plaintext.
+> - If the "options_flag" in the config file is set to "true", PassGen will ask you what you want to use in your password. If set to "False", PassGen will use the already defined list of options that are all "True" found in the code. (Basically will use everything).
 __ __
 
 <br />
