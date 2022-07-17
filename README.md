@@ -5,14 +5,12 @@ __ __
 
 <br />
 
-Update | 6/20/2022:
+Update | 7/17/2022:
 # New Features.
 If you have an older version of this project, You should update to the current version now!.
 
 Added:
-> - New feature to change your password encryption credentials!
-> - Re worked some of the code and made it look a bit better.
-
+> - New, simpler way of locking and unlocking the database. (oCrypt0r had an update and I changed the functions to reflect the new update).
 __ __
 
 <br />
