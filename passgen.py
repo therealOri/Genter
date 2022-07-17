@@ -340,11 +340,11 @@ def read():
 
 
 # Locking and unlocking files.
-def lock(key, salt, file, enc_salt):
-    oCrypt().file_encrypt(key, salt, file, enc_salt)
+def lock(file_path, enc_key, enc_salt):
+    oCrypt().file_encrypt(file_path, enc_key, enc_salt)
 
-def unlock(key2, salt2, file2, enc_salt2):
-    oCrypt().file_decrypt(key2, salt2, file2, enc_salt2)
+def unlock(file_path2, enc_key2, enc_salt2):
+    oCrypt().file_decrypt(file_path2, enc_key2, enc_salt2)
 
 
 
@@ -364,6 +364,7 @@ def change_creds():
     else:
         make_db()
 
+    # Get list of domains/websites from original database.
     database = sqlite3.connect('pwords.pgen')
     c = database.cursor()
     c.execute(f"SELECT website FROM pwd_tables")
@@ -651,22 +652,20 @@ if __name__ == '__main__':
                     if sub_option == 4:
                         clear()
                         print("Please provide credentials to lock the database. (Do NOT forget them as you will never be able to decrypt without them.)\n\n")
-                        key = input("Key?: ")
-                        salt = input("Salt?: ")
-                        enc_salt = input("Enc_Salt?: ")
+                        enc_key = input("Encryption Key?: ")
+                        enc_salt = input("Encrytion Salt?: ")
                         file_path = input("File path? - (Drag & drop): ").replace('\\ ', ' ').strip()
-                        lock(key, salt, file_path, enc_salt)
+                        lock(file_path, enc_key, enc_salt)
                         clear()
 
 
                     if sub_option == 5:
                         clear()
                         print("Please provide the correct credentials to unlock the database. (Do not forget them as you will NOT be able to decrypt without them.)\n\n")
-                        key2 = input("Key?: ")
-                        salt2 = input("Salt?: ")
-                        enc_salt2 = input("Enc_Salt?: ")
+                        enc_key2 = input("Encryption Key?: ")
+                        enc_salt2 = input("Encrytion Salt?: ")
                         file_path2 = input("File path? - (Drag & drop): ").replace('\\ ', ' ').strip()
-                        unlock(key2, salt2, file_path2, enc_salt2)
+                        unlock(file_path2, enc_key2, enc_salt2)
                         clear()
 
                     if sub_option == 6:
