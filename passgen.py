@@ -385,15 +385,21 @@ def change_creds():
     # Get all of the passwords in the list above and decrypt them. (env.so)
     lst = []
     for y in plist:
-        pwords = stringD_lst(y)
-        lst.append(pwords)
+        if not y:
+            pass
+        else:
+            pwords = stringD_lst(y)
+            lst.append(pwords)
     
 
     # Get all of the passwords in lst and encrypt them using the new credentials. (vne.py)
     lst2 = []
     for z in lst:
-        vne_pwords = stringE2(z)
-        lst2.append(vne_pwords)
+        if not z:
+            pass
+        else:
+            vne_pwords = stringE2(z)
+            lst2.append(vne_pwords)
 
 
     # Get all of the websites and all of the newly encrypted passwords and iterate through them both and then write to a new database file.
