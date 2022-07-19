@@ -261,7 +261,7 @@ def hash(password: str):
             return result2
 
 
-        elif option == 0 or option > 2:
+        elif option < 1 or option > 2:
             clear()
             print("Incorrect value given. Please choose a valid option from the menu/list.\n\n")
             input('Press "enter" to continue...')
@@ -702,7 +702,7 @@ if __name__ == '__main__':
                         break
 
 
-                    elif sub_option == 0 or sub_option > 7:
+                    elif sub_option < 1 or sub_option > 7:
                         clear()
                         print("Incorrect value given. Please choose a valid option from the menu/list.\n\n")
                         input('Press "enter" to quit...')
@@ -729,7 +729,7 @@ if __name__ == '__main__':
                 quit()
 
             
-            elif option == 0 or option > 6:
+            elif option < 1 or option > 6:
                 clear()
                 print("Incorrect value given. Please choose a valid option from the menu/list.\n\n")
                 input('Press "enter" to continue...')
