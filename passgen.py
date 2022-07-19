@@ -188,14 +188,14 @@ def stringD2a(web):
 
 # Changing encryption credentials
 def change():
-    alphabet = uppercase_letters + lowercase_letters + numbers
+    alphabet = uppercase_letters + lowercase_letters + numbers + symbols + unicode
     SALT = get_random_bytes(1024)
-    PASS = ''.join(secrets.choice(alphabet) for _ in range(16))
+    PASS = ''.join(secrets.choice(alphabet) for _ in range(32))
 
     with open("vne.py", "w") as f:
         f.write(f"SALT={SALT}\n")
-        f.write(f"PASS='{PASS}'\n")
-        f.write("FLAG='v1'")
+        f.write(f'PASS="{PASS}"\n')
+        f.write('FLAG="v1"')
         f.close()
 
 
@@ -261,7 +261,7 @@ def hash(password: str):
             return result2
 
 
-        elif option == 0 or option > 2:
+        elif option < 1 or option > 2:
             clear()
             print("Incorrect value given. Please choose a valid option from the menu/list.\n\n")
             input('Press "enter" to continue...')
@@ -385,15 +385,21 @@ def change_creds():
     # Get all of the passwords in the list above and decrypt them. (env.so)
     lst = []
     for y in plist:
-        pwords = stringD_lst(y)
-        lst.append(pwords)
+        if not y:
+            pass
+        else:
+            pwords = stringD_lst(y)
+            lst.append(pwords)
     
 
     # Get all of the passwords in lst and encrypt them using the new credentials. (vne.py)
     lst2 = []
     for z in lst:
-        vne_pwords = stringE2(z)
-        lst2.append(vne_pwords)
+        if not z:
+            pass
+        else:
+            vne_pwords = stringE2(z)
+            lst2.append(vne_pwords)
 
 
     # Get all of the websites and all of the newly encrypted passwords and iterate through them both and then write to a new database file.
@@ -568,17 +574,17 @@ def main():
 
 if __name__ == '__main__':
     if env.FLAG == '#src':
-        alphabet = uppercase_letters + lowercase_letters + numbers
+        alphabet = uppercase_letters + lowercase_letters + numbers + symbols + unicode
         print('The env file that is needed for passgen.py has not been set up yet. Setting up the file now!...\nMake sure to obfuscate and cythonize the env.py file after!')
         time.sleep(5)
         clear()
         SALT = get_random_bytes(1024)
-        PASS = ''.join(secrets.choice(alphabet) for _ in range(16))
+        PASS = ''.join(secrets.choice(alphabet) for _ in range(32))
 
         with open("env.py", "w") as f:
             f.write(f"SALT={SALT}\n")
-            f.write(f"PASS='{PASS}'\n")
-            f.write("FLAG='v1'")
+            f.write(f'PASS="{PASS}"\n')
+            f.write('FLAG="v1"')
             f.close()
         print("The env file should now be all set up!")
         input('Press "enter" to exit...')
@@ -696,7 +702,7 @@ if __name__ == '__main__':
                         break
 
 
-                    elif sub_option == 0 or sub_option > 7:
+                    elif sub_option < 1 or sub_option > 7:
                         clear()
                         print("Incorrect value given. Please choose a valid option from the menu/list.\n\n")
                         input('Press "enter" to quit...')
@@ -723,7 +729,7 @@ if __name__ == '__main__':
                 quit()
 
             
-            elif option == 0 or option > 6:
+            elif option < 1 or option > 6:
                 clear()
                 print("Incorrect value given. Please choose a valid option from the menu/list.\n\n")
                 input('Press "enter" to continue...')

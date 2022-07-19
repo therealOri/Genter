@@ -5,12 +5,12 @@ __ __
 
 <br />
 
-Update | 7/17/2022:
+Update | 7/19/2022:
 # New Features.
 If you have an older version of this project, You should update to the current version now!.
 
 Added:
-> - New, simpler way of locking and unlocking the database. (oCrypt0r had an update and I changed the functions to reflect the new update).
+> - Allowing the env.py file to use a bigger/longer PASS and allows it to use symbols and unicode characters. You WILL need to use the KDF.py patch file for pycryptodome as by default it doesn't accept unicode_escape characters.
 __ __
 
 <br />
@@ -35,6 +35,9 @@ source pgenENV/bin/activate
 pip3 install -r requirements.txt
 python3 passgen.py
 ```
+
+ ‼️ IMPORTANT ‼️
+After pip installing oCrypt0r, it will install pycryptodome. You WILL need to navigate to here: `pgenENV/lib/python3.10/site-packages/Crypto/Protocol/` and replace the KDF.py file there with the one found in the "patch" folder here in the repo. It will allow you to use the unicode characters being used in the env.py file for encrypting.
 __ __
 
 <br />
