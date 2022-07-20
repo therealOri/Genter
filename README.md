@@ -1,6 +1,6 @@
-# Passgen
-Passgen will allow you to create a very/crazy strong password that will also be randomized.
-You can change up what is used, add more stuff, or remove some things if you wish. You can also change the length of the password and how many you want to generate too.
+# PassGen
+PassGen will allow you to create a very/crazy strong password that will also be randomized.
+You can change up what is used, add more stuff, or remove some things if you wish. You can also change the length of the password and how many you want to generate too. In addistion to the password generator, PassGen has a built in password manager that you can use! Encrypted using AES.
 __ __
 
 <br />
