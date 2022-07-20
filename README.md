@@ -10,7 +10,7 @@ Update | 7/19/2022:
 If you have an older version of this project, You should update to the current version now!.
 
 Added:
-> - Allowing the env.py file to use a bigger/longer PASS and allows it to use symbols and unicode characters. You WILL need to use the KDF.py patch file for pycryptodome as by default it doesn't accept unicode_escape characters.
+> - Allowing the env.py file to use a bigger/longer PASS and allows it to use symbols and unicode characters. You WILL need to use the KDF.py patch file for pycryptodome as by default it doesn't accept unicode_escape encoding and characters.
 __ __
 
 <br />
