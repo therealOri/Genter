@@ -137,7 +137,6 @@ def PBKDF2(password, salt, dkLen=16, count=1000, prf=None, hmac_hash_module=None
         If you want multiple keys, just break up this string into segments of the desired length.
     """
 
-
     password = tobytes(password, 'unicode-escape')
     salt = tobytes(salt, 'unicode-escape')
 
@@ -202,10 +201,10 @@ class _S2V(object):
         self._key = _copy_bytes(None, None, key)
         self._ciphermod = ciphermod
         self._last_string = self._cache = b'\x00' * ciphermod.block_size
-
+        
         # Max number of update() call we can process
         self._n_updates = ciphermod.block_size * 8 - 1
-
+        
         if cipher_params is None:
             self._cipher_params = {}
         else:
@@ -509,7 +508,7 @@ def bcrypt(password, cost, salt=None):
 
    """
 
-    password = tobytes(password, "unicode-escape")
+    password = tobytes(password, 'unicode-escape')
 
     if password.find(bchr(0)[0]) != -1:
         raise ValueError("The password contains the zero byte")
