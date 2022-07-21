@@ -4,7 +4,6 @@ import os
 from hashlib import blake2b
 import sqlite3
 import base64 as b64
-import time
 from ocryptor import oCrypt
 import json
 import env
@@ -576,7 +575,7 @@ if __name__ == '__main__':
     if env.FLAG == '#src':
         alphabet = uppercase_letters + lowercase_letters + numbers + symbols + unicode
         print('The env file that is needed for passgen.py has not been set up yet. Setting up the file now!...\nMake sure to obfuscate and cythonize the env.py file after!')
-        time.sleep(5)
+        input('Press "Enter" to start!')
         clear()
         SALT = get_random_bytes(1024)
         PASS = ''.join(secrets.choice(alphabet) for _ in range(32))
