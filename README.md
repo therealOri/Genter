@@ -37,7 +37,7 @@ python3 passgen.py
 ```
 
  ‼️ IMPORTANT ‼️
-After pip installing oCrypt0r, it will install pycryptodome. You WILL need to navigate to here: `pgenENV/lib/python3.10/site-packages/Crypto/Protocol/` and replace the KDF.py file there with the one found in the "patch" folder here in the repo. It will allow you to use the unicode characters being used in the env.py file for encrypting.
+After pip installing oCrypt0r, it will install pycryptodome. And BEFORE running passgen.py you WILL need to navigate to here: `pgenENV/lib/python3.10/site-packages/Crypto/Protocol/` and replace the KDF.py file there with the one found in the "patch" folder here in the repo. It will allow you to use the unicode characters being used in the env.py file for encrypting.
 
 <br />
 <br />
