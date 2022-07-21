@@ -357,12 +357,6 @@ def make_db():
 
 
 def change_creds():
-    if os.path.isfile('pwords2.pgen'):
-        os.remove('pwords2.pgen')
-        make_db()
-    else:
-        make_db()
-
     # Get list of domains/websites from original database.
     database = sqlite3.connect('pwords.pgen')
     c = database.cursor()
@@ -682,8 +676,13 @@ if __name__ == '__main__':
                         clear()
 
                         print("Making new database for passwords...")
-                        make_db()
-                        print("New database created!")
+                        if os.path.isfile('pwords2.pgen'):
+                            print("Database already exists, deleting and trying again..")
+                            os.remove('pwords2.pgen')
+                            make_db()
+                        else:
+                            make_db()
+                        print("New database created!\n---------------------------------------------------------------")
 
                         print("\n\nWorking my magic!...")
                         change_creds()
