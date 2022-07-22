@@ -313,27 +313,33 @@ def domains():
     ldb = str(sites).replace("(", "").replace(",)", "").replace("'", "")
     dlist = ldb.strip('][').split(', ')
 
-    for _ in dlist:
-        with open('.lst', 'a') as f:
-            f.writelines(f"{_}\n")
+    if not sites:
+        print("Hmmm...Maybe you should add something to the database first. ^-^")
+    else:
+        for d in dlist:
+            with open('.lst', 'a') as f:
+                f.writelines(f"{d}\n")
 
 
 def read():
     clear()
     domains()
-    with open(".lst", "r+") as f:
-        data = f.read()
-        print(data)
-        f.truncate(0)
-        f.close()
-    os.remove(".lst")
-    
-    web_to_get = input('-----------------------------------------------------\nWebsite domain/name for password: ')
-    clear()
-    if os.path.isfile('vne.py'):
-        stringD2(web_to_get.lower())
-    else:
-        stringD2a(web_to_get.lower())
+    try:
+        with open(".lst", "r+") as f:
+            data = f.read()
+            print(data)
+            f.truncate(0)
+            f.close()
+
+        os.remove(".lst")
+        web_to_get = input('-----------------------------------------------------\nWebsite domain/name for password: ')
+        clear()
+        if os.path.isfile('vne.py'):
+            stringD2(web_to_get.lower())
+        else:
+            stringD2a(web_to_get.lower())
+    except Exception:
+        pass
 
 
 
@@ -642,7 +648,10 @@ if __name__ == '__main__':
 
                     if sub_option == 3:
                         clear()
-                        read()
+                        if not os.path.isfile('pwords.pgen'):
+                            print("Can not read domains. Database is either encrypted or not found...")
+                        else:
+                            read()
                         input('\n\nPress "enter" to continue...')
                         clear()
 
