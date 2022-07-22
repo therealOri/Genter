@@ -5,12 +5,12 @@ __ __
 
 <br />
 
-Update | 7/19/2022:
+Update | 7/22/2022:
 # New Features.
 If you have an older version of this project, You should update to the current version now!.
 
 Added:
-> - Allowing the env.py file to use a bigger/longer PASS and allows it to use symbols and unicode characters. You WILL need to use the KDF.py patch file for pycryptodome as by default it doesn't accept unicode_escape encoding and characters.
+> - When going to view the websites in "show saved websites", it will check to see if the database is encrypted or not or if it even exists. It will then look and see if there is anything to show you. If there is nothing to show you, it will let you know.
 __ __
 
 <br />
