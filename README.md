@@ -52,7 +52,7 @@ __ __
 <br />
 
 # Obfuscation & Cythonize instructions.
-!! IMPORTANT !!: 
+‼️ IMPORTANT ‼️: 
 - Do not change the env.py file contents or name of the file unless you know what you are doing. The passgen.py code/file uses and IMPORTS `env.py` for things and if you change env.py to anything else, you MUST do the same for `import env` and also for wherever `env.py`, `env.FLAG`, & `env.SALT` is/are located at in passgen.py. Or else you'll likely get errors. You'll be better off not changing the name of the `env.py` file is all. You will also need to update the `setup.py` file later on when in the "Cythonize" part of the process to reflect the name change if you change the name of `env.py`.
 
 > We are going to use [oriscate](https://github.com/therealOri/oriscate) for our obfuscation and stuff. This should be done **after** running passgen.py **once** and setting up the env.py file.
