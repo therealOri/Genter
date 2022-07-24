@@ -99,7 +99,7 @@ __ __
 <br />
 
 # Notice! 💢
-It is very important to keep backups of your so/pyd file as without it you CAN NOT decrypt your passwords. It is advised that you keep a backup of your password database and your so/pyd file as well on a USB or external SSD. If in the event of your so/pyd file getting compromized and you need to change it and your passwords that used it. If you need to change your crdentials in your .so/.pyd file, you can do so automatically using passgen. All you'll need to do is re obfuscate the file and cythonize it. Then you can get rid of your old env file.
+It is very important to keep backups of your so/pyd file as without it you CAN NOT decrypt your passwords. It is advised that you keep a backup of your password database and your so/pyd file as well on a USB or external SSD. If in the event of your so/pyd file getting compromized and you need to change it and your passwords that used it. If you need to change your credentials in your .so/.pyd file, you can do so automatically using passgen. All you'll need to do is re obfuscate the file and cythonize it. Then you can get rid of your old env file.
 __ __
 
 
