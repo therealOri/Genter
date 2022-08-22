@@ -542,15 +542,20 @@ def main():
     try:
         length = int(input('How long do you want your password(s)?: '))
     except Exception as e:
-        print(f'\nOops..The value you gave me is not a number/integer.\n[Error]: {e}')
-        quit()
+        clear()
+        print(f'Oops..The value you gave me is not a number/integer.\n[Error]: {e}')
+        input('\nPress "enter" to continue...')
+        return None
+
 
 
     try:
         amount = int(input('How many do you want generated?: '))
     except Exception as e:
-        print(f'\nOops..The value you gave me is not a number/integer.\n[Error]: {e}')
-        quit()
+        clear()
+        print(f'Oops..The value you gave me is not a number/integer.\n[Error]: {e}')
+        input('\nPress "enter" to continue...')
+        return None
 
 
 
@@ -561,7 +566,7 @@ def main():
         for _ in range(amount):
             password = ''.join(secrets.choice(all) for _ in range(length))
             print(f'Pass: {password}  |  Hash: {d_conv(password)[0]}\nSalt: {d_conv(password)[1].decode()}  |  Key: {d_conv(password)[2]}\n', file=f)
-        print('Your newly generated random password(s) and hash info has been saved to "pass.txt".\n\n\n')
+        print('Your newly generated random password(s) and hash info has been saved to "pass.txt".\n\n')
         input('Press "enter" to continue...')
         clear()
 
