@@ -5,7 +5,7 @@ __ __
 
 <br />
 
-Update | 7/22/2022:
+Update | 9/1/2022:
 # New Features.
 If you have an older version of this project, You should update to the current version now!.
 
