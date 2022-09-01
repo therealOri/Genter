@@ -10,7 +10,7 @@ Update | 9/1/2022:
 If you have an older version of this project, You should update to the current version now!.
 
 Added:
-> - You can now go back a page/menu when using any of the options if you do not wish to contine, by pressing "q" or "Q".
+> - You can now go back a page/menu when using any of the options if you do not wish to continue, by pressing "q" or "Q".
 __ __
 
 <br />
