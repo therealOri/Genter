@@ -10,7 +10,7 @@ Update | 7/22/2022:
 If you have an older version of this project, You should update to the current version now!.
 
 Added:
-> - When going to view the websites in "show saved websites", it will check to see if the database is encrypted or not or if it even exists. It will then look and see if there is anything to show you. If there is nothing to show you, it will let you know.
+> - You can now go back a page/menu when using any of the options if you do not wish to contine.
 __ __
 
 <br />
