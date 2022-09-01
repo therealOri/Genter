@@ -230,7 +230,7 @@ def hash(password: str):
     
     while True:
         try:
-            option = int(input(f"{banner()}\n\nHow do you want to make a key for hashing?\n\n1. Custom Key?\n2. Generate Key?\n\nEnter: "))
+            option = int(input(f"{banner()}\n\nHow do you want to make a key for hashing?\n\n1. Custom Key?\n2. Generate Key?\n3. Quit?\n\nEnter: "))
         except Exception as e:
             clear()
             print(f'Value given is not an integer.\nError: {e}\n\n')
@@ -241,10 +241,27 @@ def hash(password: str):
 
         if option == 1:
             clear()
+            print('[Note]: Press "q" to go back.\n')
             c_key = input('Enter/Load key to use for hashing: ')
-            salt = bytes(input('Enter phrase for salting (16 letters max): '), 'utf-8')
-            clear()
-            result1 = blake2b(bytes(password, 'utf-8'), key=bytes(c_key, 'utf-8'), salt=salt, digest_size=32).hexdigest()
+            if c_key.lower() == 'q':
+                clear()
+                continue
+
+            try:
+                salt = input('Enter phrase for salting (16 letters max): ')
+                if salt.lower() == 'q':
+                    clear()
+                    continue
+
+                salt = bytes(salt, 'utf-8')
+                clear()
+                result1 = blake2b(bytes(password, 'utf-8'), key=bytes(c_key, 'utf-8'), salt=salt, digest_size=32).hexdigest()
+            except Exception as e:
+                clear()
+                print(f'Oops..An error has occured.\n[Error]: {e}')
+                input('\nPress "enter" to continue...')
+                clear()
+                continue
 
             print(f'Password: {password}  |  Hash: {result1}\nSalt: {salt.decode()}  |  Key: {c_key}\n')
             return result1
@@ -259,8 +276,11 @@ def hash(password: str):
             print(f'Password: {password}  |  Hash: {result2}\nSalt: {salt.decode()}  |  Key: {gen_key}\n')
             return result2
 
+        if option == 3:
+            clear()
+            return None
 
-        elif option < 1 or option > 2:
+        elif option < 1 or option > 3:
             clear()
             print("Incorrect value given. Please choose a valid option from the menu/list.\n\n")
             input('Press "enter" to continue...')
@@ -294,7 +314,10 @@ def show_pass():
     clear()
     with open('pass.txt', 'r') as f:
         result = f.read()
-        return print(result)
+        if not result:
+            return None
+        else:
+            return result
         
 def clr_pass():
     clear()
@@ -332,12 +355,15 @@ def read():
             f.close()
 
         os.remove(".lst")
-        web_to_get = input('-----------------------------------------------------\nWebsite domain/name for password: ')
+        web_to_get = input('-----------------------------------------------------\nPress "q" to go back/quit.\n\nWebsite domain/name for password: ')
         clear()
-        if os.path.isfile('vne.py'):
-            stringD2(web_to_get.lower())
+        if web_to_get.lower() == 'q':
+            return web_to_get.lower()
         else:
-            stringD2a(web_to_get.lower())
+            if os.path.isfile('vne.py'):
+                stringD2(web_to_get.lower())
+            else:
+                stringD2a(web_to_get.lower())
     except Exception:
         pass
 
@@ -535,12 +561,17 @@ def main():
 
 
     clear()
-    print('Note: Please make sure to write your password(s) down or save the password(s) into a new text file before running this script again. \n\n')
+    print('Note: Please make sure to write your password(s) down or save the password(s) into a new text file before running this script again.\nPress "q" to go back. \n\n')
 
 
 
     try:
-        length = int(input('How long do you want your password(s)?: '))
+        length = input('How long do you want your password(s)?: ')
+        if length.lower() == 'q':
+            clear()
+            return None
+        else:
+            length = int(length)
     except Exception as e:
         clear()
         print(f'Oops..The value you gave me is not a number/integer.\n[Error]: {e}')
@@ -550,7 +581,12 @@ def main():
 
 
     try:
-        amount = int(input('How many do you want generated?: '))
+        amount = input('How many do you want generated?: ')
+        if amount.lower() == 'q':
+            clear()
+            return None
+        else:
+            amount = int(amount)
     except Exception as e:
         clear()
         print(f'Oops..The value you gave me is not a number/integer.\n[Error]: {e}')
@@ -613,11 +649,18 @@ if __name__ == '__main__':
 
             if option == 2:
                 clear()
-                pword = input('What would you like to hash?: ')
-                clear()
-                hash(pword)
-                input('Press "enter" to continue...')
-                clear()
+                pword = input('Press "q" to go back/quit.\n\nWhat would you like to hash?: ')
+                if pword.lower() == 'q':
+                    clear()
+                else:
+                    clear()
+                    check = hash(pword)
+                    if not check:
+                        clear()
+                        continue
+                    else:
+                        input('Press "enter" to continue...')
+                        clear()
 
 
             if option == 3:
@@ -634,80 +677,121 @@ if __name__ == '__main__':
 
                     if sub_option == 1: # Add passwords
                         clear()
-                        web = input('What is the website/domain name you would like to store in the Database?: ')
-                        passwd = input('Password to save?: ')
-                        clear()
-                        add_data(web.lower(), passwd)
-                        input('\n\nPress "enter" to continue...')
-                        clear()
+                        web = input('Press "q" to go back/quit.\n\nWhat is the website/domain name you would like to store in the Database?: ')
+                        if web.lower() == 'q':
+                            clear()
+                        else:
+                            clear()
+                            passwd = input(f'Password to save for "{web.lower()}"?: ')
+                            clear()
+                            add_data(web.lower(), passwd)
+                            input('\n\nPress "enter" to continue...')
+                            clear()
 
                     if sub_option == 2: # Remove passwords
                         clear()
-                        web_to_rmv = input('What is the website/domain name you would like to remove from the Database?: ')
                         print('(This will remove the password for the website as well)')
+                        web_to_rmv = input('Press "q" to go back/quit.\n\nWhat is the website/domain name you would like to remove from the Database?: ')
                         clear()
 
-                        rmv_data(web_to_rmv.lower())
-                        input('\n\nPress "enter" to continue...')
-                        clear()
+                        if web_to_rmv.lower() == 'q':
+                            clear()
+                            continue
+                        else:
+                            rmv_data(web_to_rmv.lower())
+                            input('\n\nPress "enter" to continue...')
+                            clear()
 
                     if sub_option == 3:
                         clear()
                         if not os.path.isfile('pwords.pgen'):
                             print("Can not read domains. Database is either encrypted or not found...")
                         else:
-                            read()
-                        input('\n\nPress "enter" to continue...')
-                        clear()
+                            data = read()
+                            if data == 'q':
+                                clear()
+                            else:
+                                input('\n\nPress "enter" to continue...')
+                                clear()
 
 
 
                     if sub_option == 4:
                         clear()
-                        print("Please provide credentials to lock the database. (Do NOT forget them as you will never be able to decrypt without them.)\n\n")
+                        print('Please provide credentials to lock the database. (Do NOT forget them as you will never be able to decrypt without them.)\nPress "q" to go back/quit.\n\n')
                         enc_key = input("Encryption Key?: ")
+                        if enc_key.lower() == 'q':
+                            clear()
+                            continue
+
                         enc_salt = input("Encrytion Salt?: ")
+                        if enc_salt.lower() == 'q':
+                            clear()
+                            continue
+
                         file_path = input("File path? - (Drag & drop): ").replace('\\ ', ' ').strip()
+                        if file_path.lower() == 'q':
+                            clear()
+                            continue
                         lock(file_path, enc_key, enc_salt)
                         clear()
 
 
+
                     if sub_option == 5:
                         clear()
-                        print("Please provide the correct credentials to unlock the database. (Do not forget them as you will NOT be able to decrypt without them.)\n\n")
+                        print('Please provide the correct credentials to unlock the database. (Do not forget them as you will NOT be able to decrypt without them.)\nPress "q" to go back/quit.\n\n')
+
                         enc_key2 = input("Encryption Key?: ")
+                        if enc_key2.lower() == 'q':
+                            clear()
+                            continue
+
                         enc_salt2 = input("Encrytion Salt?: ")
+                        if enc_salt2.lower() == 'q':
+                            clear()
+                            continue
+
                         file_path2 = input("File path? - (Drag & drop): ").replace('\\ ', ' ').strip()
+                        if file_path2.lower() == 'q':
+                            clear()
+                            continue
                         unlock(file_path2, enc_key2, enc_salt2)
                         clear()
+
+
 
                     if sub_option == 6:
                         clear()
 
                         print("Changing encryption credentials for the passwords in the database...")
                         change()
-                        input('New credentials genreated and saved as "vne.py".\n\nPress "enter" to continue...')
-                        clear()
-
-                        print("Making new database for passwords...")
-                        if os.path.isfile('pwords2.pgen'):
-                            print("Database already exists, deleting and trying again..")
-                            os.remove('pwords2.pgen')
-                            make_db()
+                        check = input('New credentials genreated and saved as "vne.py".\n\nPress "enter" to continue or "q" to go back/quit...: ')
+                        if check.lower() == 'q':
+                            os.remove('vne.py')
+                            clear()
+                            continue
                         else:
-                            make_db()
-                        print("New database created!\n---------------------------------------------------------------")
+                            clear()
+                            print("Making new database for passwords...")
+                            if os.path.isfile('pwords2.pgen'):
+                                print("Database already exists, deleting and trying again..")
+                                os.remove('pwords2.pgen')
+                                make_db()
+                            else:
+                                make_db()
+                            print("New database created!\n---------------------------------------------------------------")
 
-                        print("\n\nWorking my magic!...")
-                        change_creds()
-                        input('Credentials have been changed and all data is now usung the new encryption & credentials.\n\nPress "enter" to continue...')
-                        clear()
+                            print("\n\nWorking my magic!...")
+                            change_creds()
+                            input('Credentials have been changed and all data is now usung the new encryption & credentials.\n\nPress "enter" to continue...')
+                            clear()
 
-                        print("Cleaning up!...\n")
-                        cleanup()
-                        input('\n\nFiles have been cleaned up!\nPress "enter" to quit/reload the passgen...')
-                        clear()
-                        quit()
+                            print("Cleaning up!...\n")
+                            cleanup()
+                            input('\n\nFiles have been cleaned up!\nPress "enter" to quit/reload the passgen...')
+                            clear()
+                            quit()
 
 
                     if sub_option == 7:
@@ -725,9 +809,16 @@ if __name__ == '__main__':
 
             
             if option == 4:
-                show_pass()
-                input('Press "enter" to continue...')
-                clear()            
+                passwords = show_pass()
+                if not passwords:
+                    clear()
+                    print('No passwords found in "pass.txt"\n\n')
+                    input('Press "enter" to continue...')
+                    clear()
+                else:
+                    print(passwords)
+                    input('Press "enter" to continue...')
+                    clear()
             
             if option == 5:
                 clr_pass()
@@ -738,7 +829,7 @@ if __name__ == '__main__':
             
             if option == 6:
                 clear()
-                quit()
+                exit("Goodbye! <3")
 
             
             elif option < 1 or option > 6:
