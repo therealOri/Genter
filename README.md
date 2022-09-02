@@ -5,12 +5,15 @@ __ __
 
 <br />
 
-Update | 9/1/2022:
+Update | 9/2/2022:
 # New Features.
 If you have an older version of this project, You should update to the current version now!.
 
 Added:
-> - You can now go back a page/menu when using any of the options if you do not wish to continue, by pressing "q" or "Q".
+> - Added functionality for adding notes to the database along side of your passwords and domains. (Domains and notes are not encrypted. Only passwords.)
+> - PassGen will check to see if the database is encrypted or not when using any of the options in the submenu/2nd menu. If yes then you will be notified about it. If no then it will run like usual.
+> - Added checks to see if the domains you are adding to the database exist in the database already or not. (This is in part due to the function that reads the passwords of the provided domains not being able to tell the difference between 2 of the same domain names. Perhaps if I used a different way to select options/domains then this wouldn't be an issue. But for now it is..)
+> - More error handling and stuff..
 __ __
 
 <br />

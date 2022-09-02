@@ -200,22 +200,40 @@ def change():
 
 
 # Add and remove data from database.
-def add_data(website, passwd):
+def add_data(website, passwd, notes):
     database = sqlite3.connect('pwords.pgen')
     c = database.cursor()
-    c.execute(f"INSERT INTO pwd_tables VALUES ('{website}', '{stringE(passwd)}')")
-    database.commit()
-    database.close()
-    return print(f'"{website}" and your password has been stored/saved to the database!')
+    c.execute(f"SELECT website FROM pwd_tables")
+    sites = c.fetchall()
+    ldb = str(sites).replace("(", "").replace(",)", "").replace("'", "")
+    dlist = ldb.strip('][').split(', ')
+
+    if website in dlist:
+        return print(f'[Warning] - A website entry with the name of "{website}" exists in database already.\nTo avoid breaking the "reading passwords" functionality, please change the name slightly.')
+    if not website:
+        return print('I need a domain/website to add to the database...\n[Error]: "web" can not be empty.')
+    else:
+        c.execute(f"INSERT INTO pwd_tables VALUES ('{website}', '{stringE(passwd)}', '{notes}')")
+        database.commit()
+        database.close()
+        return print(f'"{website}" and your password has been stored/saved to the database!')
+
 
 def rmv_data(website):
     database = sqlite3.connect('pwords.pgen')
     c = database.cursor()
+    c.execute(f"SELECT website FROM pwd_tables")
+    sites = c.fetchall()
+    ldb = str(sites).replace("(", "").replace(",)", "").replace("'", "")
+    dlist = ldb.strip('][').split(', ')
 
-    c.execute(f"DELETE FROM pwd_tables WHERE website LIKE '{website}'")
-    database.commit()
-    database.close()
-    return print(f'"{website}" has been removed from the database!')
+    if website in dlist:
+        c.execute(f"DELETE FROM pwd_tables WHERE website LIKE '{website}'")
+        database.commit()
+        database.close()
+        return print(f'"{website}" has been removed from the database!')
+    else:
+        return print(f'"{website}" is not a valid option or does not exist.')
 ## ------------------------------------------------------------------------ ##
 
 
@@ -336,12 +354,15 @@ def domains():
     ldb = str(sites).replace("(", "").replace(",)", "").replace("'", "")
     dlist = ldb.strip('][').split(', ')
 
+    c.execute(f"SELECT notes FROM pwd_tables")
+    notes = c.fetchall()
+
     if not sites:
         print("Hmmm...Maybe you should add something to the database first. ^-^")
     else:
-        for d in dlist:
+        for d,n in zip(dlist, notes):
             with open('.lst', 'a') as f:
-                f.writelines(f"{d}\n")
+                f.writelines(f"{d}\t{n}\n")
 
 
 def read():
@@ -383,7 +404,7 @@ def unlock(file_path2, enc_key2, enc_salt2):
 def make_db():
     database = sqlite3.connect('pwords2.pgen')
     c = database.cursor()
-    c.execute('''CREATE TABLE pwd_tables(website text, passwd text)''')
+    c.execute('''CREATE TABLE pwd_tables(website text, passwd text, notes text)''')
     database.commit()
     database.close()
 
@@ -406,6 +427,14 @@ def change_creds():
     lpw = str(words).replace("(", "").replace(",)", "").replace("'", "")
     plist = lpw.strip('][').split(', ')
 
+    # Get list of notes from original database.
+    database = sqlite3.connect('pwords.pgen')
+    c = database.cursor()
+    c.execute(f"SELECT notes FROM pwd_tables")
+    notes = c.fetchall()
+    ndb = str(notes).replace("(", "").replace(",)", "").replace("'", "")
+    nlist = ndb.strip('][').split('*   ')
+
 
     # Get all of the passwords in the list above and decrypt them. (env.so)
     lst = []
@@ -426,12 +455,11 @@ def change_creds():
             vne_pwords = stringE2(z)
             lst2.append(vne_pwords)
 
-
     # Get all of the websites and all of the newly encrypted passwords and iterate through them both and then write to a new database file.
-    for a,b in zip(dlist, lst2):
+    for a,b,d in zip(dlist, lst2, nlist):
         database = sqlite3.connect('pwords2.pgen')
         c = database.cursor()
-        c.execute(f"INSERT INTO pwd_tables VALUES ('{a}', '{b}')")
+        c.execute(f"INSERT INTO pwd_tables VALUES ('{a}', '{b}', '{d}')")
         database.commit()
         database.close()
 ## ------------------------------------------------------------------------ ##
@@ -676,37 +704,76 @@ if __name__ == '__main__':
                         continue
 
                     if sub_option == 1: # Add passwords
-                        clear()
-                        web = input('Press "q" to go back/quit.\n\nWhat is the website/domain name you would like to store in the Database?: ')
-                        if web.lower() == 'q':
+                        if os.path.isfile('pwords.pgen.oCrypted'):
                             clear()
+                            print("Database file does not exist or is encrypted...")
+                            input('\n\nPress "enter" to continue...')
+                            clear()
+                            continue
                         else:
                             clear()
+                            web = input('Press "q" to go back/quit.\n\nWhat is the website/domain name you would like to store in the Database?: ')
+                            if web.lower() == 'q':
+                                clear()
+                                continue
+                            
                             passwd = input(f'Password to save for "{web.lower()}"?: ')
+                            if passwd.lower() == 'q':
+                                clear()
+                                continue
+
+                            notes = input("(Optional) - Additional Information/notes: ")   
+                            if notes.lower() == 'q':
+                                clear()
+                                continue
                             clear()
-                            add_data(web.lower(), passwd)
+                            add_data(web.lower(), passwd, notes)
                             input('\n\nPress "enter" to continue...')
                             clear()
 
                     if sub_option == 2: # Remove passwords
-                        clear()
-                        print('(This will remove the password for the website as well)')
-                        web_to_rmv = input('Press "q" to go back/quit.\n\nWhat is the website/domain name you would like to remove from the Database?: ')
-                        clear()
-
-                        if web_to_rmv.lower() == 'q':
+                        if os.path.isfile('pwords.pgen.oCrypted'):
+                            clear()
+                            print("Database file does not exist or is encrypted...")
+                            input('\n\nPress "enter" to continue...')
                             clear()
                             continue
                         else:
-                            rmv_data(web_to_rmv.lower())
-                            input('\n\nPress "enter" to continue...')
                             clear()
+                            domains()
+                            if os.path.isfile('.lst'):
+                                with open(".lst", "r+") as f:
+                                    data = f.read()
+                                    print(data)
+                                    f.truncate(0)
+                                    f.close()
+                                os.remove(".lst")
+                            
+                                web_to_rmv = input('-----------------------------------------------------\n(This will remove notes and passwords for the website/domain as well)\nPress "q" to go back/quit.\n\nWhat is the website/domain name you would like to remove from the Database?: ')
+                                clear()
+
+                                if web_to_rmv.lower() == 'q':
+                                    clear()
+                                    continue
+                                else:
+                                    rmv_data(web_to_rmv.lower())
+                                    input('\n\nPress "enter" to continue...')
+                                    clear()
+                            else:
+                                input('Press "enter" to continue...')
+                                clear()
+                                continue
+
 
                     if sub_option == 3:
-                        clear()
-                        if not os.path.isfile('pwords.pgen'):
-                            print("Can not read domains. Database is either encrypted or not found...")
+                        if os.path.isfile('pwords.pgen.oCrypted'):
+                            clear()
+                            print("Database file does not exist or is encrypted...")
+                            input('\n\nPress "enter" to continue...')
+                            clear()
+                            continue
                         else:
+                            clear()
                             data = read()
                             if data == 'q':
                                 clear()
@@ -717,24 +784,31 @@ if __name__ == '__main__':
 
 
                     if sub_option == 4:
-                        clear()
-                        print('Please provide credentials to lock the database. (Do NOT forget them as you will never be able to decrypt without them.)\nPress "q" to go back/quit.\n\n')
-                        enc_key = input("Encryption Key?: ")
-                        if enc_key.lower() == 'q':
+                        if os.path.isfile('pwords.pgen.oCrypted'):
+                            clear()
+                            print("Database file already encrypted...")
+                            input('\n\nPress "enter" to continue...')
                             clear()
                             continue
+                        else:
+                            clear()
+                            print('Please provide credentials to lock the database. (Do NOT forget them as you will never be able to decrypt without them.)\nPress "q" to go back/quit.\n\n')
+                            enc_key = input("Encryption Key?: ")
+                            if enc_key.lower() == 'q':
+                                clear()
+                                continue
 
-                        enc_salt = input("Encrytion Salt?: ")
-                        if enc_salt.lower() == 'q':
-                            clear()
-                            continue
+                            enc_salt = input("Encrytion Salt?: ")
+                            if enc_salt.lower() == 'q':
+                                clear()
+                                continue
 
-                        file_path = input("File path? - (Drag & drop): ").replace('\\ ', ' ').strip()
-                        if file_path.lower() == 'q':
+                            file_path = input("File path? - (Drag & drop): ").replace('\\ ', ' ').strip()
+                            if file_path.lower() == 'q':
+                                clear()
+                                continue
+                            lock(file_path, enc_key, enc_salt)
                             clear()
-                            continue
-                        lock(file_path, enc_key, enc_salt)
-                        clear()
 
 
 
@@ -762,36 +836,43 @@ if __name__ == '__main__':
 
 
                     if sub_option == 6:
-                        clear()
-
-                        print("Changing encryption credentials for the passwords in the database...")
-                        change()
-                        check = input('New credentials genreated and saved as "vne.py".\n\nPress "enter" to continue or "q" to go back/quit...: ')
-                        if check.lower() == 'q':
-                            os.remove('vne.py')
+                        if os.path.isfile('pwords.pgen.oCrypted'):
+                            clear()
+                            print("Database file does not exist or is encrypted...")
+                            input('\n\nPress "enter" to continue...')
                             clear()
                             continue
                         else:
                             clear()
-                            print("Making new database for passwords...")
-                            if os.path.isfile('pwords2.pgen'):
-                                print("Database already exists, deleting and trying again..")
-                                os.remove('pwords2.pgen')
-                                make_db()
+
+                            print("Changing encryption credentials for the passwords in the database...")
+                            change()
+                            check = input('New credentials genreated and saved as "vne.py".\n\nPress "enter" to continue or "q" to go back/quit...: ')
+                            if check.lower() == 'q':
+                                os.remove('vne.py')
+                                clear()
+                                continue
                             else:
-                                make_db()
-                            print("New database created!\n---------------------------------------------------------------")
+                                clear()
+                                print("Making new database for passwords...")
+                                if os.path.isfile('pwords2.pgen'):
+                                    print("Database already exists, deleting and trying again..")
+                                    os.remove('pwords2.pgen')
+                                    make_db()
+                                else:
+                                    make_db()
+                                print("New database created!\n---------------------------------------------------------------")
 
-                            print("\n\nWorking my magic!...")
-                            change_creds()
-                            input('Credentials have been changed and all data is now usung the new encryption & credentials.\n\nPress "enter" to continue...')
-                            clear()
+                                print("\n\nWorking my magic!...")
+                                change_creds()
+                                input('Credentials have been changed and all data is now usung the new encryption & credentials.\n\nPress "enter" to continue...')
+                                clear()
 
-                            print("Cleaning up!...\n")
-                            cleanup()
-                            input('\n\nFiles have been cleaned up!\nPress "enter" to quit/reload the passgen...')
-                            clear()
-                            quit()
+                                print("Cleaning up!...\n")
+                                cleanup()
+                                input('\n\nFiles have been cleaned up!\nPress "enter" to quit/reload the passgen...')
+                                clear()
+                                quit()
 
 
                     if sub_option == 7:
