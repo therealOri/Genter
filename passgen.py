@@ -1,20 +1,24 @@
-import secrets
-from string import ascii_lowercase, ascii_uppercase, digits
-import os
-from hashlib import blake2b
-import sqlite3
+#Imports
 import base64 as b64
-from ocryptor import oCrypt
-import json
+import beaupy
 import env
+from hashlib import blake2b
+import json
+from ocryptor import oCrypt
+import os
+import secrets
+import sqlite3
+from string import ascii_lowercase, ascii_uppercase, digits
 
 
-from Crypto.Random import get_random_bytes
-from Crypto.Protocol.KDF import PBKDF2
+#AES stoof
 from Crypto.Cipher import AES
+from Crypto.Protocol.KDF import PBKDF2
+from Crypto.Random import get_random_bytes
 from Crypto.Util.Padding import pad, unpad
 
 
+#Languages
 uppercase_letters = ascii_uppercase
 lowercase_letters = ascii_lowercase
 symbols = "!=<>'@#$%^&*()[]{},.;:-_/\\+?*|`€≡‗"
@@ -25,13 +29,14 @@ ascii_draw_box = "╣╗╝┴┬╩╦═╬"
 numbers = digits
 korean = "ㅂㅋㅎㅭㅱㅶㅹㅺㅿㆁㆄㆅ"
 russian = "БГДЁЖИЙЛПФфЦЧШЩЪЫЬЭЮЯ"
+chinese = "诶比西迪伊尺杰大水开勒哦屁吉吾儿诶比西迪伊弗吉尺艾弗吉杰屁吉吾儿?八九十开勒马娜哦月人马娜口"
 greekU = "ΓΔΘΛΞΠΣΦΨΩ" # Greek Uppercase.
 greekL = "αβγδεζηθικλμνξπρστυφχψω" # Greek Lowercase.
 portuL = "ãáàâçéêíõóôúü"
 portuU = "ÃÁÀÂÇÉÊÍÕÓÔÚÜ"
 hindi = "ऄअआइईउऊऋऌऍऎएऐऑऒओऔकखगघङचछजझञटठडढणतथदधनऩपफबभमयरऱलळऴवशषसहऽॐॠॡ।॥०१२३४५६७८९॰ॲॳॴॵॶॷॹॺॻॼॽॾॿೱೲऀँंःऺऻ़ािीुूृॄॅॆेैॉॊोौ्ॎॏ॒॑॓॔ॕॖॗॢॣ"
 arabic = "شسژزڑرذڈدخحچجثٹتپبآاےیھہوںنملگکقفغعظطضصءئؤڙڐٿ٘ ًَُِّٰٗ؟،۰۱۲۳۴۵۶۷۸۹"
-Amharic = "ሀሁሂሃሄህሆሎልሌላሊሉለሐሑሒሓሔሕሖሞምሜማሚሙመሠሡሢሣሤሥሦሮርሬራሪሩረሰሱሲሳሴስሶሾሽሼሻሺሹሸቀቁቂቃቄቅቆቦብቤባቢቡበቨቩቪቫቬቭቮቶትቴታቲቱተቸቹቺቻቼችቾኆኅኄኃኂኁኀነኑኒናኔንኖኞኝኜኛኚኙኘአኡኢኣኤእኦኮክኬካኪኩከኸኹኺኻኼኽኾዎውዌዋዊዉወዐዑዒዓዔዕዖዞዝዜዛዚዙዘዠዡዢዣዤዥዦዮይዬያዪዩየደዱዲዳዴድዶጆጅጄጃጂጁጀገጉጊጋጌግጎጦጥጤጣጢጡጠጨጩጪጫጬጭጮጶጵጴጳጲጱጰጸጹጺጻጼጽጾፆፅፄፃፂፁፀፈፉፊፋፌፍፎፖፕፔፓፒፑፐ፩፪፫፬፭፮፯፰፱፲፳፴፵፶፷፸፹፺፻፼፡።፣፤፥"
+amharic = "ሀሁሂሃሄህሆሎልሌላሊሉለሐሑሒሓሔሕሖሞምሜማሚሙመሠሡሢሣሤሥሦሮርሬራሪሩረሰሱሲሳሴስሶሾሽሼሻሺሹሸቀቁቂቃቄቅቆቦብቤባቢቡበቨቩቪቫቬቭቮቶትቴታቲቱተቸቹቺቻቼችቾኆኅኄኃኂኁኀነኑኒናኔንኖኞኝኜኛኚኙኘአኡኢኣኤእኦኮክኬካኪኩከኸኹኺኻኼኽኾዎውዌዋዊዉወዐዑዒዓዔዕዖዞዝዜዛዚዙዘዠዡዢዣዤዥዦዮይዬያዪዩየደዱዲዳዴድዶጆጅጄጃጂጁጀገጉጊጋጌግጎጦጥጤጣጢጡጠጨጩጪጫጬጭጮጶጵጴጳጲጱጰጸጹጺጻጼጽጾፆፅፄፃፂፁፀፈፉፊፋፌፍፎፖፕፔፓፒፑፐ፩፪፫፬፭፮፯፰፱፲፳፴፵፶፷፸፹፺፻፼፡።፣፤፥"
 #Example |  new_list = "WHATERVER YOU WANT HERE"  | This can be named whatever you can think of, doesn't have to be "new_list". It's just what I am using for this example.
 #You can add more and make it even more complex. Just make sure to update the rest of the code below.
 
@@ -468,64 +473,77 @@ def change_creds():
 
 
 def main():
-    #Please god let there be a better way to do this....
-    #(Help wanted)
     try:
         #You can configure what you want to do in the config.json file.
         if j_load() == True:
-            answers = ['TRUE', 'True', 'true', 'YES', 'Yes', 'yes', 'Y', 'y']
-            print('Note: Pressing "Enter" will just skip and set the arguments as Fasle.\n')
+            langs = ['upper', 'lower', 'nums', 'syms', 'kor', 'rus', 'chi', 'GU', 'GL', 'PL', 'PU', 'spec', 'block', 'a_box', 'hin', 'arab', 'emote', 'amha']
 
-            upper = input("(1/17) - Want to use uppercase letters? (y/n): ")
-            upper = upper in answers
+            # Choose multiple options from a list
+            clear()
+            print('Chose your options! (If no options are selected you will be returned back to the main menu.)\n"Space" to select & "Enter" to continue.\nPress "CTRL+C" to exit this menu.\n\n')
+            langs_config = beaupy.select_multiple(langs, ticked_indices=[0,1,2,3], tick_style="#ed1dd3", cursor_style="#ffa533", tick_character="x")
 
-            lower = input("(2/17) - Want to use lowercase letters? (y/n): ")
-            lower = lower in answers
+            all = ""
 
-            nums = input("(3/17) - Want to use numbers? (y/n): ")
-            nums = nums in answers
 
-            syms = input("(4/17) - Want to use symbols? (y/n): ")
-            syms = syms in answers
+            if langs[0] in langs_config:
+                all += uppercase_letters
 
-            kor = input("(5/17) - Want to use korean characters? (y/n): ")
-            kor = kor in answers
+            if langs[1] in langs_config:
+                all += lowercase_letters
 
-            rus = input("(6/17) - Want to use russian characters? (y/n): ")
-            rus = rus in answers
+            if langs[2] in langs_config:
+                all += numbers
 
-            GU = input("(7/17) - Want to use uppercase greek letters? (y/n): ")
-            GU = GU in answers
+            if langs[3] in langs_config:
+                all += symbols
 
-            GL = input("(8/17) - Want to use lowercase greek letters? (y/n): ")
-            GL = GL in answers
+            if langs[4] in langs_config:
+                all += korean
 
-            PL = input("(9/17) - Want to use lowercase portuguese letters? (y/n): ")
-            PL = PL in answers
+            if langs[5] in langs_config:
+                all += russian
 
-            PU = input("(10/17) - Want to use uppercase portuguese letters? (y/n): ")
-            PU = PU in answers
+            if langs[6] in langs_config:
+                all += chinese
 
-            spec = input("(11/17) - Want to use unicode characters? (y/n): ")
-            spec = spec in answers
+            if langs[7] in langs_config:
+                all += greekU
 
-            block = input("(12/17) - Want to use ascii blocks? (y/n): ")
-            block = block in answers
+            if langs[8] in langs_config:
+                all += greekL
 
-            a_box = input("(13/17) - Want to use ascii boxes? (y/n): ")
-            a_box = a_box in answers
-            
-            hin = input("(14/17) - Want to use hindi letters? (y/n): ")
-            hin = hin in answers
-            
-            arab = input("(15/17) - Want to use arabic letters? (y/n): ")
-            arab = arab in answers
-            
-            emote = input("(16/17) - Want to use emojis? (y/n): ")
-            emote = emote in answers
+            if langs[9] in langs_config:
+                all += portuL
 
-            amha = input("(17/17) - Want to use amharic? (y/n): ")
-            amha = amha in answers
+            if langs[10] in langs_config:
+                all += portuU
+
+            if langs[11] in langs_config:
+                all += unicode
+
+            if langs[12] in langs_config:
+                all += ascii_boxes
+
+            if langs[13] in langs_config:
+                all += ascii_draw_box
+
+            if langs[14] in langs_config:
+                all += hindi
+
+            if langs[15] in langs_config:
+                all += arabic
+
+            if langs[16] in langs_config:
+                all += emojis
+
+            if langs[17] in langs_config:
+                all += amharic
+
+            if not langs_config:
+                clear()
+                return
+
         else:
             upper = True
             lower = True
@@ -533,6 +551,7 @@ def main():
             syms = True
             kor = True
             rus = True
+            chi = True
             GU = True
             GL = True
             PL = True
@@ -544,48 +563,53 @@ def main():
             arab = True
             emote = True
             amha = True
+
+
+            all = ""
+
+            if upper:
+                all += uppercase_letters
+            if lower:
+                all += lowercase_letters
+            if nums:
+                all += numbers
+            if syms:
+                all += symbols
+            if kor:
+                all += korean
+            if rus:
+                all += russian
+            if chi:
+                all += chinese
+            if GU:
+                all += greekU
+            if GL:
+                all += greekL
+            if PL:
+                all += portuL
+            if PU:
+                all += portuU
+            if spec:
+                all += unicode
+            if block:
+                all += ascii_boxes
+            if a_box:
+                all += ascii_draw_box
+            if hin:
+                all += hindi
+            if arab:
+                all += arabic
+            if emote:
+                all += emojis
+            if amha:
+                all += amharic
             
     except Exception as e:
-        print(f"Oops! Something went wrong...\nERROR: {e}")
-        quit()
-
-
-    all = ""
-
-    if upper:
-        all += uppercase_letters
-    if lower:
-        all += lowercase_letters
-    if nums:
-        all += numbers
-    if syms:
-        all += symbols
-    if kor:
-        all += korean
-    if rus:
-        all += russian
-    if GU:
-        all += greekU
-    if GL:
-        all += greekL
-    if PL:
-        all += portuL
-    if PU:
-        all += portuU
-    if spec:
-        all += unicode
-    if block:
-        all += ascii_boxes
-    if a_box:
-        all += ascii_draw_box
-    if hin:
-        all += hindi
-    if arab:
-        all += arabic
-    if emote:
-        all += emojis
-    if amha:
-        all += Amharic
+        clear()
+        print(f"Oops! Something went wrong...\nERROR: {e}\n\n")
+        input('Press "enter" to continue...')
+        clear()
+        return
 
 
     clear()
@@ -703,6 +727,7 @@ if __name__ == '__main__':
                         clear()
                         continue
 
+
                     if sub_option == 1: # Add passwords
                         if os.path.isfile('pwords.pgen.oCrypted'):
                             clear()
@@ -730,6 +755,7 @@ if __name__ == '__main__':
                             add_data(web.lower(), passwd, notes)
                             input('\n\nPress "enter" to continue...')
                             clear()
+
 
                     if sub_option == 2: # Remove passwords
                         if os.path.isfile('pwords.pgen.oCrypted'):
@@ -782,7 +808,6 @@ if __name__ == '__main__':
                                 clear()
 
 
-
                     if sub_option == 4:
                         if os.path.isfile('pwords.pgen.oCrypted'):
                             clear()
@@ -809,7 +834,6 @@ if __name__ == '__main__':
                                 continue
                             lock(file_path, enc_key, enc_salt)
                             clear()
-
 
 
                     if sub_option == 5:
@@ -885,9 +909,6 @@ if __name__ == '__main__':
                         input('Press "enter" to quit...')
                         clear()
                         
-
-
-
             
             if option == 4:
                 passwords = show_pass()
@@ -901,6 +922,7 @@ if __name__ == '__main__':
                     input('Press "enter" to continue...')
                     clear()
             
+
             if option == 5:
                 clr_pass()
                 print("pass.txt has been wiped clean.\n\n")
