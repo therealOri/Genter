@@ -11,6 +11,7 @@ If you have an older version of this project, You should update to the current v
 
 Added:
 > - Added a new menu system for selecting options/languages for password generation using [beaupy](https://github.com/petereon/beaupy).
+> - Added new language. Chinese/Mandarin
 __ __
 
 <br />
