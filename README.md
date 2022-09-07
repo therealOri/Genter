@@ -31,18 +31,25 @@ __ __
 
 # Installation/Links
 
+> If you do not have "virtualenv", you can install it via pip.
+```mkd
+pip install virtualenv
+```
+
 ```zsh
-pip3 install virtualenv
 git clone https://github.com/therealOri/PassGen.git
 cd PassGen
 virtualenv pgenENV
 source pgenENV/bin/activate
-pip3 install -r requirements.txt
+pip install -r requirements.txt
+```
+ ‼️ IMPORTANT ‼️
+After pip installing `requirements.txt`, it will install pycryptodome. And **BEFORE** running passgen.py you WILL need to navigate to here: `pgenENV/lib/python3.10/site-packages/Crypto/Protocol/` and replace the KDF.py file there with the one found in the "[patch](https://github.com/therealOri/PassGen/tree/main/patch)" folder. It will allow you to use the unicode characters being used in the env.py file for encrypting. 
+> (python 3.10 version number may differ depending on what version of python you use)
+
+```mkd
 python3 passgen.py
 ```
-
- ‼️ IMPORTANT ‼️
-After pip installing oCrypt0r, it will install pycryptodome. And BEFORE running passgen.py you WILL need to navigate to here: `pgenENV/lib/python3.10/site-packages/Crypto/Protocol/` and replace the KDF.py file there with the one found in the "patch" folder here in the repo. It will allow you to use the unicode characters being used in the env.py file for encrypting.
 
 <br />
 <br />
