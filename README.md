@@ -46,7 +46,7 @@ source pgenENV/bin/activate
 pip install -r requirements.txt
 python3 passgen.py
 ```
-> The first thing you should do is generate a key and then keep it safe for when you want to use the password manager.
+> The first thing you should do is make a 100+ character password, generate a key, and then keep it safe for when you want to use the password manager.
 
 <br />
 <br />
