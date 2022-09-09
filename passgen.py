@@ -8,7 +8,6 @@ import os
 import secrets
 import sqlite3
 from string import ascii_lowercase, ascii_uppercase, digits
-from itertools import zip_longest
 
 
 #AES stoof
