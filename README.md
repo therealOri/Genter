@@ -17,11 +17,11 @@ __ __
 <br />
 
 # Screenshots
-![2022-09-05_10-01](https://user-images.githubusercontent.com/45724082/188486604-48ffb036-c3c2-45dc-899d-d445943fa7d7.png)
+![2022-09-09_11-34](https://user-images.githubusercontent.com/45724082/189410810-976e6db6-3a96-4946-bff9-5316f738aaec.png)
 
-![2022-09-05_10-02](https://user-images.githubusercontent.com/45724082/188486616-0ef3686b-75fe-4508-ad06-6d6c67d2c9a6.png)
+![2022-09-09_11-36](https://user-images.githubusercontent.com/45724082/189411174-b514b651-122c-4ae6-8fa9-ac9cbf2c578b.png)
 
-![2022-09-05_10-02_1](https://user-images.githubusercontent.com/45724082/188486641-02377cce-763c-4f30-8cf8-9ebf05b20a8d.png)
+![2022-09-09_11-38](https://user-images.githubusercontent.com/45724082/189411567-48bda427-b0f7-4935-948f-5a72c19f8f95.png)
 __ __
 
 
