@@ -11,7 +11,7 @@ If you have an older version of this project, You should update to the current v
 
 Added:
 > - Overhauled how you will encrypt your passwords. It now uses "Password Based Key Derivation" to make a key. That key will allow you to encrypt and decrypt your passwords. (Don't lose the key and store it somewhere safe). You can use keys generated to encrypt whatever..like Locking the database for example.
-> - Removed the need for the env.py file outside of checking to see if it is passgens's first time running. Other than that, it can be completely ignorred now.
+> - Removed the need for the env.py file.
 > - Updated the password gen option names to refect what languages you are using. (More understandable now)
 __ __
 
