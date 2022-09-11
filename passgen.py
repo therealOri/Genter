@@ -179,6 +179,7 @@ def add_data(website, passwd, notes, master_key, salt):
         return print(f'"{website}" and your password has been stored/saved to the database!')
 
 
+
 def rmv_data(website):
     database = sqlite3.connect('pwords.pgen')
     c = database.cursor()
@@ -692,7 +693,7 @@ if __name__ == '__main__':
                             clear()
                             continue
                         
-                        passwd = input(f'Password to save for "{web.lower()}"?: ')
+                        passwd = beaupy.prompt(f'Password to save for "{web.lower()}"?: ', secure=True)
                         if passwd.lower() == 'q':
                             clear()
                             continue
@@ -779,12 +780,12 @@ if __name__ == '__main__':
                     else:
                         clear()
                         print('Please provide credentials to lock the database. (Do NOT forget them as you will never be able to decrypt without them.)\nPress "q" to go back/quit.\n\n')
-                        enc_key = input("Encryption Key?: ")
+                        enc_key = beaupy.prompt("Encryption Key: ", secure=True)
                         if enc_key.lower() == 'q':
                             clear()
                             continue
 
-                        enc_salt = input("Encrytion Salt?: ")
+                        enc_salt = beaupy.prompt("Encryption Salt: ", secure=True)
                         if enc_salt.lower() == 'q':
                             clear()
                             continue
@@ -793,20 +794,25 @@ if __name__ == '__main__':
                         if file_path.lower() == 'q':
                             clear()
                             continue
-                        lock(file_path, enc_key, enc_salt)
-                        clear()
+                        try:
+                            enc_key = b64.b64decode(enc_key)
+                            lock(file_path, enc_key, enc_salt)
+                            clear()
+                        except Exception:
+                            lock(file_path, enc_key, enc_salt)
+                            clear()
 
 
                 if sub_option == 5:
                     clear()
                     print('Please provide the correct credentials to unlock the database. (Do not forget them as you will NOT be able to decrypt without them.)\nPress "q" to go back/quit.\n\n')
 
-                    enc_key2 = input("Encryption Key?: ")
+                    enc_key2 = beaupy.prompt("Encryption Key: ", secure=True)
                     if enc_key2.lower() == 'q':
                         clear()
                         continue
 
-                    enc_salt2 = input("Encrytion Salt?: ")
+                    enc_salt2 = beaupy.prompt("Encryption Salt: ", secure=True)
                     if enc_salt2.lower() == 'q':
                         clear()
                         continue
@@ -815,8 +821,13 @@ if __name__ == '__main__':
                     if file_path2.lower() == 'q':
                         clear()
                         continue
-                    unlock(file_path2, enc_key2, enc_salt2)
-                    clear()
+                    try:
+                        enc_key2 = b64.b64decode(enc_key2)
+                        unlock(file_path2, enc_key2, enc_salt2)
+                        clear()
+                    except Exception:
+                        unlock(file_path2, enc_key2, enc_salt2)
+                        clear()
 
 
 
