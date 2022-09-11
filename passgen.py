@@ -147,7 +147,7 @@ def readMD(web, master_key, salt):
         except Exception as e:
             strd_e = f'The provided credentials do not match what was was used to encrypt the data...\nError: {e}'
             raise Exception(strd_e) from None
-        return print(f"Password for {web}: {d_cipher_data.decode()}")
+        return print(f"Password for {web}: {d_cipher_data.decode('unicode-escape')}")
     else:
         print('Oof..nothing here but us foxos...')
 
