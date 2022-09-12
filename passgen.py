@@ -154,13 +154,9 @@ def readMD(web, master_key, salt):
 
 
 
-# Used to encode notes..for some reason it likes it this way instead of encoding the notes in the function itself.
-def note_encode(note):
-    b64_note = b64.b64encode(note.encode('utf-8'))
-    return b64_note.decode()
-
 # Add and remove data from database.
 def add_data(website, passwd, notes, master_key, salt):
+    b64_note = b64.b64encode(notes.encode('unicode-escape'))
     database = sqlite3.connect('pwords.pgen')
     c = database.cursor()
     c.execute(f"SELECT website FROM pwd_tables")
@@ -173,7 +169,7 @@ def add_data(website, passwd, notes, master_key, salt):
     if not website:
         return print('I need a domain/website to add to the database...\n[Error]: "web" can not be empty.')
     else:
-        c.execute(f"INSERT INTO pwd_tables VALUES ('{website}', '{stringME(passwd, master_key, salt)}', '{note_encode(notes)}')")
+        c.execute(f"INSERT INTO pwd_tables VALUES ('{website}', '{stringME(passwd, master_key, salt)}', '{b64_note.decode('unicode-escape')}')")
         database.commit()
         database.close()
         return print(f'"{website}" and your password has been stored/saved to the database!')
@@ -286,8 +282,9 @@ def d_conv(password):
 def j_load():
     with open('config.json') as f:
         data = json.load(f)
-        option = data['options_flag']
-    return option
+        options_flag = data['options_flag']
+        secure_prompts = data['secure_prompts']
+    return options_flag, secure_prompts
 
 
 # Showing contents of pass.txt and clearing it.
@@ -351,8 +348,12 @@ def read():
         if web_to_get.lower() == 'q':
             return web_to_get.lower()
         else:
-            master_key = beaupy.prompt("Please provide your master key to decrypt the password: ", secure=True)
-            salt = beaupy.prompt("Encryption Salt: ", secure=True)
+            if j_load()[1] == True:
+                master_key = beaupy.prompt("Please provide your master key to decrypt the password: ", secure=True)
+                salt = beaupy.prompt("Encryption Salt: ", secure=True)
+            else:
+                master_key = beaupy.prompt("Please provide your master key to decrypt the password: ", secure=False)
+                salt = beaupy.prompt("Encryption Salt: ", secure=False)
             clear()
             readMD(web_to_get.lower(), master_key, salt)
     except Exception:
@@ -447,7 +448,7 @@ def change_creds(old_master_key, new_master_key, old_salt, new_salt):
 def main():
     try:
         #You can configure what you want to do in the config.json file.
-        if j_load() == True:
+        if j_load()[0] == True:
             langs = ['uppercase', 'lowercase', 'numbers', 'symbols', 'korean', 'russian', 'chinese', 'GreekUppercase', 'GreekLowercase', 'PortugueseLowercase', 'PortugueseUppercase', 'unicode', 'ascii_boxes', 'ascii_draw_box', 'hindi', 'arabic', 'emojis', 'amharic']
 
             # Choose multiple options from a list
@@ -655,7 +656,7 @@ if __name__ == '__main__':
 
         if option == 2:
             clear()
-            m_gen = beaupy.prompt('(It is reccomended to use passgen to make password)\nPress "q" to go back.\n\nPassword to generate master_key - (100+ characters long.): ', secure=True)
+            m_gen = beaupy.prompt('(It is reccomended to use passgen to make the password)\nPress "q" to go back.\n\nPassword to generate master_key - (100+ characters long.): ', secure=True)
             if m_gen.lower() == 'q':
                 clear()
             else:
@@ -693,22 +694,31 @@ if __name__ == '__main__':
                             clear()
                             continue
                         
-                        passwd = beaupy.prompt(f'Password to save for "{web.lower()}"?: ', secure=True)
+                        if j_load()[1] == True:
+                            passwd = beaupy.prompt(f'Password to save for "{web.lower()}"?: ', secure=True)
+                        else:
+                            passwd = beaupy.prompt(f'Password to save for "{web.lower()}"?: ', secure=False)
                         if passwd.lower() == 'q':
                             clear()
                             continue
 
-                        notes = input("(Optional) - Additional Information/notes: ")
+                        notes = beaupy.prompt("(Optional) - Additional Information/notes: ")
                         if notes.lower() == 'q':
                             clear()
                             continue
 
-                        master = beaupy.prompt("Master Key for encryption: ", secure=True)
+                        if j_load()[1] == True:
+                            master = beaupy.prompt("Master Key for encryption: ", secure=True)
+                        else:
+                            master = beaupy.prompt("Master Key for encryption: ", secure=False)
                         if master.lower() == 'q':
                             clear()
                             continue
 
-                        salt = beaupy.prompt("Encryption salt: ", secure=True)   
+                        if j_load()[1] == True:
+                            salt = beaupy.prompt("Encryption salt: ", secure=True)
+                        else:
+                            salt = beaupy.prompt("Encryption salt: ", secure=False)
                         if master.lower() == 'q':
                             clear()
                             continue
@@ -753,6 +763,7 @@ if __name__ == '__main__':
                             continue
 
 
+                #Reading/show passwords
                 if sub_option == 3:
                     if os.path.isfile('pwords.pgen.oCrypted'):
                         clear()
@@ -770,6 +781,7 @@ if __name__ == '__main__':
                             clear()
 
 
+                #Lock Database
                 if sub_option == 4:
                     if os.path.isfile('pwords.pgen.oCrypted'):
                         clear()
@@ -780,12 +792,18 @@ if __name__ == '__main__':
                     else:
                         clear()
                         print('Please provide credentials to lock the database. (Do NOT forget them as you will never be able to decrypt without them.)\nPress "q" to go back/quit.\n\n')
-                        enc_key = beaupy.prompt("Encryption Key: ", secure=True)
+                        if j_load()[1] == True:
+                            enc_key = beaupy.prompt("Encryption Key: ", secure=True)
+                        else:
+                            enc_key = beaupy.prompt("Encryption Key: ", secure=False)
                         if enc_key.lower() == 'q':
                             clear()
                             continue
 
-                        enc_salt = beaupy.prompt("Encryption Salt: ", secure=True)
+                        if j_load()[1] == True:
+                            enc_salt = beaupy.prompt("Encryption Salt: ", secure=True)
+                        else:
+                            enc_salt = beaupy.prompt("Encryption Salt: ", secure=False)
                         if enc_salt.lower() == 'q':
                             clear()
                             continue
@@ -803,16 +821,23 @@ if __name__ == '__main__':
                             clear()
 
 
+                #unlock Database
                 if sub_option == 5:
                     clear()
                     print('Please provide the correct credentials to unlock the database. (Do not forget them as you will NOT be able to decrypt without them.)\nPress "q" to go back/quit.\n\n')
 
-                    enc_key2 = beaupy.prompt("Encryption Key: ", secure=True)
+                    if j_load()[1] == True:
+                        enc_key2 = beaupy.prompt("Encryption Key: ", secure=True)
+                    else:
+                        enc_key2 = beaupy.prompt("Encryption Key: ", secure=False)
                     if enc_key2.lower() == 'q':
                         clear()
                         continue
 
-                    enc_salt2 = beaupy.prompt("Encryption Salt: ", secure=True)
+                    if j_load()[1] == True:
+                        enc_salt2 = beaupy.prompt("Encryption Salt: ", secure=True)
+                    else:
+                        enc_salt2 = beaupy.prompt("Encryption Salt: ", secure=False)
                     if enc_salt2.lower() == 'q':
                         clear()
                         continue
@@ -842,12 +867,13 @@ if __name__ == '__main__':
                         clear()
 
                         print(f'Changing encryption master key for the encryption...\n\nPress "enter" to continue or "q" to go back/quit...: ')
-                        new_pass = bytes(beaupy.prompt("Password to generate master_key - (100+ characters long.): ", secure=True), 'unicode-escape')
+                        new_pass = beaupy.prompt("(It is reccomended to use passgen to make the password)\nPassword to generate master_key - (100+ characters long.): ", secure=True)
                         if new_pass.lower() == 'q':
                             clear()
                             continue
                         else:
                             clear()
+                            new_pass = bytes(new_pass, 'unicode_escape')
                             new_master = keygen(new_pass)
                             print(f'New Master Key: {new_master}\nDO NO LOSE THIS KEY. If you lose this key, you can not recover your passwords or change keys.\nThis key will be used when encrypting & decrypting passwords.')
                             input('\n\nPress "enter" to continue...')
@@ -862,10 +888,16 @@ if __name__ == '__main__':
                             print("New database created!\n---------------------------------------------------------------")
 
                             print("\n\nWorking my magic!...")
-                            old_master_key = beaupy.prompt("Old master key: ", secure=True)
-                            old_salt = beaupy.prompt("Old Encryption salt: ", secure=True)
-                            new_master_key = beaupy.prompt("Newly just generated master key: ", secure=True)
-                            new_salt = beaupy.prompt("New encryption salt: ", secure=True)
+                            if j_load()[1] == True:
+                                old_master_key = beaupy.prompt("Old master key: ", secure=True)
+                                old_salt = beaupy.prompt("Old Encryption salt: ", secure=True)
+                                new_master_key = beaupy.prompt("Newly just generated master key: ", secure=True)
+                                new_salt = beaupy.prompt("New encryption salt: ", secure=True)
+                            else:
+                                old_master_key = beaupy.prompt("Old master key: ", secure=False)
+                                old_salt = beaupy.prompt("Old Encryption salt: ", secure=False)
+                                new_master_key = beaupy.prompt("Newly just generated master key: ", secure=False)
+                                new_salt = beaupy.prompt("New encryption salt: ", secure=False)
 
                             change_creds(old_master_key, new_master_key, old_salt, new_salt)
                             input('Credentials have been changed and all data is now using the new encryption & credentials.\n\nPress "enter" to continue...')
