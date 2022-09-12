@@ -69,7 +69,7 @@ def keygen(master):
         algorithm=hashes.BLAKE2b(digest_size=64),
         length=64,
         salt=salt,
-        iterations=562174,
+        iterations=1562174,
     )
     key = kdf.derive(master)
     bkey = b64.b64encode(key) #Base64 encode the bytes. (We decode this before encrypting, using bytes instead of the base64 encoded string.)
