@@ -1,3 +1,4 @@
 {
-    "options_flag": true
+    "options_flag": true,
+    "secure_prompts": true
 }
