@@ -65,6 +65,7 @@ __ __
 > - If you are on windows 10 use this: [download](https://www.python.org/ftp/python/3.10.7/python-3.10.7-amd64.exe). (Pip3 comes with it)
 > - The hashing feature of this script can be completly ignorred if you are just making passwords. Hashing is for if you want to store them in a server somewhere, so they aren't just sat around as plaintext.
 > - If the "options_flag" in the config file is set to "true", PassGen will ask you what you want to use in your password. If set to "False", PassGen will use the already defined list of options that are all "True" by default found in the code. (Basically will use everything).
+> - If the "secure_prompts" option in the config file is "true", it will hide what you type whenever you are asked to provide keys, salts, passwords, etc. If it is set to "false" it will not hide what you type.
 __ __
 
 <br />
