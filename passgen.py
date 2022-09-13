@@ -67,7 +67,7 @@ def keygen(master):
     # derive
     kdf = PBKDF2HMAC(
         algorithm=hashes.BLAKE2b(digest_size=64),
-        length=64,
+        length=72,
         salt=salt,
         iterations=1562174,
     )
