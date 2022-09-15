@@ -280,7 +280,7 @@ def d_conv(password):
 
 # config.json file loading.
 def j_load():
-    with open('config.json') as f:
+    with open('config.json', 'r') as f:
         data = json.load(f)
         options_flag = data['options_flag']
         secure_prompts = data['secure_prompts']
