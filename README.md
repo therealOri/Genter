@@ -5,14 +5,14 @@ __ __
 
 <br />
 
-Update | 9/9/2022:
+Update | 10/18/2022:
 # New Features.
 If you have an older version of this project, You should update to the current version now!.
 
 Added:
-> - Overhauled how you will encrypt your passwords. It now uses "Password Based Key Derivation" to make a key. That key will allow you to encrypt and decrypt your passwords. (Don't lose the key and store it somewhere safe). You can use keys generated to encrypt whatever..like Locking the database for example.
-> - Removed the need for the env.py file.
-> - Updated the password gen option names to refect what languages you are using. (More understandable now)
+> - New Passphrase generation feature! Allows you to generate passphrases like Bitwarden!
+> - Added new languages! Sri Lankin, and Egyptian Hieroglyphs! (Giving us a total of 20! different languages to make passwords from!)
+> - Added a new config option. "wordlst_update". This flag (set to false by default) will allow you to always be up to date with the wordlist found here in the repository. You can help contibute valid english (for now) words to the list.
 __ __
 
 <br />
