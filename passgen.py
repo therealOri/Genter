@@ -1,10 +1,13 @@
+#DEV_Branch
 #Imports
+from Crypto.Random import random
 import base64 as b64
 import beaupy
 from hashlib import blake2b
 import json
 from ocryptor import oCrypt
 import os
+import wget
 import secrets
 import sqlite3
 from string import ascii_lowercase, ascii_uppercase, digits
@@ -25,7 +28,7 @@ from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
 uppercase_letters = ascii_uppercase
 lowercase_letters = ascii_lowercase
 symbols = "!=<>'@#$%^&*()[]{},.;:-_/\\+?*|`€≡‗"
-unicode = "¡¢£¤¥¦§¨©ª«¬®™️¯°±²³´µ¶·¸¹º»¼½¾¿×Ø÷øÞßƒðÐıæ𐐘𐑀ඞඕᔕ"
+unicode = "¡¢£¤¥¦§¨©ª«¬®™️¯°±²³´µ¶·¸¹º»¼½¾¿×Ø÷øÞßƒðÐıæᔕ"
 emojis = "⚔☣️⚛️〰️🗝️🔒⛓️✨🫠🫧🫥💢"
 ascii_boxes = "░▒▓█▄▀■"
 ascii_draw_box = "╣╗╝┴┬╩╦═╬"
@@ -40,6 +43,10 @@ portuU = "ÃÁÀÂÇÉÊÍÕÓÔÚÜ"
 hindi = "ऄअआइईउऊऋऌऍऎएऐऑऒओऔकखगघङचछजझञटठडढणतथदधनऩपफबभमयरऱलळऴवशषसहऽॐॠॡ।॥०१२३४५६७८९॰ॲॳॴॵॶॷॹॺॻॼॽॾॿೱೲऀँंःऺऻ़ािीुूृॄॅॆेैॉॊोौ्ॎॏ॒॑॓॔ॕॖॗॢॣ"
 arabic = "شسژزڑرذڈدخحچجثٹتپبآاےیھہوںنملگکقفغعظطضصءئؤڙڐٿ٘ ًَُِّٰٗ؟،۰۱۲۳۴۵۶۷۸۹"
 amharic = "ሀሁሂሃሄህሆሎልሌላሊሉለሐሑሒሓሔሕሖሞምሜማሚሙመሠሡሢሣሤሥሦሮርሬራሪሩረሰሱሲሳሴስሶሾሽሼሻሺሹሸቀቁቂቃቄቅቆቦብቤባቢቡበቨቩቪቫቬቭቮቶትቴታቲቱተቸቹቺቻቼችቾኆኅኄኃኂኁኀነኑኒናኔንኖኞኝኜኛኚኙኘአኡኢኣኤእኦኮክኬካኪኩከኸኹኺኻኼኽኾዎውዌዋዊዉወዐዑዒዓዔዕዖዞዝዜዛዚዙዘዠዡዢዣዤዥዦዮይዬያዪዩየደዱዲዳዴድዶጆጅጄጃጂጁጀገጉጊጋጌግጎጦጥጤጣጢጡጠጨጩጪጫጬጭጮጶጵጴጳጲጱጰጸጹጺጻጼጽጾፆፅፄፃፂፁፀፈፉፊፋፌፍፎፖፕፔፓፒፑፐ፩፪፫፬፭፮፯፰፱፲፳፴፵፶፷፸፹፺፻፼፡።፣፤፥"
+sinhala = "්‍රඤචදසමහඒරැඅුටොි්යවනකතගලපබංජඩඉ𐐘𐑀ඞඕ"
+hieroglyphs = "𓀨𓁢𓂀𓂁𓂄𓂉𓃣𓄯𓉢𓊇𓊆𓊉𓊈𓊎𓊕𓊔𓊖𓊗𓋹𓋸𓏲𓌬𓋨"
+
+
 #Example |  new_list = "WHATERVER YOU WANT HERE"  | This can be named whatever you can think of, doesn't have to be "new_list". It's just what I am using for this example.
 #You can add more and make it even more complex. Just make sure to update the rest of the code below.
 
@@ -280,11 +287,12 @@ def d_conv(password):
 
 # config.json file loading.
 def j_load():
-    with open('config.json', 'r') as f:
+    with open('config.json') as f:
         data = json.load(f)
         options_flag = data['options_flag']
         secure_prompts = data['secure_prompts']
-    return options_flag, secure_prompts
+        wordlst = data['wordlst_update']
+    return options_flag, secure_prompts, wordlst
 
 
 # Showing contents of pass.txt and clearing it.
@@ -449,7 +457,7 @@ def main():
     try:
         #You can configure what you want to do in the config.json file.
         if j_load()[0] == True:
-            langs = ['uppercase', 'lowercase', 'numbers', 'symbols', 'korean', 'russian', 'chinese', 'GreekUppercase', 'GreekLowercase', 'PortugueseLowercase', 'PortugueseUppercase', 'unicode', 'ascii_boxes', 'ascii_draw_box', 'hindi', 'arabic', 'emojis', 'amharic']
+            langs = ['uppercase', 'lowercase', 'numbers', 'symbols', 'korean', 'russian', 'chinese', 'GreekUppercase', 'GreekLowercase', 'PortugueseLowercase', 'PortugueseUppercase', 'unicode', 'ascii_boxes', 'ascii_draw_box', 'hindi', 'arabic', 'emojis', 'amharic', 'sinhala', 'hieroglyphs']
 
             # Choose multiple options from a list
             clear()
@@ -513,6 +521,12 @@ def main():
             if langs[17] in langs_config:
                 all += amharic
 
+            if langs[18] in langs_config:
+                all += sinhala
+
+            if langs[19] in langs_config:
+                all += hieroglyphs
+
             if not langs_config:
                 clear()
                 return
@@ -536,6 +550,8 @@ def main():
             arab = True
             emote = True
             amha = True
+            sinha = True
+            hiero = True
 
 
             all = ""
@@ -576,7 +592,11 @@ def main():
                 all += emojis
             if amha:
                 all += amharic
-            
+            if sinha:
+                all += sinhala
+            if hiero:
+                all += hieroglyphs
+
     except Exception as e:
         clear()
         print(f"Oops! Something went wrong...\nERROR: {e}\n\n")
@@ -632,6 +652,116 @@ def main():
         clear()
 
 
+
+#Generate Phrases (Like Bitwarden)
+def phrzgn():
+
+    #download words.txt from repo
+    if os.path.isfile('words.txt'):
+        pass #file exists, do nothing
+    else:
+        print("words.txt doesn't exist...Downloading words.txt from repo.")
+        wget.download("https://raw.githubusercontent.com/therealOri/PassGen/main/words.txt")
+        clear()
+
+    if j_load()[2] == True:
+        os.remove('words.txt')
+        print("Updating wordlist..")
+        wget.download("https://raw.githubusercontent.com/therealOri/PassGen/main/words.txt")
+        clear()
+    else:
+        pass #updates set to false
+
+    while True:
+        try:
+            number = beaupy.prompt(f'(Press "ctrl+c" to exit)\n-----------------------------------------------------------\n\nHow many words?: ')
+            if number == None:
+                clear()
+                return
+            else:
+                number = int(number)
+        except ValueError as e:
+            print(f'Oops! Something went wrong.\nError: {e}\n\n')
+            input('Press "enter" to continue...')
+            clear()
+            continue
+
+        if number > 20 or number < 3:
+            print("20 words is the maximum number of words you can use. And 5 words is the minimum.\n\n")
+            input('Press "enter" to continue...')
+            clear()
+        else:
+            break
+
+
+    cwd = os.getcwd()
+    word_path = f"{cwd}/words.txt"
+    with open(word_path, 'r') as fh:
+        words = fh.read().lower()
+    word_list = words.splitlines() #list of words
+
+
+    sep = beaupy.prompt('(Press "ctrl+c" to exit)\n-----------------------------------------------------------\n\nLine separator? (leave empty for default "-"): ')
+    if sep == None:
+        clear()
+        return
+    else:
+        if sep == '':
+            sep = '-'
+
+
+    #Returns True or False. Basically Yes or No?
+    capital_words = ''
+    default_words = ''
+    capitalize = beaupy.confirm('(Press "ctrl+c" to exit)\n-----------------------------------------------------------\n\nCapitalize?')
+    if capitalize == None:
+        clear()
+        return
+    else:
+        if capitalize:
+            """Make list of words with the first letter capitalized."""
+            c_lst = []
+            for i in word_list:
+                if len(i) < 3 or len(i) > 9:
+                    pass #Ignore and move on to next item
+                else:
+                    c_lst.append(i.title())
+
+            cap = True
+            capital_words = f'{sep}'.join(random.choice(c_lst) for _ in range(number))
+        else:
+            cap = False
+            default_words = f'{sep}'.join(random.choice(word_list) for _ in range(number))
+
+
+    numbers = beaupy.confirm('(Press "ctrl+c" to exit)\n-----------------------------------------------------------\n\nNumber?')
+    if numbers == None:
+        clear()
+        return
+    else:
+        if numbers:
+            num = True
+            rn_num = random.randint(0, 9) # <-- Get a random number to be used with only 1 of the words defined in capital_words or default_words below.
+            word_index = random.randint(0, number - 1) # Get random index that is in the word list
+
+            if default_words != '':
+                word_with_number = default_words.split(sep)
+            else:
+                word_with_number = capital_words.split(sep)
+
+            word_with_number[word_index] = word_with_number[word_index] + str(rn_num)
+            word_with_number = sep.join(word_with_number)
+        else:
+            num = False
+        
+
+    if cap == True and num == False:
+        return capital_words
+    if cap == False and num == False:
+        return default_words
+    if num == True:
+        return word_with_number
+
 ##-------------- ^^ Functions End ^^ --------------##
 
 
@@ -641,7 +771,7 @@ if __name__ == '__main__':
     while True:
         clear()
         try:
-            option = int(input(f"{banner()}\n\nWhat would you like to do?\n\n1. Make a password?\n2. Generate Key?\n3. Manage passwords?\n4. Get hash for a password?\n5. Show pass.txt?\n6. Clear pass.txt?\n7. Quit?\n\nEnter: "))
+            option = int(input(f"{banner()}\n\nWhat would you like to do?\n\n1. Make a password?\n2. Make a phrase?\n3. Generate Key?\n4. Manage passwords?\n5. Get hash for a password?\n6. Show pass.txt?\n7. Clear pass.txt?\n8. Quit?\n\nEnter: "))
         except Exception as e:
             clear()
             print(f'Value given is not an integer.\nError: {e}\n\n')
@@ -656,6 +786,17 @@ if __name__ == '__main__':
 
         if option == 2:
             clear()
+            phrase = phrzgn()
+            if phrase == None:
+                clear()
+            else:
+                print(phrase)
+                input('\n\nPress "enter" to continue...')
+                clear()
+
+
+        if option == 3:
+            clear()
             m_gen = beaupy.prompt('(It is reccomended to use passgen to make the password)\nPress "q" to go back.\n\nPassword to generate master_key - (100+ characters long.): ', secure=True)
             if m_gen.lower() == 'q':
                 clear()
@@ -667,7 +808,7 @@ if __name__ == '__main__':
                 clear()
 
 
-        if option == 3:
+        if option == 4:
             clear()
             while True:
                 try:
@@ -920,7 +1061,7 @@ if __name__ == '__main__':
                     input('Press "enter" to quit...')
                     clear()
 
-        if option == 4:
+        if option == 5:
             clear()
             pword = input('Press "q" to go back/quit.\n\nWhat would you like to hash?: ')
             if pword.lower() == 'q':
@@ -936,7 +1077,7 @@ if __name__ == '__main__':
                     clear()  
 
         
-        if option == 5:
+        if option == 6:
             passwords = show_pass()
             if not passwords:
                 clear()
@@ -949,19 +1090,19 @@ if __name__ == '__main__':
                 clear()
         
 
-        if option == 6:
+        if option == 7:
             clr_pass()
             print("pass.txt has been wiped clean.\n\n")
             input('Press "enter" to continue...')
             clear()
         
         
-        if option == 7:
+        if option == 8:
             clear()
             exit("Goodbye! <3")
 
         
-        elif option < 1 or option > 7:
+        elif option < 1 or option > 8:
             clear()
             print("Incorrect value given. Please choose a valid option from the menu/list.\n\n")
             input('Press "enter" to continue...')
