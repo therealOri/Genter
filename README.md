@@ -10,7 +10,7 @@ Update | 10/18/2022:
 If you have an older version of this project, You should update to the current version now!.
 
 Added:
-> - New Passphrase generation feature! Allows you to generate passphrases like Bitwarden!
+> - New Passphrase generation feature! Allows you to generate passphrases like Bitwarden! (using the lovely [beaupy](https://github.com/petereon/beaupy) package! <3)
 > - Added new languages! Sri Lankin, and Egyptian Hieroglyphs! (Giving us a total of 20! different languages to make passwords from!)
 > - Added a new config option. "wordlst_update". This flag (set to false by default) will allow you to always be up to date with the wordlist found here in the repository. You can help contibute valid english (for now) words to the list.
 __ __
