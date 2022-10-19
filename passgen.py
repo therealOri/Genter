@@ -658,19 +658,17 @@ def phrzgn():
 
     #download words.txt from repo
     if os.path.isfile('words.txt'):
-        pass #file exists, do nothing
+        if j_load()[2] == True:
+            os.remove('words.txt')
+            print("Updating wordlist..")
+            wget.download("https://raw.githubusercontent.com/therealOri/PassGen/main/words.txt")
+            clear()
+        else:
+            pass #updates set to false
     else:
         print("words.txt doesn't exist...Downloading words.txt from repo.")
         wget.download("https://raw.githubusercontent.com/therealOri/PassGen/main/words.txt")
         clear()
-
-    if j_load()[2] == True:
-        os.remove('words.txt')
-        print("Updating wordlist..")
-        wget.download("https://raw.githubusercontent.com/therealOri/PassGen/main/words.txt")
-        clear()
-    else:
-        pass #updates set to false
 
     while True:
         try:
