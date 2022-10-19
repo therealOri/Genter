@@ -1,4 +1,5 @@
 {
     "options_flag": true,
-    "secure_prompts": true
+    "secure_prompts": true,
+    "wordlst_update": false
 }
