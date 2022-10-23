@@ -22,12 +22,12 @@ __ __
 
 # Screenshots
 
-![main_menu](https://user-images.githubusercontent.com/45724082/196574471-e9d58692-087e-4ddc-a45b-1a4d66f5f36e.png)
+![main_menu](https://user-images.githubusercontent.com/45724082/197407322-0392e393-ec87-4a4f-8ff2-8effe506cbfd.png)
 
 ![password_gen_menu](https://user-images.githubusercontent.com/45724082/196574611-900f8aea-fcf3-4055-bb78-253538855377.png)
 
-![2022-09-09_11-38](https://user-images.githubusercontent.com/45724082/189411567-48bda427-b0f7-4935-948f-5a72c19f8f95.png)
-__ __
+![sub_menu](https://user-images.githubusercontent.com/45724082/197407344-621635df-60c5-41f4-b73e-e431442f1ab9.png)
+__
 
 
 
