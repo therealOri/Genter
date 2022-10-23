@@ -1,6 +1,4 @@
-#DEV_Branch
 #Imports
-from Crypto.Random import random
 import base64 as b64
 import beaupy
 from hashlib import blake2b
@@ -16,8 +14,15 @@ from string import ascii_lowercase, ascii_uppercase, digits
 #AES stoof
 from Crypto.Cipher import AES
 from Crypto.Protocol.KDF import PBKDF2
-from Crypto.Random import get_random_bytes
+from Crypto.Random import get_random_bytes, random
 from Crypto.Util.Padding import pad, unpad
+
+
+project_name = "Passgen"
+#The header that's used with the aes encryption for the json object is not encrypted, just base64 encoded and I don't really know of it's importance.
+header = f"Encrypted using {project_name}. DO NOT TAMPER WITH.  |  Made by therealOri  |  {os.urandom(8)}"
+header = bytes(header, 'utf-8')
+
 
 #KeyGen
 from cryptography.hazmat.primitives import hashes
@@ -74,7 +79,7 @@ def keygen(master):
     # derive
     kdf = PBKDF2HMAC(
         algorithm=hashes.BLAKE2b(digest_size=64),
-        length=72,
+        length=32, #aes.key uses 32 for encryption..it doesn't like anything bigger.
         salt=salt,
         iterations=1562174,
     )
@@ -115,54 +120,59 @@ def cleanup():
 # ENCRYPTION STUFF
 ## ------------------------------------------------------------------------ ##
 
+
 # Encrypting the passwords with master key and AES encryption.
-def stringME(password, master_key, salt):
-    key = PBKDF2(master_key, salt)
-    rb = get_random_bytes(AES.block_size)
-    cipher = AES.new(key, AES.MODE_CBC, rb)
-    cipher_data = b64.b64encode(rb + cipher.encrypt(pad(password.encode('unicode_escape'), AES.block_size)))
-    return cipher_data.decode()
+def stringME(data, key):
+    data = bytes(data, 'utf-8')
+    cipher = AES.new(key, AES.MODE_GCM)
+    cipher.update(header)
+    ciphertext, tag = cipher.encrypt_and_digest(data)
+    json_k = [ 'nonce', 'header', 'ciphertext', 'tag' ]
+    json_v = [ b64.b64encode(x).decode('utf-8') for x in [cipher.nonce, header, ciphertext, tag ]]
+    result = json.dumps(dict(zip(json_k, json_v)))
+    result = bytes(result, 'utf-8')
+    result = b64.b64encode(result)
+    return result.decode()
 
 
 #Decrypting the passwords with master key and AES encryption.
-def stringMD(passw, master_key, salt):
-    passwdE = b64.b64decode(passw) # Decoding the base64 bytes and giving me the aes data to decrypt.
+def stringMD(b64_input, key):
     try:
-        key = PBKDF2(master_key, salt)
-        cipher = AES.new(key, AES.MODE_CBC, passwdE[:AES.block_size])
-        d_cipher_data = unpad(cipher.decrypt(passwdE[AES.block_size:]), AES.block_size)
-    except Exception as e:
-        strd_e = f'The provided credentials do not match what was was used to encrypt the data...\nError: {e}'
-        raise Exception(strd_e) from None
-    return d_cipher_data.decode('unicode-escape')
+        json_input = b64.b64decode(b64_input)
+        b64j = json.loads(json_input)
+        json_k = [ 'nonce', 'header', 'ciphertext', 'tag' ]
+        jv = {k:b64.b64decode(b64j[k]) for k in json_k}
 
+        cipher = AES.new(key, AES.MODE_GCM, nonce=jv['nonce'])
+        cipher.update(jv['header'])
+        plaintext = cipher.decrypt_and_verify(jv['ciphertext'], jv['tag'])
+        return plaintext.decode()
+    except (ValueError, KeyError):
+        input("Incorrect data given, or Data has been tampered with. Can't decrypt.\n\nPress 'enter' to continue...")
+        clear()
+        return None
 
 
 #Reading a password for selected domain/website
-def readMD(web, master_key, salt):
-    d_master_key = b64.b64decode(master_key)
+def readMD(web, master_key):
     database = sqlite3.connect('pwords.pgen')
     c = database.cursor()
     c.execute(f"SELECT passwd FROM pwd_tables WHERE website LIKE '{web}'")
 
     if b64passwd := c.fetchone():
-        passwdE = b64.b64decode(b64passwd[0])
-        try:
-            key = PBKDF2(d_master_key, salt)
-            cipher = AES.new(key, AES.MODE_CBC, passwdE[:AES.block_size])
-            d_cipher_data = unpad(cipher.decrypt(passwdE[AES.block_size:]), AES.block_size)
-        except Exception as e:
-            strd_e = f'The provided credentials do not match what was was used to encrypt the data...\nError: {e}'
-            raise Exception(strd_e) from None
-        return print(f"Password for {web}: {d_cipher_data.decode('unicode-escape')}")
+        ghj = b64passwd[0]
+        pwdata = stringMD(ghj, master_key)
+        return pwdata
     else:
-        print('Oof..nothing here but us foxos...')
+        print('Oof..nothing here but us foxos...\n\n')
+        input('Press "enter" to continue...')
+        return
 
 
 
 
 # Add and remove data from database.
-def add_data(website, passwd, notes, master_key, salt):
+def add_data(website, passwd, notes, key):
     b64_note = b64.b64encode(notes.encode('unicode-escape'))
     database = sqlite3.connect('pwords.pgen')
     c = database.cursor()
@@ -176,7 +186,7 @@ def add_data(website, passwd, notes, master_key, salt):
     if not website:
         return print('I need a domain/website to add to the database...\n[Error]: "web" can not be empty.')
     else:
-        c.execute(f"INSERT INTO pwd_tables VALUES ('{website}', '{stringME(passwd, master_key, salt)}', '{b64_note.decode('unicode-escape')}')")
+        c.execute(f"INSERT INTO pwd_tables VALUES ('{website}', '{stringME(passwd, key)}', '{b64_note.decode('unicode-escape')}')")
         database.commit()
         database.close()
         return print(f'"{website}" and your password has been stored/saved to the database!')
@@ -213,21 +223,23 @@ def hash(password: str):
     alphabet = uppercase_letters + lowercase_letters + numbers
     
     while True:
-        try:
-            option = int(input(f"{banner()}\n\nHow do you want to make a key for hashing?\n\n1. Custom Key?\n2. Generate Key?\n3. Quit?\n\nEnter: "))
-        except Exception as e:
+        options = ['Custom key?', 'Generate key?', 'Quit?']
+        print(f'{banner()}\n\nHow do you want to make a key for hashing?\n-----------------------------------------------------------\n')
+        option = beaupy.select(options, cursor_style="#ffa533")
+
+        if option == None:
             clear()
-            print(f'Value given is not an integer.\nError: {e}\n\n')
-            input('Press "enter" to continue...')
-            clear()
-            continue
+            return None
 
 
-        if option == 1:
+        if options[0] in option:
             clear()
-            print('[Note]: Press "q" to go back.\n')
-            c_key = input('Enter/Load key to use for hashing: ')
-            if c_key.lower() == 'q':
+            if j_load()[1] == True:
+                c_key = beaupy.prompt('Press "q" to go back/quit.\n-----------------------------------------------------------\nEnter/Load key to use for hashing: ', secure=True)
+            else:
+                c_key = beaupy.prompt('Press "q" to go back/quit.\n-----------------------------------------------------------\nEnter/Load key to use for hashing: ', secure=False)
+
+            if not c_key or c_key.lower() == 'q':
                 clear()
                 continue
 
@@ -251,7 +263,7 @@ def hash(password: str):
             return result1
 
 
-        if option == 2:
+        if options[1] in option:
             clear()
             gen_key = ''.join(secrets.choice(alphabet) for _ in range(25))
             salt = bytes(''.join(secrets.choice(alphabet) for _ in range(16)), 'utf-8')
@@ -260,15 +272,9 @@ def hash(password: str):
             print(f'Password: {password}  |  Hash: {result2}\nSalt: {salt.decode()}  |  Key: {gen_key}\n')
             return result2
 
-        if option == 3:
+        if options[2] in option:
             clear()
             return None
-
-        elif option < 1 or option > 3:
-            clear()
-            print("Incorrect value given. Please choose a valid option from the menu/list.\n\n")
-            input('Press "enter" to continue...')
-            clear()
 
 
 
@@ -333,11 +339,12 @@ def domains():
 
     
     if not sites:
-        print("Hmmm...Maybe you should add something to the database first. ^-^")
+        input('Hmmm...Maybe you should add something to the database first. ^-^\n\nPress "enter" to continue...')
+        clear()
     else:
         for d,n in zip(dlist, clean_list):
             with open('.lst', 'a') as f:
-                f.writelines(f"{d}  [{n}]\n")
+                f.writelines(f"{d}  ({n})\n")
 
 
 def read():
@@ -346,24 +353,51 @@ def read():
     try:
         with open(".lst", "r+") as f:
             data = f.read()
-            print(data)
+            fnlst = data.strip().split('\n')
             f.truncate(0)
             f.close()
 
         os.remove(".lst")
-        web_to_get = input('-----------------------------------------------------\nPress "q" to go back/quit.\n\nWebsite domain/name for password: ')
+        print(f'(Press "ctrl+c" to exit)\n-----------------------------------------------------------\n\nWebsite domain/name for password?\n')
+        domain = beaupy.select(fnlst, cursor_style="#ffa533")
+
         clear()
-        if web_to_get.lower() == 'q':
-            return web_to_get.lower()
+        if domain == None:
+            clear()
+            return
         else:
             if j_load()[1] == True:
                 master_key = beaupy.prompt("Please provide your master key to decrypt the password: ", secure=True)
-                salt = beaupy.prompt("Encryption Salt: ", secure=True)
             else:
                 master_key = beaupy.prompt("Please provide your master key to decrypt the password: ", secure=False)
-                salt = beaupy.prompt("Encryption Salt: ", secure=False)
             clear()
-            readMD(web_to_get.lower(), master_key, salt)
+            try:
+                master_key = b64.b64decode(master_key)
+            except Exception as e:
+                input(f'Provided key is not base64 encoded...\n\nPress "enter" to continue...')
+                clear()
+                return
+
+            if not master_key:
+                input(f'Key can not be an empty string...\n\nPress "enter" to continue...')
+                clear()
+                return
+
+            if len(master_key) < 32 or len(master_key) > 32:
+                clear()
+                input(f'Key needs to be 32 characters/bytes long. Current key length: {len(master_key)}\n\nPress "enter" to continue...')
+                clear()
+                return
+            else:
+                domain = domain.split(' ', 1)[0] #get first word in a string.
+                pwd = readMD(domain, master_key)
+                if pwd == None:
+                    clear()
+                    return
+                else:
+                    print(f'Password for "{domain}" is: {pwd}\n\n')
+                    input('Press "enter" to continue...')
+                    clear()
     except Exception:
         pass
 
@@ -390,63 +424,71 @@ def make_db():
     database.close()
 
 
-def change_creds(old_master_key, new_master_key, old_salt, new_salt):
+
+def change_creds(old_master_key, new_master_key):
     D_old_key = b64.b64decode(old_master_key)
     D_new_key = b64.b64decode(new_master_key)
-
-    # Get list of domains/websites from original database.
-    database = sqlite3.connect('pwords.pgen')
-    c = database.cursor()
-    c.execute(f"SELECT website FROM pwd_tables")
-    sites = c.fetchall()
-    ldb = str(sites).replace("(", "").replace(",)", "").replace("'", "")
-    dlist = ldb.strip('][').split(', ')
-    
-
-    # Get list of passwords from original database.
-    database = sqlite3.connect('pwords.pgen')
-    c = database.cursor()
-    c.execute(f"SELECT passwd FROM pwd_tables")
-    words = c.fetchall()
-    lpw = str(words).replace("(", "").replace(",)", "").replace("'", "")
-    plist = lpw.strip('][').split(', ')
-
-
-    # Get list of notes from original database.
-    database = sqlite3.connect('pwords.pgen')
-    c = database.cursor()
-    c.execute(f"SELECT notes FROM pwd_tables")
-    notes = c.fetchall()
-    ndb = str(notes).replace("(", "").replace(",)", "").replace("'", "")
-    nlist = ndb.strip('][').split(', ')
-
-    # Get all of the passwords in plist above and decrypt them, then append
-    lst = []
-    for y in plist:
-        if not y:
-            pass
-        else:
-            old_pwords = stringMD(y, D_old_key, old_salt)
-            lst.append(old_pwords)
-    
-
-    # Get all of the passwords in lst and encrypt them using the new credentials.
-    lst2 = []
-    for z in lst:
-        if not z:
-            pass
-        else:
-            new_pwords = stringME(z, D_new_key, new_salt)
-            lst2.append(new_pwords)
-
-
-    # Get all of the websites and all of the newly encrypted passwords and iterate through them both and then write to a new database file.
-    for a,b,d in zip(dlist, lst2, nlist):
-        database = sqlite3.connect('pwords2.pgen')
+    if len(D_old_key) and len(D_new_key) < 32 or len(D_old_key) and len(D_new_key) > 32:
+        clear()
+        input(f'Keys need to be 32 characters/bytes long.\n\nold_key length: {len(D_old_key)}\nnew_key length: {len(D_new_key)}\n\nPress "enter" to continue...')
+        clear()
+        return False
+    else:
+        # Get list of domains/websites from original database.
+        database = sqlite3.connect('pwords.pgen')
         c = database.cursor()
-        c.execute(f"INSERT INTO pwd_tables VALUES ('{a}', '{b}', '{d}')")
-        database.commit()
-        database.close()
+        c.execute(f"SELECT website FROM pwd_tables")
+        sites = c.fetchall()
+        ldb = str(sites).replace("(", "").replace(",)", "").replace("'", "")
+        dlist = ldb.strip('][').split(', ')
+        
+
+        # Get list of passwords from original database.
+        database = sqlite3.connect('pwords.pgen')
+        c = database.cursor()
+        c.execute(f"SELECT passwd FROM pwd_tables")
+        words = c.fetchall()
+        lpw = str(words).replace("(", "").replace(",)", "").replace("'", "")
+        plist = lpw.strip('][').split(', ')
+
+
+        # Get list of notes from original database.
+        database = sqlite3.connect('pwords.pgen')
+        c = database.cursor()
+        c.execute(f"SELECT notes FROM pwd_tables")
+        notes = c.fetchall()
+        ndb = str(notes).replace("(", "").replace(",)", "").replace("'", "")
+        nlist = ndb.strip('][').split(', ')
+
+        # Get all of the passwords in plist above and decrypt them, then append
+        lst = []
+        for y in plist:
+            if not y:
+                pass
+            else:
+                old_pwords = stringMD(y, D_old_key)
+                lst.append(old_pwords)
+        
+
+        # Get all of the passwords in lst and encrypt them using the new credentials.
+        lst2 = []
+        for z in lst:
+            if not z:
+                pass
+            else:
+                new_pwords = stringME(z, D_new_key)
+                lst2.append(new_pwords)
+
+
+        # Get all of the websites and all of the newly encrypted passwords and iterate through them both and then write to a new database file.
+        for a,b,d in zip(dlist, lst2, nlist):
+            database = sqlite3.connect('pwords2.pgen')
+            c = database.cursor()
+            c.execute(f"INSERT INTO pwd_tables VALUES ('{a}', '{b}', '{d}')")
+            database.commit()
+            database.close()
+
+        return True
 
 ## ------------------------------------------------------------------------ ##
 
@@ -768,21 +810,20 @@ def phrzgn():
 if __name__ == '__main__':
     while True:
         clear()
-        try:
-            option = int(input(f"{banner()}\n\nWhat would you like to do?\n\n1. Make a password?\n2. Make a phrase?\n3. Generate Key?\n4. Manage passwords?\n5. Get hash for a password?\n6. Show pass.txt?\n7. Clear pass.txt?\n8. Quit?\n\nEnter: "))
-        except Exception as e:
-            clear()
-            print(f'Value given is not an integer.\nError: {e}\n\n')
-            input('Press "enter" to continue...')
-            clear()
-            continue
+        options = ['Make a password?', 'Make a phrase?', 'Generate a key?', 'Manage passwords?', 'Get hash for a password?', 'Show pass.txt?', 'Clear psss.txt?', 'Quit?']
+        print(f'{banner()}\n\nWhat would you like to do?\n-----------------------------------------------------------\n')
+        option = beaupy.select(options, cursor_style="#ffa533")
 
+        if not option:
+            clear()
+            exit("Keyboard Interuption Detected!\nGoodbye <3")
+        
 
-        if option == 1:
+        if options[0] in option:
             clear()
             main()
 
-        if option == 2:
+        if options[1] in option:
             clear()
             phrase = phrzgn()
             if phrase == None:
@@ -793,10 +834,10 @@ if __name__ == '__main__':
                 clear()
 
 
-        if option == 3:
+        if options[2] in option:
             clear()
-            m_gen = beaupy.prompt('(It is reccomended to use passgen to make the password)\nPress "q" to go back.\n\nPassword to generate master_key - (100+ characters long.): ', secure=True)
-            if m_gen.lower() == 'q':
+            m_gen = beaupy.prompt('(It is reccomended to use passgen to make the password)\nPress "q" or "ctrl+c" to go back/exit.\n\nPassword to generate master_key - (100+ characters long.): ', secure=True)
+            if not m_gen or m_gen.lower() == 'q':
                 clear()
             else:
                 m_gen = bytes(m_gen, 'unicode-escape')
@@ -806,20 +847,19 @@ if __name__ == '__main__':
                 clear()
 
 
-        if option == 4:
+        if options[3] in option:
             clear()
             while True:
-                try:
-                    sub_option = int(input(f"{banner()}\n\nWhat do you want to manage?\n\n1. Add password?\n2. Remove password?\n3. Show saved websites\n4. Lock database?\n5. Unlock database?\n6. Change encryption?\n7. Back?\n\nEnter: "))
-                except Exception as e:
+                sub_options = ['Add password?', 'Remove password?', 'Show saved websites?', 'Lock database?', 'Unlock database?', 'Change encryption?', 'Back?']
+                print(f'{banner()}\n\nWhat would you like to manage?\n-----------------------------------------------------------\n')
+                sub_option = beaupy.select(sub_options, cursor_style="#ffa533")
+                
+                
+                if sub_option == None:
                     clear()
-                    print(f'Value given is not an integer.\nError: {e}\n\n')
-                    input('Press "enter" to continue...')
-                    clear()
-                    continue
+                    break
 
-
-                if sub_option == 1: # Add passwords
+                if sub_options[0] in sub_option: # Add passwords
                     if os.path.isfile('pwords.pgen.oCrypted'):
                         clear()
                         print("Database file does not exist or is encrypted...")
@@ -828,8 +868,8 @@ if __name__ == '__main__':
                         continue
                     else:
                         clear()
-                        web = input('Press "q" to go back/quit.\n\nWhat is the website/domain name you would like to store in the Database?: ')
-                        if web.lower() == 'q':
+                        web = beaupy.prompt('Press "q" to go back/quit.\n\nWhat is the website/domain name you would like to store in the Database?: ')
+                        if not web or web.lower() == 'q':
                             clear()
                             continue
                         
@@ -853,22 +893,26 @@ if __name__ == '__main__':
                         if master.lower() == 'q':
                             clear()
                             continue
-
-                        if j_load()[1] == True:
-                            salt = beaupy.prompt("Encryption salt: ", secure=True)
-                        else:
-                            salt = beaupy.prompt("Encryption salt: ", secure=False)
-                        if master.lower() == 'q':
+                        clear()
+                        try:
+                            master = b64.b64decode(master)
+                        except Exception as e:
+                            print("Provided key isn't base64 encoded...\n\n")
+                            input('Press "enter" to continue...')
                             clear()
                             continue
-                        clear()
-                        master = b64.b64decode(master)
-                        add_data(web.lower(), passwd, notes, master, salt)
-                        input('\n\nPress "enter" to continue...')
-                        clear()
+                        if len(master) < 32 or len(master) > 32:
+                            clear()
+                            input(f'Key needs to be 32 characters/bytes long. Current key length: {len(master)}\n\nPress "enter" to continue...')
+                            clear()
+                            continue
+                        else:
+                            add_data(web.lower(), passwd, notes, master)
+                            input('\n\nPress "enter" to continue...')
+                            clear()
 
 
-                if sub_option == 2: # Remove passwords
+                if sub_options[1] in sub_option: # Remove passwords
                     if os.path.isfile('pwords.pgen.oCrypted'):
                         clear()
                         print("Database file does not exist or is encrypted...")
@@ -886,10 +930,10 @@ if __name__ == '__main__':
                                 f.close()
                             os.remove(".lst")
                         
-                            web_to_rmv = input('-----------------------------------------------------\n(This will remove notes and passwords for the website/domain as well)\nPress "q" to go back/quit.\n\nWhat is the website/domain name you would like to remove from the Database?: ')
+                            web_to_rmv = beaupy.prompt('-----------------------------------------------------\n(This will remove notes and passwords for the website/domain as well)\nPress "q" to go back/quit.\n\nWhat is the website/domain name you would like to remove from the Database?: ')
                             clear()
 
-                            if web_to_rmv.lower() == 'q':
+                            if not web_to_rmv or web_to_rmv.lower() == 'q':
                                 clear()
                                 continue
                             else:
@@ -897,13 +941,12 @@ if __name__ == '__main__':
                                 input('\n\nPress "enter" to continue...')
                                 clear()
                         else:
-                            input('Press "enter" to continue...')
                             clear()
                             continue
 
 
                 #Reading/show passwords
-                if sub_option == 3:
+                if sub_options[2] in sub_option:
                     if os.path.isfile('pwords.pgen.oCrypted'):
                         clear()
                         print("Database file does not exist or is encrypted...")
@@ -913,15 +956,12 @@ if __name__ == '__main__':
                     else:
                         clear()
                         data = read()
-                        if data == 'q':
-                            clear()
-                        else:
-                            input('\n\nPress "enter" to continue...')
+                        if data == None:
                             clear()
 
 
                 #Lock Database
-                if sub_option == 4:
+                if sub_options[3] in sub_option:
                     if os.path.isfile('pwords.pgen.oCrypted'):
                         clear()
                         print("Database file already encrypted...")
@@ -935,7 +975,7 @@ if __name__ == '__main__':
                             enc_key = beaupy.prompt("Encryption Key: ", secure=True)
                         else:
                             enc_key = beaupy.prompt("Encryption Key: ", secure=False)
-                        if enc_key.lower() == 'q':
+                        if not enc_key or enc_key.lower() == 'q':
                             clear()
                             continue
 
@@ -943,7 +983,7 @@ if __name__ == '__main__':
                             enc_salt = beaupy.prompt("Encryption Salt: ", secure=True)
                         else:
                             enc_salt = beaupy.prompt("Encryption Salt: ", secure=False)
-                        if enc_salt.lower() == 'q':
+                        if not enc_salt or enc_salt.lower() == 'q':
                             clear()
                             continue
 
@@ -951,17 +991,22 @@ if __name__ == '__main__':
                         if file_path.lower() == 'q':
                             clear()
                             continue
+
                         try:
                             enc_key = b64.b64decode(enc_key)
-                            lock(file_path, enc_key, enc_salt)
-                            clear()
                         except Exception:
-                            lock(file_path, enc_key, enc_salt)
                             clear()
+                            print("Provided key isn't base64 encoded...\n\n")
+                            input('Press "enter" to continue...')
+                            clear()
+                            continue
+
+                        lock(file_path, enc_key, enc_salt)
+                        clear()
 
 
                 #unlock Database
-                if sub_option == 5:
+                if sub_options[4] in sub_option:
                     clear()
                     print('Please provide the correct credentials to unlock the database. (Do not forget them as you will NOT be able to decrypt without them.)\nPress "q" to go back/quit.\n\n')
 
@@ -969,7 +1014,7 @@ if __name__ == '__main__':
                         enc_key2 = beaupy.prompt("Encryption Key: ", secure=True)
                     else:
                         enc_key2 = beaupy.prompt("Encryption Key: ", secure=False)
-                    if enc_key2.lower() == 'q':
+                    if not enc_key2 or enc_key2.lower() == 'q':
                         clear()
                         continue
 
@@ -977,7 +1022,7 @@ if __name__ == '__main__':
                         enc_salt2 = beaupy.prompt("Encryption Salt: ", secure=True)
                     else:
                         enc_salt2 = beaupy.prompt("Encryption Salt: ", secure=False)
-                    if enc_salt2.lower() == 'q':
+                    if not enc_salt2 or enc_salt2.lower() == 'q':
                         clear()
                         continue
 
@@ -985,17 +1030,24 @@ if __name__ == '__main__':
                     if file_path2.lower() == 'q':
                         clear()
                         continue
+
+                    #if given random string of text, it will try to decode, if it can't, send error. 
+                    #(Sometimes it likes to decode that random gibberish as it thinks it is valid base64..)
                     try:
                         enc_key2 = b64.b64decode(enc_key2)
-                        unlock(file_path2, enc_key2, enc_salt2)
-                        clear()
                     except Exception:
-                        unlock(file_path2, enc_key2, enc_salt2)
                         clear()
+                        print("Provided key isn't base64 encoded...\n\n")
+                        input('Press "enter" to continue...')
+                        clear()
+                        continue
+
+                    unlock(file_path2, enc_key2, enc_salt2)
+                    clear()
 
 
 
-                if sub_option == 6:
+                if sub_options[5] in sub_option:
                     if os.path.isfile('pwords.pgen.oCrypted'):
                         clear()
                         print("Database file does not exist or is encrypted...")
@@ -1004,41 +1056,33 @@ if __name__ == '__main__':
                         continue
                     else:
                         clear()
+                        print("Making new database for passwords...")
+                        if os.path.isfile('pwords2.pgen'):
+                            print("Database already exists, deleting and trying again..")
+                            os.remove('pwords2.pgen')
+                            make_db()
+                        else:
+                            make_db()
+                        print("New database created!\nWorking my magic!...\n---------------------------------------------------------------\n\n")
 
-                        print(f'Changing encryption master key for the encryption...\n\nPress "enter" to continue or "q" to go back/quit...: ')
-                        new_pass = beaupy.prompt("(It is reccomended to use passgen to make the password)\nPassword to generate master_key - (100+ characters long.): ", secure=True)
-                        if new_pass.lower() == 'q':
+                        if j_load()[1] == True:
+                            old_master_key = beaupy.prompt("Old master key: ", secure=True)
+                            new_master_key = beaupy.prompt("New master key: ", secure=True)
+                        else:
+                            old_master_key = beaupy.prompt("Old master key: ", secure=False)
+                            new_master_key = beaupy.prompt("New master key: ", secure=False)
+
+                        if not old_master_key or not new_master_key:
+                            clear()
+                            continue
+                        else:
+                            crds = change_creds(old_master_key, new_master_key)
+                        
+                        if crds == False:
                             clear()
                             continue
                         else:
                             clear()
-                            new_pass = bytes(new_pass, 'unicode_escape')
-                            new_master = keygen(new_pass)
-                            print(f'New Master Key: {new_master}\nDO NO LOSE THIS KEY. If you lose this key, you can not recover your passwords or change keys.\nThis key will be used when encrypting & decrypting passwords.')
-                            input('\n\nPress "enter" to continue...')
-                            clear()
-                            print("Making new database for passwords...")
-                            if os.path.isfile('pwords2.pgen'):
-                                print("Database already exists, deleting and trying again..")
-                                os.remove('pwords2.pgen')
-                                make_db()
-                            else:
-                                make_db()
-                            print("New database created!\n---------------------------------------------------------------")
-
-                            print("\n\nWorking my magic!...")
-                            if j_load()[1] == True:
-                                old_master_key = beaupy.prompt("Old master key: ", secure=True)
-                                old_salt = beaupy.prompt("Old Encryption salt: ", secure=True)
-                                new_master_key = beaupy.prompt("Newly just generated master key: ", secure=True)
-                                new_salt = beaupy.prompt("New encryption salt: ", secure=True)
-                            else:
-                                old_master_key = beaupy.prompt("Old master key: ", secure=False)
-                                old_salt = beaupy.prompt("Old Encryption salt: ", secure=False)
-                                new_master_key = beaupy.prompt("Newly just generated master key: ", secure=False)
-                                new_salt = beaupy.prompt("New encryption salt: ", secure=False)
-
-                            change_creds(old_master_key, new_master_key, old_salt, new_salt)
                             input('Credentials have been changed and all data is now using the new encryption & credentials.\n\nPress "enter" to continue...')
                             clear()
 
@@ -1049,20 +1093,20 @@ if __name__ == '__main__':
                             exit("Goodbye! <3")
 
 
-                if sub_option == 7:
+                if sub_options[6] in sub_option:
+                    clear()
                     break
 
 
-                elif sub_option < 1 or sub_option > 7:
-                    clear()
-                    print("Incorrect value given. Please choose a valid option from the menu/list.\n\n")
-                    input('Press "enter" to quit...')
-                    clear()
-
-        if option == 5:
+        if options[4] in option:
             clear()
-            pword = input('Press "q" to go back/quit.\n\nWhat would you like to hash?: ')
-            if pword.lower() == 'q':
+            if j_load()[1] == True:
+                pword = beaupy.prompt('Press "q" to go back/quit.\n-----------------------------------------------------------\nWhat would you like to hash?: ', secure=True)
+            else:
+                pword = beaupy.prompt('Press "q" to go back/quit.\n-----------------------------------------------------------\nWhat would you like to hash?: ', secure=False)
+                
+            
+            if not pword or pword.lower() == 'q':
                 clear()
             else:
                 clear()
@@ -1075,7 +1119,7 @@ if __name__ == '__main__':
                     clear()  
 
         
-        if option == 6:
+        if options[5] in option:
             passwords = show_pass()
             if not passwords:
                 clear()
@@ -1088,21 +1132,14 @@ if __name__ == '__main__':
                 clear()
         
 
-        if option == 7:
+        if options[6] in option:
             clr_pass()
             print("pass.txt has been wiped clean.\n\n")
             input('Press "enter" to continue...')
             clear()
         
         
-        if option == 8:
+        if options[7] in option:
             clear()
             exit("Goodbye! <3")
-
-        
-        elif option < 1 or option > 8:
-            clear()
-            print("Incorrect value given. Please choose a valid option from the menu/list.\n\n")
-            input('Press "enter" to continue...')
-            clear()
             
