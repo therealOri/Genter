@@ -5,14 +5,17 @@ __ __
 
 <br />
 
-Update | 10/18/2022:
+Update | 10/23/2022:
 # New Features.
 If you have an older version of this project, You should update to the current version now!.
 
 Added:
-> - New Passphrase generation feature! Allows you to generate passphrases like Bitwarden! (using the lovely [beaupy](https://github.com/petereon/beaupy) package! <3)
-> - Added new languages! Sri Lankin, and Egyptian Hieroglyphs! (Giving us a total of 20! different languages to make passwords from!)
-> - Added a new config option. "wordlst_update". This flag (set to false by default) will allow you to always be up to date with the wordlist found here in the repository. You can help contibute valid english (for now) words to the list.
+> - New method of encrypting data! AES.new() is using mode GCM instead of CBC.
+> - Updated and changed menus and option selections. (Now using [beaupy](https://github.com/petereon/beaupy) a lot more.)
+> - When changing encryption keys/credentials, it won't try to make a new key and will assume you have already made a new key using passgen.
+> - Bug fixes & More "if checks"/error handling.
+
+If you come across ANY issues or bugs, please report it by making an [issue](https://github.com/therealOri/PassGen/issues). It helps out a lot!
 __ __
 
 <br />
