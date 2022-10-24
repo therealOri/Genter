@@ -19,7 +19,7 @@ from Crypto.Util.Padding import pad, unpad
 
 
 project_name = "Passgen"
-#The header that's used with the aes encryption for the json object is not encrypted, just base64 encoded and I don't really know of it's importance.
+#The header that's used with the aes encryption for the json object is not encrypted, just base64 encoded and I don't really know of its importance.
 header = f"Encrypted using {project_name}. DO NOT TAMPER WITH.  |  Made by therealOri  |  {os.urandom(8)}"
 header = bytes(header, 'utf-8')
 
@@ -317,7 +317,7 @@ def clr_pass():
         f.truncate(0)
 
 
-# Reading passwords functinality.
+# Reading passwords functionality.
 def domains():
     database = sqlite3.connect('pwords.pgen')
     c = database.cursor()
