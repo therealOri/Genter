@@ -15,6 +15,12 @@ Added:
 > - When changing encryption keys/credentials, it won't try to make a new key and will assume you have already made a new key using passgen.
 > - Bug fixes & More "if checks"/error handling.
 
+<br />
+
+Latest Changed (10/26/22):
+> - If needed files aren't found if an option that that needs to use said files are picked, Passgen will download them from this repo.
+> - Also some fixes for the exit() function are being tested out for compatibility with an upcoming idea I have that I want to do. "exit()" is now "sys.exit()".
+
 If you come across ANY issues or bugs, please report it by making an [issue](https://github.com/therealOri/PassGen/issues). It helps out a lot!
 __ __
 
