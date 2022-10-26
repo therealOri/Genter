@@ -19,7 +19,7 @@ Added:
 
 Latest Changed (10/26/22):
 > - If needed files aren't found if an option that that needs to use said files are picked, Passgen will download them from this repo.
-> - Also some fixes for the exit() function are being tested out for compatibility with an upcoming idea I have that I want to do. "exit()" is now "sys.exit()".
+> - Also some fixes for the exit() function for compatibility with an upcoming idea I have that I want to do has been made. "exit()" is now "sys.exit()".
 
 If you come across ANY issues or bugs, please report it by making an [issue](https://github.com/therealOri/PassGen/issues). It helps out a lot!
 __ __
