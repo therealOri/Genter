@@ -5,6 +5,7 @@ from hashlib import blake2b
 import json
 from ocryptor import oCrypt
 import os
+import sys
 import wget
 import secrets
 import sqlite3
@@ -293,12 +294,25 @@ def d_conv(password):
 
 # config.json file loading.
 def j_load():
-    with open('config.json') as f:
-        data = json.load(f)
-        options_flag = data['options_flag']
-        secure_prompts = data['secure_prompts']
-        wordlst = data['wordlst_update']
-    return options_flag, secure_prompts, wordlst
+    if os.path.isfile('config.json'):
+        with open('config.json') as f:
+            data = json.load(f)
+            options_flag = data['options_flag']
+            secure_prompts = data['secure_prompts']
+            wordlst = data['wordlst_update']
+        return options_flag, secure_prompts, wordlst
+        
+    else:
+        print("config.json file not found, downloading it from the repository...")
+        wget.download("https://raw.githubusercontent.com/therealOri/PassGen/main/config.json")
+        clear()
+        with open('config.json') as f:
+            data = json.load(f)
+            options_flag = data['options_flag']
+            secure_prompts = data['secure_prompts']
+            wordlst = data['wordlst_update']
+        return options_flag, secure_prompts, wordlst
+
 
 
 # Showing contents of pass.txt and clearing it.
@@ -422,7 +436,6 @@ def make_db():
     c.execute('''CREATE TABLE pwd_tables(website text, passwd text, notes text)''')
     database.commit()
     database.close()
-
 
 
 def change_creds(old_master_key, new_master_key):
@@ -685,13 +698,27 @@ def main():
     print('\n')
 
 
-    with open('pass.txt', 'w') as f:
-        for _ in range(amount):
-            password = ''.join(secrets.choice(all) for _ in range(length))
-            print(f'Pass: {password}  |  Hash: {d_conv(password)[0]}\nSalt: {d_conv(password)[1].decode()}  |  Key: {d_conv(password)[2]}\n', file=f)
-        print('Your newly generated random password(s) and hash info has been saved to "pass.txt".\n\n')
-        input('Press "enter" to continue...')
+    if os.path.isfile('pass.txt'):
+        with open('pass.txt', 'w') as f:
+            for _ in range(amount):
+                password = ''.join(secrets.choice(all) for _ in range(length))
+                print(f'Pass: {password}  |  Hash: {d_conv(password)[0]}\nSalt: {d_conv(password)[1].decode()}  |  Key: {d_conv(password)[2]}\n', file=f)
+            print('Your newly generated random password(s) and hash info has been saved to "pass.txt".\n\n')
+            input('Press "enter" to continue...')
+            clear()
+    else:
         clear()
+        print("Pass.txt not found, downloading file from repository..")
+        wget.download("https://raw.githubusercontent.com/therealOri/PassGen/main/pass.txt")
+        clear()
+        with open('pass.txt', 'w') as f:
+            for _ in range(amount):
+                password = ''.join(secrets.choice(all) for _ in range(length))
+                print(f'Pass: {password}  |  Hash: {d_conv(password)[0]}\nSalt: {d_conv(password)[1].decode()}  |  Key: {d_conv(password)[2]}\n', file=f)
+            print('Your newly generated random password(s) and hash info has been saved to "pass.txt".\n\n')
+            input('Press "enter" to continue...')
+            clear()
+
 
 
 
@@ -860,244 +887,350 @@ if __name__ == '__main__':
                     break
 
                 if sub_options[0] in sub_option: # Add passwords
-                    if os.path.isfile('pwords.pgen.oCrypted'):
-                        clear()
-                        print("Database file does not exist or is encrypted...")
-                        input('\n\nPress "enter" to continue...')
-                        clear()
-                        continue
-                    else:
-                        clear()
-                        web = beaupy.prompt('Press "q" to go back/quit.\n\nWhat is the website/domain name you would like to store in the Database?: ')
-                        if not web or web.lower() == 'q':
+                    if os.path.isfile('pwords.pgen'):
+                        if os.path.isfile('pwords.pgen.oCrypted'):
                             clear()
-                            continue
-                        
-                        if j_load()[1] == True:
-                            passwd = beaupy.prompt(f'Password to save for "{web.lower()}"?: ', secure=True)
-                        else:
-                            passwd = beaupy.prompt(f'Password to save for "{web.lower()}"?: ', secure=False)
-                        if passwd.lower() == 'q':
-                            clear()
-                            continue
-
-                        notes = beaupy.prompt("(Optional) - Additional Information/notes: ")
-                        if notes.lower() == 'q':
-                            clear()
-                            continue
-
-                        if j_load()[1] == True:
-                            master = beaupy.prompt("Master Key for encryption: ", secure=True)
-                        else:
-                            master = beaupy.prompt("Master Key for encryption: ", secure=False)
-                        if master.lower() == 'q':
-                            clear()
-                            continue
-                        clear()
-                        try:
-                            master = b64.b64decode(master)
-                        except Exception as e:
-                            print("Provided key isn't base64 encoded...\n\n")
-                            input('Press "enter" to continue...')
-                            clear()
-                            continue
-                        if len(master) < 32 or len(master) > 32:
-                            clear()
-                            input(f'Key needs to be 32 characters/bytes long. Current key length: {len(master)}\n\nPress "enter" to continue...')
-                            clear()
-                            continue
-                        else:
-                            add_data(web.lower(), passwd, notes, master)
+                            print("Database file does not exist or is encrypted...")
                             input('\n\nPress "enter" to continue...')
                             clear()
-
-
-                if sub_options[1] in sub_option: # Remove passwords
-                    if os.path.isfile('pwords.pgen.oCrypted'):
-                        clear()
-                        print("Database file does not exist or is encrypted...")
-                        input('\n\nPress "enter" to continue...')
-                        clear()
-                        continue
-                    else:
-                        clear()
-                        domains()
-                        if os.path.isfile('.lst'):
-                            with open(".lst", "r+") as f:
-                                data = f.read()
-                                print(data)
-                                f.truncate(0)
-                                f.close()
-                            os.remove(".lst")
-                        
-                            web_to_rmv = beaupy.prompt('-----------------------------------------------------\n(This will remove notes and passwords for the website/domain as well)\nPress "q" to go back/quit.\n\nWhat is the website/domain name you would like to remove from the Database?: ')
+                            continue
+                        else:
                             clear()
+                            web = beaupy.prompt('Press "q" to go back/quit.\n\nWhat is the website/domain name you would like to store in the Database?: ')
+                            if not web or web.lower() == 'q':
+                                clear()
+                                continue
+                            
+                            if j_load()[1] == True:
+                                passwd = beaupy.prompt(f'Password to save for "{web.lower()}"?: ', secure=True)
+                            else:
+                                passwd = beaupy.prompt(f'Password to save for "{web.lower()}"?: ', secure=False)
+                            if passwd.lower() == 'q':
+                                clear()
+                                continue
 
-                            if not web_to_rmv or web_to_rmv.lower() == 'q':
+                            notes = beaupy.prompt("(Optional) - Additional Information/notes: ")
+                            if notes.lower() == 'q':
+                                clear()
+                                continue
+
+                            if j_load()[1] == True:
+                                master = beaupy.prompt("Master Key for encryption: ", secure=True)
+                            else:
+                                master = beaupy.prompt("Master Key for encryption: ", secure=False)
+                            if master.lower() == 'q':
+                                clear()
+                                continue
+                            clear()
+                            try:
+                                master = b64.b64decode(master)
+                            except Exception as e:
+                                print("Provided key isn't base64 encoded...\n\n")
+                                input('Press "enter" to continue...')
+                                clear()
+                                continue
+                            if len(master) < 32 or len(master) > 32:
+                                clear()
+                                input(f'Key needs to be 32 characters/bytes long. Current key length: {len(master)}\n\nPress "enter" to continue...')
                                 clear()
                                 continue
                             else:
-                                rmv_data(web_to_rmv.lower())
+                                add_data(web.lower(), passwd, notes, master)
                                 input('\n\nPress "enter" to continue...')
                                 clear()
-                        else:
+                    else:
+                        print("pwords.pgen not found, downloading from the repository...")
+                        wget.download("https://raw.githubusercontent.com/therealOri/PassGen/main/pwords.pgen")
+                        clear()
+                        if os.path.isfile('pwords.pgen.oCrypted'):
+                            clear()
+                            print("Database file does not exist or is encrypted...")
+                            input('\n\nPress "enter" to continue...')
                             clear()
                             continue
+                        else:
+                            clear()
+                            web = beaupy.prompt('Press "q" to go back/quit.\n\nWhat is the website/domain name you would like to store in the Database?: ')
+                            if not web or web.lower() == 'q':
+                                clear()
+                                continue
+                            
+                            if j_load()[1] == True:
+                                passwd = beaupy.prompt(f'Password to save for "{web.lower()}"?: ', secure=True)
+                            else:
+                                passwd = beaupy.prompt(f'Password to save for "{web.lower()}"?: ', secure=False)
+                            if passwd.lower() == 'q':
+                                clear()
+                                continue
+
+                            notes = beaupy.prompt("(Optional) - Additional Information/notes: ")
+                            if notes.lower() == 'q':
+                                clear()
+                                continue
+
+                            if j_load()[1] == True:
+                                master = beaupy.prompt("Master Key for encryption: ", secure=True)
+                            else:
+                                master = beaupy.prompt("Master Key for encryption: ", secure=False)
+                            if master.lower() == 'q':
+                                clear()
+                                continue
+                            clear()
+                            try:
+                                master = b64.b64decode(master)
+                            except Exception as e:
+                                print("Provided key isn't base64 encoded...\n\n")
+                                input('Press "enter" to continue...')
+                                clear()
+                                continue
+                            if len(master) < 32 or len(master) > 32:
+                                clear()
+                                input(f'Key needs to be 32 characters/bytes long. Current key length: {len(master)}\n\nPress "enter" to continue...')
+                                clear()
+                                continue
+                            else:
+                                add_data(web.lower(), passwd, notes, master)
+                                input('\n\nPress "enter" to continue...')
+                                clear()
+
+
+                if sub_options[1] in sub_option: # Remove passwords
+                    if os.path.isfile('pwords.pgen'):
+                        if os.path.isfile('pwords.pgen.oCrypted'):
+                            clear()
+                            print("Database file does not exist or is encrypted...")
+                            input('\n\nPress "enter" to continue...')
+                            clear()
+                            continue
+                        else:
+                            clear()
+                            domains()
+                            if os.path.isfile('.lst'):
+                                with open(".lst", "r+") as f:
+                                    data = f.read()
+                                    print(data)
+                                    f.truncate(0)
+                                    f.close()
+                                os.remove(".lst")
+                            
+                                web_to_rmv = beaupy.prompt('-----------------------------------------------------\n(This will remove notes and passwords for the website/domain as well)\nPress "q" to go back/quit.\n\nWhat is the website/domain name you would like to remove from the Database?: ')
+                                clear()
+
+                                if not web_to_rmv or web_to_rmv.lower() == 'q':
+                                    clear()
+                                    continue
+                                else:
+                                    rmv_data(web_to_rmv.lower())
+                                    input('\n\nPress "enter" to continue...')
+                                    clear()
+                            else:
+                                clear()
+                                continue
+                    else:
+                        clear()
+                        print("pwords.pgen not found, downloading from the repository...")
+                        wget.download("https://raw.githubusercontent.com/therealOri/PassGen/main/pwords.pgen")
+                        input("\n\nDatabse is empty and won't be able to remove any passwords, maybe you should add something to the database first? ^-^.\n\nPress 'enter' to continue...")
+                        clear()
+                        continue
 
 
                 #Reading/show passwords
                 if sub_options[2] in sub_option:
-                    if os.path.isfile('pwords.pgen.oCrypted'):
-                        clear()
-                        print("Database file does not exist or is encrypted...")
-                        input('\n\nPress "enter" to continue...')
-                        clear()
-                        continue
+                    if os.path.isfile('pwords.pgen'):
+                        if os.path.isfile('pwords.pgen.oCrypted'):
+                            clear()
+                            print("Database file does not exist or is encrypted...")
+                            input('\n\nPress "enter" to continue...')
+                            clear()
+                            continue
+                        else:
+                            clear()
+                            data = read()
+                            if data == None:
+                                clear()
                     else:
                         clear()
-                        data = read()
-                        if data == None:
-                            clear()
+                        print("pwords.pgen not found, downloading from the repository...")
+                        wget.download("https://raw.githubusercontent.com/therealOri/PassGen/main/pwords.pgen")
+                        input("\n\nDatabse is empty and won't be able to show any passwords, maybe you should add something to the database first? ^-^.\n\nPress 'enter' to continue...")
+                        clear()
+                        continue
+                        
+                        
 
 
                 #Lock Database
                 if sub_options[3] in sub_option:
-                    if os.path.isfile('pwords.pgen.oCrypted'):
-                        clear()
-                        print("Database file already encrypted...")
-                        input('\n\nPress "enter" to continue...')
-                        clear()
-                        continue
+                    if os.path.isfile('pwords.pgen'):
+                            if os.path.isfile('pwords.pgen.oCrypted'):
+                                clear()
+                                print("Database file already encrypted...")
+                                input('\n\nPress "enter" to continue...')
+                                clear()
+                                continue
+                            else:
+                                clear()
+                                print('Please provide credentials to lock the database. (Do NOT forget them as you will never be able to decrypt without them.)\nPress "q" to go back/quit.\n\n')
+                                if j_load()[1] == True:
+                                    enc_key = beaupy.prompt("Encryption Key: ", secure=True)
+                                else:
+                                    enc_key = beaupy.prompt("Encryption Key: ", secure=False)
+                                if not enc_key or enc_key.lower() == 'q':
+                                    clear()
+                                    continue
+
+                                if j_load()[1] == True:
+                                    enc_salt = beaupy.prompt("Encryption Salt: ", secure=True)
+                                else:
+                                    enc_salt = beaupy.prompt("Encryption Salt: ", secure=False)
+                                if not enc_salt or enc_salt.lower() == 'q':
+                                    clear()
+                                    continue
+
+                                file_path = input("File path? - (Drag & drop): ").replace('\\ ', ' ').strip()
+                                if file_path.lower() == 'q':
+                                    clear()
+                                    continue
+
+                                try:
+                                    enc_key = b64.b64decode(enc_key)
+                                except Exception:
+                                    clear()
+                                    print("Provided ket isn't base64 encoded...\n\n")
+                                    input('Press "enter" to continue...')
+                                    clear()
+                                    continue
+
+                                lock(file_path, enc_key, enc_salt)
+                                clear()
                     else:
                         clear()
-                        print('Please provide credentials to lock the database. (Do NOT forget them as you will never be able to decrypt without them.)\nPress "q" to go back/quit.\n\n')
-                        if j_load()[1] == True:
-                            enc_key = beaupy.prompt("Encryption Key: ", secure=True)
-                        else:
-                            enc_key = beaupy.prompt("Encryption Key: ", secure=False)
-                        if not enc_key or enc_key.lower() == 'q':
-                            clear()
-                            continue
-
-                        if j_load()[1] == True:
-                            enc_salt = beaupy.prompt("Encryption Salt: ", secure=True)
-                        else:
-                            enc_salt = beaupy.prompt("Encryption Salt: ", secure=False)
-                        if not enc_salt or enc_salt.lower() == 'q':
-                            clear()
-                            continue
-
-                        file_path = input("File path? - (Drag & drop): ").replace('\\ ', ' ').strip()
-                        if file_path.lower() == 'q':
-                            clear()
-                            continue
-
-                        try:
-                            enc_key = b64.b64decode(enc_key)
-                        except Exception:
-                            clear()
-                            print("Provided key isn't base64 encoded...\n\n")
-                            input('Press "enter" to continue...')
-                            clear()
-                            continue
-
-                        lock(file_path, enc_key, enc_salt)
+                        print("pwords.pgen not found, downloading from the repository...")
+                        wget.download("https://raw.githubusercontent.com/therealOri/PassGen/main/pwords.pgen")
+                        input("\n\nDatabse is empty, skipping on locking the database.\n\nPress 'enter' to continue...")
                         clear()
+                        continue
 
 
                 #unlock Database
                 if sub_options[4] in sub_option:
-                    clear()
-                    print('Please provide the correct credentials to unlock the database. (Do not forget them as you will NOT be able to decrypt without them.)\nPress "q" to go back/quit.\n\n')
+                    if os.path.isfile('pwords.pgen'):
+                        if os.path.isfile('pwords.pgen.oCrypted'):
+                            clear()
+                            print('Please provide the correct credentials to unlock the database. (Do not forget them as you will NOT be able to decrypt without them.)\nPress "q" to go back/quit.\n\n')
 
-                    if j_load()[1] == True:
-                        enc_key2 = beaupy.prompt("Encryption Key: ", secure=True)
+                            if j_load()[1] == True:
+                                enc_key2 = beaupy.prompt("Encryption Key: ", secure=True)
+                            else:
+                                enc_key2 = beaupy.prompt("Encryption Key: ", secure=False)
+                            if not enc_key2 or enc_key2.lower() == 'q':
+                                clear()
+                                continue
+
+                            if j_load()[1] == True:
+                                enc_salt2 = beaupy.prompt("Encryption Salt: ", secure=True)
+                            else:
+                                enc_salt2 = beaupy.prompt("Encryption Salt: ", secure=False)
+                            if not enc_salt2 or enc_salt2.lower() == 'q':
+                                clear()
+                                continue
+
+                            file_path2 = input("File path? - (Drag & drop): ").replace('\\ ', ' ').strip()
+                            if file_path2.lower() == 'q':
+                                clear()
+                                continue
+
+                            #if given random string of text, it will try to decode, if it can't, send error. 
+                            #(Sometimes it likes to decode that random gibberish as it thinks it is valid base64..)
+                            try:
+                                enc_key2 = b64.b64decode(enc_key2)
+                            except Exception:
+                                clear()
+                                print("Provided key isn't base64 encoded...\n\n")
+                                input('Press "enter" to continue...')
+                                clear()
+                                continue
+
+                            unlock(file_path2, enc_key2, enc_salt2)
+                            clear()
+                        else:
+                            clear()
+                            print("Database file is not encrypted/locked...")
+                            input('\n\nPress "enter" to continue...')
+                            clear()
+                            continue
                     else:
-                        enc_key2 = beaupy.prompt("Encryption Key: ", secure=False)
-                    if not enc_key2 or enc_key2.lower() == 'q':
+                        clear()
+                        print("pwords.pgen not found, downloading from the repository...")
+                        wget.download("https://raw.githubusercontent.com/therealOri/PassGen/main/pwords.pgen")
+                        input("\n\nDatabse is empty and not locked, skipping on unlocking the database.\n\nPress 'enter' to continue...")
                         clear()
                         continue
 
-                    if j_load()[1] == True:
-                        enc_salt2 = beaupy.prompt("Encryption Salt: ", secure=True)
-                    else:
-                        enc_salt2 = beaupy.prompt("Encryption Salt: ", secure=False)
-                    if not enc_salt2 or enc_salt2.lower() == 'q':
-                        clear()
-                        continue
 
-                    file_path2 = input("File path? - (Drag & drop): ").replace('\\ ', ' ').strip()
-                    if file_path2.lower() == 'q':
-                        clear()
-                        continue
-
-                    #if given random string of text, it will try to decode, if it can't, send error. 
-                    #(Sometimes it likes to decode that random gibberish as it thinks it is valid base64..)
-                    try:
-                        enc_key2 = b64.b64decode(enc_key2)
-                    except Exception:
-                        clear()
-                        print("Provided key isn't base64 encoded...\n\n")
-                        input('Press "enter" to continue...')
-                        clear()
-                        continue
-
-                    unlock(file_path2, enc_key2, enc_salt2)
-                    clear()
-
-
-
+                #change credentials
                 if sub_options[5] in sub_option:
-                    if os.path.isfile('pwords.pgen.oCrypted'):
-                        clear()
-                        print("Database file does not exist or is encrypted...")
-                        input('\n\nPress "enter" to continue...')
-                        clear()
-                        continue
+                    if os.path.isfile('pwords.pgen'):
+                        if os.path.isfile('pwords.pgen.oCrypted'):
+                            clear()
+                            print("Database file does not exist or is encrypted...")
+                            input('\n\nPress "enter" to continue...')
+                            clear()
+                            continue
+                        else:
+                            clear()
+                            print("Making new database for passwords...")
+                            if os.path.isfile('pwords2.pgen'):
+                                print("Database already exists, deleting and trying again..")
+                                os.remove('pwords2.pgen')
+                                make_db()
+                            else:
+                                make_db()
+                            print("New database created!\nWorking my magic!...\n---------------------------------------------------------------\n\n")
+
+                            if j_load()[1] == True:
+                                old_master_key = beaupy.prompt("Old master key: ", secure=True)
+                                new_master_key = beaupy.prompt("New master key: ", secure=True)
+                            else:
+                                old_master_key = beaupy.prompt("Old master key: ", secure=False)
+                                new_master_key = beaupy.prompt("New master key: ", secure=False)
+
+                            if not old_master_key or not new_master_key:
+                                clear()
+                                continue
+                            else:
+                                crds = change_creds(old_master_key, new_master_key)
+                            
+                            if crds == False:
+                                clear()
+                                continue
+                            else:
+                                clear()
+                                input('Credentials have been changed and all data is now using the new encryption & credentials.\n\nPress "enter" to continue...')
+                                clear()
+
+                                print("Cleaning up!...")
+                                cleanup()
+                                input('\n\nFiles have been cleaned up!\nPress "enter" to quit/reload the passgen...')
+                                clear()
+                                sys.exit("Goodbye! <3")
                     else:
                         clear()
-                        print("Making new database for passwords...")
-                        if os.path.isfile('pwords2.pgen'):
-                            print("Database already exists, deleting and trying again..")
-                            os.remove('pwords2.pgen')
-                            make_db()
-                        else:
-                            make_db()
-                        print("New database created!\nWorking my magic!...\n---------------------------------------------------------------\n\n")
-
-                        if j_load()[1] == True:
-                            old_master_key = beaupy.prompt("Old master key: ", secure=True)
-                            new_master_key = beaupy.prompt("New master key: ", secure=True)
-                        else:
-                            old_master_key = beaupy.prompt("Old master key: ", secure=False)
-                            new_master_key = beaupy.prompt("New master key: ", secure=False)
-
-                        if not old_master_key or not new_master_key:
-                            clear()
-                            continue
-                        else:
-                            crds = change_creds(old_master_key, new_master_key)
-                        
-                        if crds == False:
-                            clear()
-                            continue
-                        else:
-                            clear()
-                            input('Credentials have been changed and all data is now using the new encryption & credentials.\n\nPress "enter" to continue...')
-                            clear()
-
-                            print("Cleaning up!...")
-                            cleanup()
-                            input('\n\nFiles have been cleaned up!\nPress "enter" to quit/reload the passgen...')
-                            clear()
-                            exit("Goodbye! <3")
+                        print("pwords.pgen not found, downloading from the repository...")
+                        wget.download("https://raw.githubusercontent.com/therealOri/PassGen/main/pwords.pgen")
+                        input("\n\nDatabse is empty and has no data/credentials to change, skipping on changing credentials.\n\nPress 'enter' to continue...")
+                        clear()
+                        continue
+                    
 
 
                 if sub_options[6] in sub_option:
                     clear()
                     break
 
-
+        
+        #hashing
         if options[4] in option:
             clear()
             if j_load()[1] == True:
@@ -1118,28 +1251,47 @@ if __name__ == '__main__':
                     input('Press "enter" to continue...')
                     clear()  
 
-        
+
+        #showing passwords
         if options[5] in option:
-            passwords = show_pass()
-            if not passwords:
+            if os.path.isfile('pass.txt'):
+                passwords = show_pass()
+                if not passwords:
+                    clear()
+                    print('No passwords found in "pass.txt"\n\n')
+                    input('Press "enter" to continue...')
+                    clear()
+                else:
+                    print(passwords)
+                    input('Press "enter" to continue...')
+                    clear()
+            else:
                 clear()
-                print('No passwords found in "pass.txt"\n\n')
+                print("pass.txt not found, downloading from the repository...")
+                wget.download("https://raw.githubusercontent.com/therealOri/PassGen/main/pass.txt")
+                input("\n\npass.txt is empty, no passwords found.\n\nPress 'enter' to continue...")
+                clear()
+                continue
+                        
+        
+
+        #clear passwords
+        if options[6] in option:
+            if os.path.isfile('pass.txt'):
+                clr_pass()
+                print("pass.txt has been wiped clean.\n\n")
                 input('Press "enter" to continue...')
                 clear()
             else:
-                print(passwords)
-                input('Press "enter" to continue...')
                 clear()
-        
-
-        if options[6] in option:
-            clr_pass()
-            print("pass.txt has been wiped clean.\n\n")
-            input('Press "enter" to continue...')
-            clear()
+                print("pass.txt not found, downloading from the repository...")
+                wget.download("https://raw.githubusercontent.com/therealOri/PassGen/main/pass.txt")
+                input("\n\npass.txt is empty already.\n\nPress 'enter' to continue...")
+                clear()
+                continue
         
         
         if options[7] in option:
             clear()
-            exit("Goodbye! <3")
+            sys.exit("Goodbye! <3")
             
