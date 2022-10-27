@@ -5,21 +5,12 @@ __ __
 
 <br />
 
-Update | 10/23/2022:
+Update | 10/27/2022:
 # New Features.
 If you have an older version of this project, You should update to the current version now!.
 
 Added:
-> - New method of encrypting data! AES.new() is using mode GCM instead of CBC.
-> - Updated and changed menus and option selections. (Now using [beaupy](https://github.com/petereon/beaupy) a lot more.)
-> - When changing encryption keys/credentials, it won't try to make a new key and will assume you have already made a new key using passgen.
-> - Bug fixes & More "if checks"/error handling.
-
-<br />
-
-Latest Changed (10/26/22):
-> - If needed files aren't found if an option that that needs to use said files are picked, Passgen will download them from this repo.
-> - Also some fixes for the exit() function for compatibility with an upcoming idea I have that I want to do has been made. "exit()" is now "sys.exit()".
+> - I have made a windows executeable for those who use windows and don't have python3 or don't want to install and use python and everything. I will however not be paying $100s for a cert for the exe so you'll just have to deal with any popups or false positives if any even happen to begin with. I used [Pyinstaller](https://pyinstaller.org/en/stable/) for the making of the .exe file. I had to make its own windows version of passgen because windows is just that way.
 
 If you come across ANY issues or bugs, please report it by making an [issue](https://github.com/therealOri/PassGen/issues). It helps out a lot!
 __ __
