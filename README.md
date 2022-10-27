@@ -12,7 +12,10 @@ If you have an older version of this project, You should update to the current v
 Added:
 > - I have made a windows executeable for those who use windows and don't have python3 or don't want to install and use python and everything. I will however not be paying $100s for a cert for the exe so you'll just have to deal with any popups or false positives if any even happen to begin with. I used [Pyinstaller](https://pyinstaller.org/en/stable/) for the making of the .exe file. I had to make its own windows version of passgen because windows is just that way.
 
+<br />
+
 If you come across ANY issues or bugs, please report it by making an [issue](https://github.com/therealOri/PassGen/issues). It helps out a lot!
+> This is my first time making a .exe file so I would love any feedback on what could be done better or changed. <3
 __ __
 
 <br />
