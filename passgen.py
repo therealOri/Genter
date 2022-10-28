@@ -843,7 +843,7 @@ if __name__ == '__main__':
 
         if not option:
             clear()
-            exit("Keyboard Interuption Detected!\nGoodbye <3")
+            sys.exit("Keyboard Interuption Detected!\nGoodbye <3")
         
 
         if options[0] in option:
