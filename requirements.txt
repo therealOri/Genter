@@ -2,3 +2,4 @@ oCrypt0r==1.0.9-1
 beaupy==1.3.1
 cryptography==38.0.1
 wget==3.2
+alive-progress==2.4.1
