@@ -20,6 +20,16 @@ If you come across ANY issues or bugs, please report it by making an [issue](htt
 __ __
 
 <br />
+<br />
+
+# ToDo
+- [_] A new way of storing and fetching domain names/websites. So passgen can have more than 1 domain name at a time stored within the database with different notes and passwords. (Need help with this)
+
+- [_] A new project name that's cool and isn't just "password" + "gen" mashed together.
+__ __
+
+<br />
+<br />
 
 # Screenshots
 
