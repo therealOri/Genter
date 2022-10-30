@@ -5,13 +5,13 @@ __ __
 
 <br />
 
-Update | 10/27/2022:
+Update | 10/30/2022:
 # New Features.
 If you have an older version of this project, You should update to the current version now!.
 
 Added:
-> - Linux executable for those who don't want to use python. Made possible with [Pyinstaller](https://pyinstaller.org/en/stable/).
-> - I have made a windows executeable for those who use windows and don't have python3 or don't want to install and use python and everything. I will however not be paying $100s for a cert for the exe so you'll just have to deal with any popups or false positives if any even happen to begin with. I used [Pyinstaller](https://pyinstaller.org/en/stable/) for the making of the .exe file. I had to make its own windows version of passgen because windows is just that way.
+> - New key derivation function. Now using Scrypt!
+> - passgen.py python code will use a fancy loading bar but the linux and windows executable will not. (pyinstaller didn't like it or would work with it)
 
 <br />
 
@@ -87,9 +87,13 @@ __ __
 <br />
 
 # Notice! 💢
-It is very important to keep backups of your keys and data as without it you CAN NOT decrypt your passwords or recover anything. It is advised that you keep a backup of your master key and password database file as well on a USB or external SSD. If in the event of anything getting compromized and you need to change your key and encrypted data/your passwords that used your key, you can change your key and encryption automatically using passgen.
+- It is very important to keep backups of your keys and data as without it you CAN NOT decrypt your passwords or recover anything. It is advised that you keep a backup of your master key and password database file as well on a USB or external SSD. If in the event of anything getting compromized and you need to change your key and encrypted data/your passwords that used your key, you can change your key and encryption automatically using passgen.
 
-By using PassGen you understand the risk of data encryption and the always possible risk of losing data. I am hereby not liable or responisble for any loss of data and or if you lose your key and are unable to decrypt your passwords/data. Everything lies in your hands in terms of how well you keep your master key safe and your data backed up.
+> By using PassGen you understand the risk of data encryption and the always possible risk of losing data. I am hereby not liable or responisble for any loss of data and or if you lose your key and are unable to decrypt your passwords/data. Everything lies in your hands in terms of how well you keep your master key safe and your data backed up. (It is reccomended that you make keys using passgen).
+
+- Because Passgen is only being worked on by me currently, security may not be the best it could be and I may not be aware of better methods. I am still learning more everyday. If you know of better methods of password encryption or of better ways of doing anything, PLEASE!! bring it to my attention and or make a pull request and fix the issue! Don't be like the people on r/Python and just tell me there's an issue and not provide any ways of fixing the problem or providing no resources to look into to help make passgen better/fix the issue. Help out if you find any issues, I will always be very appreciative of any help! <3
+
+> By using the passgen password manager feature, you ackowledge that you are aware of the above information and accpet what has been said and are using it at your own risk.
 __ __
 
 
