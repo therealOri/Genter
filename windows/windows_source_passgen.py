@@ -26,8 +26,7 @@ header = bytes(header, 'utf-8')
 
 
 #KeyGen
-from cryptography.hazmat.primitives import hashes
-from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
+from cryptography.hazmat.primitives.kdf.scrypt import Scrypt
 
 
 #Languages
@@ -78,13 +77,16 @@ def keygen(master):
     salt = os.urandom(16)
 
     # derive
-    kdf = PBKDF2HMAC(
-        algorithm=hashes.BLAKE2b(digest_size=64),
-        length=32, #aes.key uses 32 for encryption..it doesn't like anything bigger.
+    print("Generating key...")
+    Scr = Scrypt(
         salt=salt,
-        iterations=1562174,
+        length=32,
+        n=2**20,
+        r=16,
+        p=1,
     )
-    key = kdf.derive(master)
+    key = Scr.derive(master)
+    clear()
     bkey = b64.b64encode(key) #Base64 encode the bytes. (We decode this before encrypting, using bytes instead of the base64 encoded string.)
     return bkey.decode()
 
@@ -867,7 +869,7 @@ if __name__ == '__main__':
             else:
                 m_gen = bytes(m_gen, 'unicode-escape')
                 m_key = keygen(m_gen)
-                print(f'Key: {m_key}\nIf you have made this key to encrypt your data...DO NOT LOSE THIS KEY. If you lose this key, you can not recover your passwords or change encrypted data.\nThis key will be used when encrypting & decrypting passwords.\n\n')
+                print(f'If you have made this key to encrypt your data...DO NOT LOSE THIS KEY. If you lose this key, you can not recover your passwords or change encrypted data.\nThis key will be used when encrypting & decrypting passwords.\n\n\nKey: {m_key}\n\n')
                 input('Press "enter" to continue...')
                 clear()
 
