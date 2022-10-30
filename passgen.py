@@ -10,6 +10,7 @@ import wget
 import secrets
 import sqlite3
 from string import ascii_lowercase, ascii_uppercase, digits
+from alive_progress import alive_bar
 
 
 #AES stoof
@@ -26,8 +27,7 @@ header = bytes(header, 'utf-8')
 
 
 #KeyGen
-from cryptography.hazmat.primitives import hashes
-from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
+from cryptography.hazmat.primitives.kdf.scrypt import Scrypt
 
 
 #Languages
@@ -67,7 +67,7 @@ def banner():
         ██╔═══╝ ██╔══██║╚════██║╚════██║██║   ██║██╔══╝  ██║╚██╗██║
         ██║     ██║  ██║███████║███████║╚██████╔╝███████╗██║ ╚████║
         ╚═╝     ╚═╝  ╚═╝╚══════╝╚══════╝ ╚═════╝ ╚══════╝╚═╝  ╚═══╝
-                                                           
+
       Made by Ori#6338 | @therealOri_ | https://github.com/therealOri
     """
 
@@ -78,13 +78,18 @@ def keygen(master):
     salt = os.urandom(16)
 
     # derive
-    kdf = PBKDF2HMAC(
-        algorithm=hashes.BLAKE2b(digest_size=64),
-        length=32, #aes.key uses 32 for encryption..it doesn't like anything bigger.
-        salt=salt,
-        iterations=1562174,
-    )
-    key = kdf.derive(master)
+    print("Generating key...")
+    with alive_bar(0) as bar:
+        Scr = Scrypt(
+            salt=salt,
+            length=32,
+            n=2**20,
+            r=16,
+            p=1,
+        )
+        key = Scr.derive(master)
+        bar()
+    clear()
     bkey = b64.b64encode(key) #Base64 encode the bytes. (We decode this before encrypting, using bytes instead of the base64 encoded string.)
     return bkey.decode()
 
@@ -111,7 +116,7 @@ def cleanup():
     else:
         pass
 ## ------------------------------------------------------------------------ ##
-  
+
 
 
 
@@ -161,8 +166,8 @@ def readMD(web, master_key):
     c.execute(f"SELECT passwd FROM pwd_tables WHERE website LIKE '{web}'")
 
     if b64passwd := c.fetchone():
-        ghj = b64passwd[0]
-        pwdata = stringMD(ghj, master_key)
+        gej = b64passwd[0]
+        pwdata = stringMD(gej, master_key)
         return pwdata
     else:
         print('Oof..nothing here but us foxos...\n\n')
@@ -222,7 +227,7 @@ def rmv_data(website):
 # Hashing
 def hash(password: str):
     alphabet = uppercase_letters + lowercase_letters + numbers
-    
+
     while True:
         options = ['Custom key?', 'Generate key?', 'Quit?']
         print(f'{banner()}\n\nHow do you want to make a key for hashing?\n-----------------------------------------------------------\n')
@@ -268,7 +273,7 @@ def hash(password: str):
             clear()
             gen_key = ''.join(secrets.choice(alphabet) for _ in range(25))
             salt = bytes(''.join(secrets.choice(alphabet) for _ in range(16)), 'utf-8')
-            
+
             result2 = blake2b(bytes(password, 'utf-8'), key=bytes(gen_key, 'utf-8'), salt=salt, digest_size=32).hexdigest()
             print(f'Password: {password}  |  Hash: {result2}\nSalt: {salt.decode()}  |  Key: {gen_key}\n')
             return result2
@@ -284,10 +289,10 @@ def hash(password: str):
 def d_conv(password):
     alphabet = uppercase_letters + lowercase_letters + numbers
     clear()
-    
+
     default_key = ''.join(secrets.choice(alphabet) for _ in range(25)) #Can be as long as you want.
     salt = bytes(''.join(secrets.choice(alphabet) for _ in range(16)), 'utf-8') #MUST be 16 or less.
-    
+
     result = blake2b(bytes(password, 'utf-8'), key=bytes(default_key, 'utf-8'), salt=salt, digest_size=32).hexdigest()
     return result, salt, default_key
 
@@ -301,7 +306,7 @@ def j_load():
             secure_prompts = data['secure_prompts']
             wordlst = data['wordlst_update']
         return options_flag, secure_prompts, wordlst
-        
+
     else:
         print("config.json file not found, downloading it from the repository...")
         wget.download("https://raw.githubusercontent.com/therealOri/PassGen/main/config.json")
@@ -324,7 +329,7 @@ def show_pass():
             return None
         else:
             return result
-        
+
 def clr_pass():
     clear()
     with open('pass.txt', 'r+') as f:
@@ -351,7 +356,7 @@ def domains():
         except Exception:
             clean_list.append(x[0])
 
-    
+
     if not sites:
         input('Hmmm...Maybe you should add something to the database first. ^-^\n\nPress "enter" to continue...')
         clear()
@@ -413,7 +418,7 @@ def read():
                     input('Press "enter" to continue...')
                     clear()
     except Exception:
-        pass
+        return
 
 
 
@@ -454,7 +459,7 @@ def change_creds(old_master_key, new_master_key):
         sites = c.fetchall()
         ldb = str(sites).replace("(", "").replace(",)", "").replace("'", "")
         dlist = ldb.strip('][').split(', ')
-        
+
 
         # Get list of passwords from original database.
         database = sqlite3.connect('pwords.pgen')
@@ -481,7 +486,7 @@ def change_creds(old_master_key, new_master_key):
             else:
                 old_pwords = stringMD(y, D_old_key)
                 lst.append(old_pwords)
-        
+
 
         # Get all of the passwords in lst and encrypt them using the new credentials.
         lst2 = []
@@ -820,7 +825,7 @@ def phrzgn():
             word_with_number = sep.join(word_with_number)
         else:
             num = False
-        
+
 
     if cap == True and num == False:
         return capital_words
@@ -844,7 +849,7 @@ if __name__ == '__main__':
         if not option:
             clear()
             sys.exit("Keyboard Interuption Detected!\nGoodbye <3")
-        
+
 
         if options[0] in option:
             clear()
@@ -869,7 +874,7 @@ if __name__ == '__main__':
             else:
                 m_gen = bytes(m_gen, 'unicode-escape')
                 m_key = keygen(m_gen)
-                print(f'Key: {m_key}\nIf you have made this key to encrypt your data...DO NOT LOSE THIS KEY. If you lose this key, you can not recover your passwords or change encrypted data.\nThis key will be used when encrypting & decrypting passwords.\n\n')
+                print(f'If you have made this key to encrypt your data...DO NOT LOSE THIS KEY. If you lose this key, you can not recover your passwords or change encrypted data.\nThis key will be used when encrypting & decrypting passwords.\n\n\nKey: {m_key}\n\n')
                 input('Press "enter" to continue...')
                 clear()
 
@@ -880,8 +885,8 @@ if __name__ == '__main__':
                 sub_options = ['Add password?', 'Remove password?', 'Show saved websites?', 'Lock database?', 'Unlock database?', 'Change encryption?', 'Back?']
                 print(f'{banner()}\n\nWhat would you like to manage?\n-----------------------------------------------------------\n')
                 sub_option = beaupy.select(sub_options, cursor_style="#ffa533")
-                
-                
+
+
                 if sub_option == None:
                     clear()
                     break
@@ -900,7 +905,7 @@ if __name__ == '__main__':
                             if not web or web.lower() == 'q':
                                 clear()
                                 continue
-                            
+
                             if j_load()[1] == True:
                                 passwd = beaupy.prompt(f'Password to save for "{web.lower()}"?: ', secure=True)
                             else:
@@ -954,7 +959,7 @@ if __name__ == '__main__':
                             if not web or web.lower() == 'q':
                                 clear()
                                 continue
-                            
+
                             if j_load()[1] == True:
                                 passwd = beaupy.prompt(f'Password to save for "{web.lower()}"?: ', secure=True)
                             else:
@@ -1012,7 +1017,7 @@ if __name__ == '__main__':
                                     f.truncate(0)
                                     f.close()
                                 os.remove(".lst")
-                            
+
                                 web_to_rmv = beaupy.prompt('-----------------------------------------------------\n(This will remove notes and passwords for the website/domain as well)\nPress "q" to go back/quit.\n\nWhat is the website/domain name you would like to remove from the Database?: ')
                                 clear()
 
@@ -1056,8 +1061,8 @@ if __name__ == '__main__':
                         input("\n\nDatabse is empty and won't be able to show any passwords, maybe you should add something to the database first? ^-^.\n\nPress 'enter' to continue...")
                         clear()
                         continue
-                        
-                        
+
+
 
 
                 #Lock Database
@@ -1141,7 +1146,7 @@ if __name__ == '__main__':
                                 clear()
                                 continue
 
-                            #if given random string of text, it will try to decode, if it can't, send error. 
+                            #if given random string of text, it will try to decode, if it can't, send error.
                             #(Sometimes it likes to decode that random gibberish as it thinks it is valid base64..)
                             try:
                                 enc_key2 = b64.b64decode(enc_key2)
@@ -1201,7 +1206,7 @@ if __name__ == '__main__':
                                 continue
                             else:
                                 crds = change_creds(old_master_key, new_master_key)
-                            
+
                             if crds == False:
                                 clear()
                                 continue
@@ -1222,14 +1227,14 @@ if __name__ == '__main__':
                         input("\n\nDatabse is empty and has no data/credentials to change, skipping on changing credentials.\n\nPress 'enter' to continue...")
                         clear()
                         continue
-                    
+
 
 
                 if sub_options[6] in sub_option:
                     clear()
                     break
 
-        
+
         #hashing
         if options[4] in option:
             clear()
@@ -1237,8 +1242,8 @@ if __name__ == '__main__':
                 pword = beaupy.prompt('Press "q" to go back/quit.\n-----------------------------------------------------------\nWhat would you like to hash?: ', secure=True)
             else:
                 pword = beaupy.prompt('Press "q" to go back/quit.\n-----------------------------------------------------------\nWhat would you like to hash?: ', secure=False)
-                
-            
+
+
             if not pword or pword.lower() == 'q':
                 clear()
             else:
@@ -1249,7 +1254,7 @@ if __name__ == '__main__':
                     continue
                 else:
                     input('Press "enter" to continue...')
-                    clear()  
+                    clear()
 
 
         #showing passwords
@@ -1272,8 +1277,8 @@ if __name__ == '__main__':
                 input("\n\npass.txt is empty, no passwords found.\n\nPress 'enter' to continue...")
                 clear()
                 continue
-                        
-        
+
+
 
         #clear passwords
         if options[6] in option:
@@ -1289,9 +1294,9 @@ if __name__ == '__main__':
                 input("\n\npass.txt is empty already.\n\nPress 'enter' to continue...")
                 clear()
                 continue
-        
-        
+
+
         if options[7] in option:
             clear()
             sys.exit("Goodbye! <3")
-            
+
