@@ -11,6 +11,7 @@ If you have an older version of this project, You should update to the current v
 
 Added:
 > - New project name! (Will take some time to fully convert everything.)
+Only thing left to convert is the windows executable. 
 
 <br />
 
