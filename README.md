@@ -17,7 +17,7 @@ Added:
 <br />
 
 If you come across ANY issues or bugs, please report it by making an [issue](https://github.com/therealOri/Genter/issues). It helps out a lot!
-> This is my first time making a .exe file so I would love any feedback on what could be done better or changed. <3
+> This is my first time making and managing an .exe file so I would love any feedback on what could be done better or changed. <3
 __ __
 
 <br />
