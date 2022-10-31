@@ -1,4 +1,4 @@
-# PassGen
+# Genter
 PassGen will allow you to create a very crazy & strong randomized password.
 You can manually pick and choose what languages and symbols are used. You can also change the length of the password and how many you want to generate. Also, In addition to the password generator, PassGen has a built in password manager that you can use! Passwords are encrypted using AES and a "Password Based Key Derivation" master Key.
 __ __
@@ -10,8 +10,7 @@ Update | 10/30/2022:
 If you have an older version of this project, You should update to the current version now!.
 
 Added:
-> - New key derivation function. Now using Scrypt!
-> - passgen.py python code will use a fancy loading bar but the linux and windows executable will not. (pyinstaller didn't like it or would work with it)
+> - New project name! (Will take some time to fully convert everything.)
 
 <br />
 
@@ -25,7 +24,7 @@ __ __
 # ToDo
 - [_] A new way of storing and fetching domain names/websites. So passgen can have more than 1 domain name at a time stored within the database with different notes and passwords. (Need help with this)
 
-- [_] A new project name that's cool and isn't just "password" + "gen" mashed together.
+- [x] A new project name that's cool and isn't just "password" + "gen" mashed together.
 __ __
 
 <br />
@@ -55,11 +54,11 @@ pip install virtualenv
 
 ```zsh
 git clone https://github.com/therealOri/PassGen.git
-cd PassGen
-virtualenv pgenENV
-source pgenENV/bin/activate
+cd Genter
+virtualenv gterENV
+source gterENV/bin/activate
 pip install -r requirements.txt
-python3 passgen.py
+python3 genter.py
 ```
 > The first thing you should do is make a 100+ character password, generate a key, and then keep it safe for when you want to use the password manager.
 
@@ -77,7 +76,7 @@ __ __
 
 # Extra/Notes
 > - If you don't have python3, then you can find, download, and install it from [here](https://www.python.org/downloads/). (Or from your package manager of choice).
-> - If you are on windows 10 use this: [download](https://www.python.org/ftp/python/3.10.7/python-3.10.7-amd64.exe). (Pip3 comes with it)
+> - If you are on windows 10 use this: [download](https://www.python.org/ftp/python/3.11.0/python-3.11.0-amd64.exe). (Pip3 comes with it)
 > - The hashing feature of this script can be completly ignorred if you are just making passwords. Hashing is for if you want to store them in a server somewhere, so they aren't just sat around as plaintext.
 > - If the "options_flag" in the config file is set to "true", PassGen will ask you what you want to use in your password. If set to "False", PassGen will use the already defined list of options that are all "True" by default found in the code. (Basically will use everything).
 > - If the "secure_prompts" option in the config file is "true", it will hide what you type whenever you are asked to provide keys, salts, passwords, etc. If it is set to "false" it will not hide what you type.
@@ -87,13 +86,13 @@ __ __
 <br />
 
 # Notice! 💢
-- It is very important to keep backups of your keys and data as without it you CAN NOT decrypt your passwords or recover anything. It is advised that you keep a backup of your master key and password database file as well on a USB or external SSD. If in the event of anything getting compromized and you need to change your key and encrypted data/your passwords that used your key, you can change your key and encryption automatically using passgen.
+- It is very important to keep backups of your keys and data as without it you CAN NOT decrypt your passwords or recover anything. It is advised that you keep a backup of your master key and password database file as well on a USB or external SSD. If in the event of anything getting compromized and you need to change your key and encrypted data/your passwords that used your key, you can change your key and encryption automatically using genter.
 
-> By using PassGen you understand the risk of data encryption and the always possible risk of losing data. I am hereby not liable or responisble for any loss of data and or if you lose your key and are unable to decrypt your passwords/data. Everything lies in your hands in terms of how well you keep your master key safe and your data backed up. (It is reccomended that you make keys using passgen).
+> By using Genter you understand the risk of data encryption and the always possible risk of losing data. I am hereby not liable or responisble for any loss of data and or if you lose your key and are unable to decrypt your passwords/data. Everything lies in your hands in terms of how well you keep your master key safe and your data backed up. (It is reccomended that you make keys using genter).
 
-- Because Passgen is only being worked on by me currently, security may not be the best it could be and I may not be aware of better methods. I am still learning more everyday. If you know of better methods of password encryption or of better ways of doing anything, PLEASE!! bring it to my attention and or make a pull request and fix the issue! Don't be like the people on r/Python and just tell me there's an issue and not provide any ways of fixing the problem or providing no resources to look into to help make passgen better/fix the issue. Help out if you find any issues, I will always be very appreciative of any help! <3
+- Because Genter is only being worked on by me currently, security may not be the best it could be and I may not be aware of better methods. I am still learning more everyday. If you know of better methods of password encryption or of better ways of doing anything, PLEASE!! bring it to my attention and or make a pull request and fix the issue! Don't be like the people on r/Python and just tell me there's an issue and not provide any ways of fixing the problem or providing no resources to look into to help make genter better/fix the issue. Help out if you find any issues, I will always be very appreciative of any help! <3
 
-> By using the passgen password manager feature, you ackowledge that you are aware of the above information and accpet what has been said and are using it at your own risk.
+> By using the genter password manager feature, you ackowledge that you are aware of the above information and accpet what has been said and are using it at your own risk.
 __ __
 
 
