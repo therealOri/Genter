@@ -11,7 +11,7 @@ If you have an older version of this project, You should update to the current v
 
 Added:
 - New key derivation function. Now using Scrypt! (Make sure to read the README.md in the respective folders/directories)
-- passgen.py python code will use a fancy loading bar but the linux and windows executable will not. (pyinstaller didn't like it and would not work with it)
+- genter.py python code will use a fancy loading bar but the linux and windows executable will not. (pyinstaller didn't like it and would not work with it)
 - New name! PassGen -> Genter.
 
 <br />
