@@ -1,6 +1,7 @@
 # Genter
 Genter will allow you to create a very crazy & strong randomized password.
 You can manually pick and choose what languages and symbols are used. You can also change the length of the password and how many you want to generate. Also, In addition to the password generator, Genter has a built in password manager that you can use! Passwords are encrypted using AES and a "Password Based Key Derivation" master Key.
+> Feel free to contribute!
 __ __
 
 <br />
@@ -24,9 +25,7 @@ __ __
 <br />
 
 # ToDo
-- [_] A new way of storing and fetching domain names/websites. So genter can have more than 1 domain name at a time stored within the database with different notes and passwords. (Need help with this)
-
-- [x] A new project name that's cool and isn't just "password" + "gen" mashed together.
+- [ ] A new way of storing and fetching domain names/websites. So genter can have more than 1 domain name at a time stored within the database with different notes and passwords. (Need help with this)
 __ __
 
 <br />
