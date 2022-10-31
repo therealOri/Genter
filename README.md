@@ -5,13 +5,14 @@ __ __
 
 <br />
 
-Update | 10/30/2022:
+Update | 10/31/2022:
 # New Features.
 If you have an older version of this project, You should update to the current version now!.
 
 Added:
-> - New project name! (Will take some time to fully convert everything.)
-Only thing left to convert is the windows executable. 
+- New key derivation function. Now using Scrypt! (Make sure to read the README.md in the respective folders/directories)
+- passgen.py python code will use a fancy loading bar but the linux and windows executable will not. (pyinstaller didn't like it and would not work with it)
+- New name! PassGen -> Genter.
 
 <br />
 
