@@ -20,7 +20,7 @@ from Crypto.Random import get_random_bytes, random
 from Crypto.Util.Padding import pad, unpad
 
 
-project_name = "Passgen"
+project_name = "Genter"
 #The header that's used with the aes encryption for the json object is not encrypted, just base64 encoded and I don't really know of its importance.
 header = f"Encrypted using {project_name}. DO NOT TAMPER WITH.  |  Made by therealOri  |  {os.urandom(8)}"
 header = bytes(header, 'utf-8')
@@ -33,8 +33,8 @@ from cryptography.hazmat.primitives.kdf.scrypt import Scrypt
 #Languages
 uppercase_letters = ascii_uppercase
 lowercase_letters = ascii_lowercase
-symbols = "!=<>'@#$%^&*()[]{},.;:-_/\\+?*|`€≡‗"
-unicode = "¡¢£¤¥¦§¨©ª«¬®™️¯°±²³´µ¶·¸¹º»¼½¾¿×Ø÷øÞßƒðÐıæᔕ"
+symbols = "!=<>'@#$%^&*()[]{},.;:-_/\\+?*|`"
+unicode = "¡¢£¤¥¦§¨©ª«¬®™️¯°±²³´µ¶·¸¹º»¼½¾¿×Ø÷øÞßƒðÐıæᔕ€≡‗"
 emojis = "⚔☣️⚛️〰️🗝️🔒⛓️✨🫠🫧🫥💢"
 ascii_boxes = "░▒▓█▄▀■"
 ascii_draw_box = "╣╗╝┴┬╩╦═╬"
@@ -61,12 +61,14 @@ hieroglyphs = "𓀨𓁢𓂀𓂁𓂄𓂉𓃣𓄯𓉢𓊇𓊆𓊉𓊈𓊎𓊕𓊔�
 ##-------------- Functions --------------##
 def banner():
     return """
-        ██████╗  █████╗ ███████╗███████╗ ██████╗ ███████╗███╗   ██╗
-        ██╔══██╗██╔══██╗██╔════╝██╔════╝██╔════╝ ██╔════╝████╗  ██║
-        ██████╔╝███████║███████╗███████╗██║  ███╗█████╗  ██╔██╗ ██║
-        ██╔═══╝ ██╔══██║╚════██║╚════██║██║   ██║██╔══╝  ██║╚██╗██║
-        ██║     ██║  ██║███████║███████║╚██████╔╝███████╗██║ ╚████║
-        ╚═╝     ╚═╝  ╚═╝╚══════╝╚══════╝ ╚═════╝ ╚══════╝╚═╝  ╚═══╝
+
+            ██████╗ ███████╗███╗   ██╗████████╗███████╗██████╗
+           ██╔════╝ ██╔════╝████╗  ██║╚══██╔══╝██╔════╝██╔══██╗
+           ██║  ███╗█████╗  ██╔██╗ ██║   ██║   █████╗  ██████╔╝
+           ██║   ██║██╔══╝  ██║╚██╗██║   ██║   ██╔══╝  ██╔══██╗
+           ╚██████╔╝███████╗██║ ╚████║   ██║   ███████╗██║  ██║
+            ╚═════╝ ╚══════╝╚═╝  ╚═══╝   ╚═╝   ╚══════╝╚═╝  ╚═╝
+
 
       Made by Ori#6338 | @therealOri_ | https://github.com/therealOri
     """
@@ -104,15 +106,15 @@ def clear():
 
 # Cleaning up files.
 def cleanup():
-    # Remove current pwords.pgen db.
-    if os.path.isfile('pwords.pgen'):
-        os.remove('pwords.pgen')
+    # Remove current pwords.gter db.
+    if os.path.isfile('pwords.gter'):
+        os.remove('pwords.gter')
     else:
         pass
 
     # Rename new database to the name of the original database.
-    if os.path.isfile('pwords2.pgen'):
-        os.rename('pwords2.pgen', 'pwords.pgen')
+    if os.path.isfile('pwords2.gter'):
+        os.rename('pwords2.gter', 'pwords.gter')
     else:
         pass
 ## ------------------------------------------------------------------------ ##
@@ -161,7 +163,7 @@ def stringMD(b64_input, key):
 
 #Reading a password for selected domain/website
 def readMD(web, master_key):
-    database = sqlite3.connect('pwords.pgen')
+    database = sqlite3.connect('pwords.gter')
     c = database.cursor()
     c.execute(f"SELECT passwd FROM pwd_tables WHERE website LIKE '{web}'")
 
@@ -180,7 +182,7 @@ def readMD(web, master_key):
 # Add and remove data from database.
 def add_data(website, passwd, notes, key):
     b64_note = b64.b64encode(notes.encode('unicode-escape'))
-    database = sqlite3.connect('pwords.pgen')
+    database = sqlite3.connect('pwords.gter')
     c = database.cursor()
     c.execute(f"SELECT website FROM pwd_tables")
     sites = c.fetchall()
@@ -200,7 +202,7 @@ def add_data(website, passwd, notes, key):
 
 
 def rmv_data(website):
-    database = sqlite3.connect('pwords.pgen')
+    database = sqlite3.connect('pwords.gter')
     c = database.cursor()
     c.execute(f"SELECT website FROM pwd_tables")
     sites = c.fetchall()
@@ -338,7 +340,7 @@ def clr_pass():
 
 # Reading passwords functionality.
 def domains():
-    database = sqlite3.connect('pwords.pgen')
+    database = sqlite3.connect('pwords.gter')
     c = database.cursor()
     c.execute(f"SELECT website FROM pwd_tables")
     sites = c.fetchall()
@@ -436,7 +438,7 @@ def unlock(file_path2, enc_key2, enc_salt2):
 
 # Making new DB for the following functions for changing your encryption.
 def make_db():
-    database = sqlite3.connect('pwords2.pgen')
+    database = sqlite3.connect('pwords2.gter')
     c = database.cursor()
     c.execute('''CREATE TABLE pwd_tables(website text, passwd text, notes text)''')
     database.commit()
@@ -453,7 +455,7 @@ def change_creds(old_master_key, new_master_key):
         return False
     else:
         # Get list of domains/websites from original database.
-        database = sqlite3.connect('pwords.pgen')
+        database = sqlite3.connect('pwords.gter')
         c = database.cursor()
         c.execute(f"SELECT website FROM pwd_tables")
         sites = c.fetchall()
@@ -462,7 +464,7 @@ def change_creds(old_master_key, new_master_key):
 
 
         # Get list of passwords from original database.
-        database = sqlite3.connect('pwords.pgen')
+        database = sqlite3.connect('pwords.gter')
         c = database.cursor()
         c.execute(f"SELECT passwd FROM pwd_tables")
         words = c.fetchall()
@@ -471,7 +473,7 @@ def change_creds(old_master_key, new_master_key):
 
 
         # Get list of notes from original database.
-        database = sqlite3.connect('pwords.pgen')
+        database = sqlite3.connect('pwords.gter')
         c = database.cursor()
         c.execute(f"SELECT notes FROM pwd_tables")
         notes = c.fetchall()
@@ -500,7 +502,7 @@ def change_creds(old_master_key, new_master_key):
 
         # Get all of the websites and all of the newly encrypted passwords and iterate through them both and then write to a new database file.
         for a,b,d in zip(dlist, lst2, nlist):
-            database = sqlite3.connect('pwords2.pgen')
+            database = sqlite3.connect('pwords2.gter')
             c = database.cursor()
             c.execute(f"INSERT INTO pwd_tables VALUES ('{a}', '{b}', '{d}')")
             database.commit()
@@ -892,8 +894,8 @@ if __name__ == '__main__':
                     break
 
                 if sub_options[0] in sub_option: # Add passwords
-                    if os.path.isfile('pwords.pgen'):
-                        if os.path.isfile('pwords.pgen.oCrypted'):
+                    if os.path.isfile('pwords.gter'):
+                        if os.path.isfile('pwords.gter.oCrypted'):
                             clear()
                             print("Database file does not exist or is encrypted...")
                             input('\n\nPress "enter" to continue...')
@@ -944,10 +946,10 @@ if __name__ == '__main__':
                                 input('\n\nPress "enter" to continue...')
                                 clear()
                     else:
-                        print("pwords.pgen not found, downloading from the repository...")
-                        wget.download("https://raw.githubusercontent.com/therealOri/PassGen/main/pwords.pgen")
+                        print("pwords.gter not found, downloading from the repository...")
+                        wget.download("https://raw.githubusercontent.com/therealOri/PassGen/main/pwords.gter")
                         clear()
-                        if os.path.isfile('pwords.pgen.oCrypted'):
+                        if os.path.isfile('pwords.gter.oCrypted'):
                             clear()
                             print("Database file does not exist or is encrypted...")
                             input('\n\nPress "enter" to continue...')
@@ -1000,8 +1002,8 @@ if __name__ == '__main__':
 
 
                 if sub_options[1] in sub_option: # Remove passwords
-                    if os.path.isfile('pwords.pgen'):
-                        if os.path.isfile('pwords.pgen.oCrypted'):
+                    if os.path.isfile('pwords.gter'):
+                        if os.path.isfile('pwords.gter.oCrypted'):
                             clear()
                             print("Database file does not exist or is encrypted...")
                             input('\n\nPress "enter" to continue...')
@@ -1033,8 +1035,8 @@ if __name__ == '__main__':
                                 continue
                     else:
                         clear()
-                        print("pwords.pgen not found, downloading from the repository...")
-                        wget.download("https://raw.githubusercontent.com/therealOri/PassGen/main/pwords.pgen")
+                        print("pwords.gter not found, downloading from the repository...")
+                        wget.download("https://raw.githubusercontent.com/therealOri/PassGen/main/pwords.gter")
                         input("\n\nDatabse is empty and won't be able to remove any passwords, maybe you should add something to the database first? ^-^.\n\nPress 'enter' to continue...")
                         clear()
                         continue
@@ -1042,8 +1044,8 @@ if __name__ == '__main__':
 
                 #Reading/show passwords
                 if sub_options[2] in sub_option:
-                    if os.path.isfile('pwords.pgen'):
-                        if os.path.isfile('pwords.pgen.oCrypted'):
+                    if os.path.isfile('pwords.gter'):
+                        if os.path.isfile('pwords.gter.oCrypted'):
                             clear()
                             print("Database file does not exist or is encrypted...")
                             input('\n\nPress "enter" to continue...')
@@ -1056,8 +1058,8 @@ if __name__ == '__main__':
                                 clear()
                     else:
                         clear()
-                        print("pwords.pgen not found, downloading from the repository...")
-                        wget.download("https://raw.githubusercontent.com/therealOri/PassGen/main/pwords.pgen")
+                        print("pwords.gter not found, downloading from the repository...")
+                        wget.download("https://raw.githubusercontent.com/therealOri/PassGen/main/pwords.gter")
                         input("\n\nDatabse is empty and won't be able to show any passwords, maybe you should add something to the database first? ^-^.\n\nPress 'enter' to continue...")
                         clear()
                         continue
@@ -1067,8 +1069,8 @@ if __name__ == '__main__':
 
                 #Lock Database
                 if sub_options[3] in sub_option:
-                    if os.path.isfile('pwords.pgen'):
-                            if os.path.isfile('pwords.pgen.oCrypted'):
+                    if os.path.isfile('pwords.gter'):
+                            if os.path.isfile('pwords.gter.oCrypted'):
                                 clear()
                                 print("Database file already encrypted...")
                                 input('\n\nPress "enter" to continue...')
@@ -1111,8 +1113,8 @@ if __name__ == '__main__':
                                 clear()
                     else:
                         clear()
-                        print("pwords.pgen not found, downloading from the repository...")
-                        wget.download("https://raw.githubusercontent.com/therealOri/PassGen/main/pwords.pgen")
+                        print("pwords.gter not found, downloading from the repository...")
+                        wget.download("https://raw.githubusercontent.com/therealOri/PassGen/main/pwords.gter")
                         input("\n\nDatabse is empty, skipping on locking the database.\n\nPress 'enter' to continue...")
                         clear()
                         continue
@@ -1120,8 +1122,8 @@ if __name__ == '__main__':
 
                 #unlock Database
                 if sub_options[4] in sub_option:
-                    if os.path.isfile('pwords.pgen'):
-                        if os.path.isfile('pwords.pgen.oCrypted'):
+                    if os.path.isfile('pwords.gter'):
+                        if os.path.isfile('pwords.gter.oCrypted'):
                             clear()
                             print('Please provide the correct credentials to unlock the database. (Do not forget them as you will NOT be able to decrypt without them.)\nPress "q" to go back/quit.\n\n')
 
@@ -1167,8 +1169,8 @@ if __name__ == '__main__':
                             continue
                     else:
                         clear()
-                        print("pwords.pgen not found, downloading from the repository...")
-                        wget.download("https://raw.githubusercontent.com/therealOri/PassGen/main/pwords.pgen")
+                        print("pwords.gter not found, downloading from the repository...")
+                        wget.download("https://raw.githubusercontent.com/therealOri/PassGen/main/pwords.gter")
                         input("\n\nDatabse is empty and not locked, skipping on unlocking the database.\n\nPress 'enter' to continue...")
                         clear()
                         continue
@@ -1176,8 +1178,8 @@ if __name__ == '__main__':
 
                 #change credentials
                 if sub_options[5] in sub_option:
-                    if os.path.isfile('pwords.pgen'):
-                        if os.path.isfile('pwords.pgen.oCrypted'):
+                    if os.path.isfile('pwords.gter'):
+                        if os.path.isfile('pwords.gter.oCrypted'):
                             clear()
                             print("Database file does not exist or is encrypted...")
                             input('\n\nPress "enter" to continue...')
@@ -1186,9 +1188,9 @@ if __name__ == '__main__':
                         else:
                             clear()
                             print("Making new database for passwords...")
-                            if os.path.isfile('pwords2.pgen'):
+                            if os.path.isfile('pwords2.gter'):
                                 print("Database already exists, deleting and trying again..")
-                                os.remove('pwords2.pgen')
+                                os.remove('pwords2.gter')
                                 make_db()
                             else:
                                 make_db()
@@ -1222,8 +1224,8 @@ if __name__ == '__main__':
                                 sys.exit("Goodbye! <3")
                     else:
                         clear()
-                        print("pwords.pgen not found, downloading from the repository...")
-                        wget.download("https://raw.githubusercontent.com/therealOri/PassGen/main/pwords.pgen")
+                        print("pwords.gter not found, downloading from the repository...")
+                        wget.download("https://raw.githubusercontent.com/therealOri/PassGen/main/pwords.gter")
                         input("\n\nDatabse is empty and has no data/credentials to change, skipping on changing credentials.\n\nPress 'enter' to continue...")
                         clear()
                         continue
