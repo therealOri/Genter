@@ -32,11 +32,12 @@ __ __
 
 # Screenshots
 
-![main_menu](https://user-images.githubusercontent.com/45724082/197407322-0392e393-ec87-4a4f-8ff2-8effe506cbfd.png)
+![main_menu](https://user-images.githubusercontent.com/45724082/198920455-234d4600-45af-4eeb-ae6e-b2f1f8a037a7.png)
 
-![password_gen_menu](https://user-images.githubusercontent.com/45724082/196574611-900f8aea-fcf3-4055-bb78-253538855377.png)
+![password_options](https://user-images.githubusercontent.com/45724082/198920472-73b5f648-1584-4df0-b05c-4210c45b7115.png)
 
-![sub_menu](https://user-images.githubusercontent.com/45724082/197407344-621635df-60c5-41f4-b73e-e431442f1ab9.png)
+![sub_menu](https://user-images.githubusercontent.com/45724082/198920479-62971b93-efb2-4f60-a257-157242264494.png)
+
 __ __
 
 
