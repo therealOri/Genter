@@ -13,7 +13,7 @@ __ __
 - The above copyright notice and this permission notice shall be included in all
 copies or substantial portions of the Software.
 
-- You shall also give credit where credit is due, to the author of the "software" if you use any code from PassGen/this project in your own projects.
+- You shall also give credit where credit is due, to the author of the "software" if you use any code from Genter/this project in your own projects.
 __ __
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
