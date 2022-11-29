@@ -13,7 +13,7 @@ Update | 11/29/2022:
 If you have an older version of this project, You should update to the current version now!.
 
 Added:
-- Bug fixes, typo fixes, and convenience features.
+- Typo fixes and convenience features.
 
 <br />
 
