@@ -12,6 +12,17 @@ __ __
 <br />
 <br />
 
+# Download
+> Due to github only allowing 25mb file uploads and genter is 43.6mb. I have decided to host the file on my website instead.
+Link coming soon..for now you can do the following (if on linux) until then.
+```bash
+pyinstaller --onefile genter_source.py
+```
+__ __
+
+<br />
+<br />
+
 
 # How to run if double clicking doesn't work.
 - Open terminal and type ./genter
