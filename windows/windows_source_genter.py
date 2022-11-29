@@ -14,12 +14,13 @@ from string import ascii_lowercase, ascii_uppercase, digits
 
 #AES stoof
 from Crypto.Cipher import AES
-from Crypto.Protocol.KDF import PBKDF2
-from Crypto.Random import get_random_bytes, random
-from Crypto.Util.Padding import pad, unpad
+from Crypto.Random import random
 
 
+#To help with brand name changes.
 project_name = "Genter"
+project_ext = ".gter"
+
 #The header that's used with the aes encryption for the json object is not encrypted, just base64 encoded and I don't really know of its importance.
 header = f"Encrypted using {project_name}. DO NOT TAMPER WITH.  |  Made by therealOri  |  {os.urandom(8)}"
 header = bytes(header, 'utf-8')
@@ -32,15 +33,15 @@ from cryptography.hazmat.primitives.kdf.scrypt import Scrypt
 #Languages
 uppercase_letters = ascii_uppercase
 lowercase_letters = ascii_lowercase
-symbols = "!=<>'@#$%^&*()[]{},.;:-_/\\+?*|`"
+symbols = "!=<>'@#$%^&*()[\],.;:-_/+?{|}`~"
 unicode = "¡¢£¤¥¦§¨©ª«¬®™️¯°±²³´µ¶·¸¹º»¼½¾¿×Ø÷øÞßƒðÐıæᔕ€≡‗"
-emojis = "⚔☣️⚛️〰️🗝️🔒⛓️✨🫠🫧🫥💢"
+emojis = "⚔☣️⚛️〰️🗝️🔒⛓️✨🫠🫧🫥💢🪬"
 ascii_boxes = "░▒▓█▄▀■"
 ascii_draw_box = "╣╗╝┴┬╩╦═╬"
 numbers = digits
 korean = "ㅂㅋㅎㅭㅱㅶㅹㅺㅿㆁㆄㆅ"
 russian = "БГДЁЖИЙЛПФфЦЧШЩЪЫЬЭЮЯ"
-chinese = "诶比西迪伊尺杰大水开勒哦屁吉吾儿诶比西迪伊弗吉尺艾弗吉杰屁吉吾儿?八九十开勒马娜哦月人马娜口"
+chinese = "诶比西迪伊尺杰大水开勒哦屁吉吾儿诶比西迪伊弗吉尺艾弗吉杰屁吉吾儿八九十开勒马娜哦月人马娜口"
 greekU = "ΓΔΘΛΞΠΣΦΨΩ" # Greek Uppercase.
 greekL = "αβγδεζηθικλμνξπρστυφχψω" # Greek Lowercase.
 portuL = "ãáàâçéêíõóôúü"
@@ -88,6 +89,7 @@ def keygen(master):
         p=1,
     )
     key = Scr.derive(master)
+
     clear()
     bkey = b64.b64encode(key) #Base64 encode the bytes. (We decode this before encrypting, using bytes instead of the base64 encoded string.)
     return bkey.decode()
@@ -103,15 +105,15 @@ def clear():
 
 # Cleaning up files.
 def cleanup():
-    # Remove current pwords.gter db.
-    if os.path.isfile('pwords.gter'):
-        os.remove('pwords.gter')
+    # Remove current pwords{project_ext} db.
+    if os.path.isfile(f'pwords{project_ext}'):
+        os.remove(f'pwords{project_ext}')
     else:
         pass
 
     # Rename new database to the name of the original database.
-    if os.path.isfile('pwords2.gter'):
-        os.rename('pwords2.gter', 'pwords.gter')
+    if os.path.isfile(f'pwords2{project_ext}'):
+        os.rename(f'pwords2{project_ext}', f'pwords{project_ext}')
     else:
         pass
 ## ------------------------------------------------------------------------ ##
@@ -124,7 +126,6 @@ def cleanup():
 
 # ENCRYPTION STUFF
 ## ------------------------------------------------------------------------ ##
-
 
 # Encrypting the passwords with master key and AES encryption.
 def stringME(data, key):
@@ -160,13 +161,13 @@ def stringMD(b64_input, key):
 
 #Reading a password for selected domain/website
 def readMD(web, master_key):
-    database = sqlite3.connect('pwords.gter')
+    database = sqlite3.connect(f'pwords{project_ext}')
     c = database.cursor()
     c.execute(f"SELECT passwd FROM pwd_tables WHERE website LIKE '{web}'")
 
     if b64passwd := c.fetchone():
-        ghj = b64passwd[0]
-        pwdata = stringMD(ghj, master_key)
+        gej = b64passwd[0]
+        pwdata = stringMD(gej, master_key)
         return pwdata
     else:
         print('Oof..nothing here but us foxos...\n\n')
@@ -179,7 +180,7 @@ def readMD(web, master_key):
 # Add and remove data from database.
 def add_data(website, passwd, notes, key):
     b64_note = b64.b64encode(notes.encode('unicode-escape'))
-    database = sqlite3.connect('pwords.gter')
+    database = sqlite3.connect(f'pwords{project_ext}')
     c = database.cursor()
     c.execute(f"SELECT website FROM pwd_tables")
     sites = c.fetchall()
@@ -199,7 +200,7 @@ def add_data(website, passwd, notes, key):
 
 
 def rmv_data(website):
-    database = sqlite3.connect('pwords.gter')
+    database = sqlite3.connect(f'pwords{project_ext}')
     c = database.cursor()
     c.execute(f"SELECT website FROM pwd_tables")
     sites = c.fetchall()
@@ -335,7 +336,7 @@ def clr_pass():
 
 # Reading passwords functionality.
 def domains():
-    database = sqlite3.connect('pwords.gter')
+    database = sqlite3.connect(f'pwords{project_ext}')
     c = database.cursor()
     c.execute(f"SELECT website FROM pwd_tables")
     sites = c.fetchall()
@@ -415,7 +416,7 @@ def read():
                     input('Press "enter" to continue...')
                     clear()
     except Exception:
-        pass
+        return
 
 
 
@@ -433,7 +434,7 @@ def unlock(file_path2, enc_key2, enc_salt2):
 
 # Making new DB for the following functions for changing your encryption.
 def make_db():
-    database = sqlite3.connect('pwords2.gter')
+    database = sqlite3.connect(f'pwords2{project_ext}')
     c = database.cursor()
     c.execute('''CREATE TABLE pwd_tables(website text, passwd text, notes text)''')
     database.commit()
@@ -442,15 +443,15 @@ def make_db():
 
 def change_creds(old_master_key, new_master_key):
     D_old_key = b64.b64decode(old_master_key)
-    D_new_key = b64.b64decode(new_master_key)
-    if len(D_old_key) and len(D_new_key) < 32 or len(D_old_key) and len(D_new_key) > 32:
+    E_new_key = b64.b64decode(new_master_key)
+    if len(D_old_key) and len(E_new_key) < 32 or len(D_old_key) and len(E_new_key) > 32:
         clear()
-        input(f'Keys need to be 32 characters/bytes long.\n\nold_key length: {len(D_old_key)}\nnew_key length: {len(D_new_key)}\n\nPress "enter" to continue...')
+        input(f'Keys need to be 32 characters/bytes long.\n\nold_key length: {len(D_old_key)}\nnew_key length: {len(E_new_key)}\n\nPress "enter" to continue...')
         clear()
         return False
     else:
         # Get list of domains/websites from original database.
-        database = sqlite3.connect('pwords.gter')
+        database = sqlite3.connect(f'pwords{project_ext}')
         c = database.cursor()
         c.execute(f"SELECT website FROM pwd_tables")
         sites = c.fetchall()
@@ -459,7 +460,7 @@ def change_creds(old_master_key, new_master_key):
 
 
         # Get list of passwords from original database.
-        database = sqlite3.connect('pwords.gter')
+        database = sqlite3.connect(f'pwords{project_ext}')
         c = database.cursor()
         c.execute(f"SELECT passwd FROM pwd_tables")
         words = c.fetchall()
@@ -468,7 +469,7 @@ def change_creds(old_master_key, new_master_key):
 
 
         # Get list of notes from original database.
-        database = sqlite3.connect('pwords.gter')
+        database = sqlite3.connect(f'pwords{project_ext}')
         c = database.cursor()
         c.execute(f"SELECT notes FROM pwd_tables")
         notes = c.fetchall()
@@ -491,13 +492,13 @@ def change_creds(old_master_key, new_master_key):
             if not z:
                 pass
             else:
-                new_pwords = stringME(z, D_new_key)
+                new_pwords = stringME(z, E_new_key)
                 lst2.append(new_pwords)
 
 
         # Get all of the websites and all of the newly encrypted passwords and iterate through them both and then write to a new database file.
         for a,b,d in zip(dlist, lst2, nlist):
-            database = sqlite3.connect('pwords2.gter')
+            database = sqlite3.connect(f'pwords2{project_ext}')
             c = database.cursor()
             c.execute(f"INSERT INTO pwd_tables VALUES ('{a}', '{b}', '{d}')")
             database.commit()
@@ -835,11 +836,10 @@ def phrzgn():
 
 
 
-
 if __name__ == '__main__':
     while True:
         clear()
-        options = ['Make a password?', 'Make a phrase?', 'Generate a key?', 'Manage passwords?', 'Get hash for a password?', 'Show pass.txt?', 'Clear psss.txt?', 'Quit?']
+        options = ['Make a password?', 'Make a phrase?', 'Generate a key?', 'Manage passwords?', 'Get hash for a password?', 'Show pass.txt?', 'Clear pass.txt?', 'Quit?']
         print(f'{banner()}\n\nWhat would you like to do?\n-----------------------------------------------------------\n')
         option = beaupy.select(options, cursor_style="#ffa533")
 
@@ -865,8 +865,12 @@ if __name__ == '__main__':
 
         if options[2] in option:
             clear()
-            m_gen = beaupy.prompt('(It is reccomended to use passgen to make the password)\nPress "q" or "ctrl+c" to go back/exit.\n\nPassword to generate master_key - (100+ characters long.): ', secure=True)
+            m_gen = beaupy.prompt('(It is reccomended to use genter to make the password)\nPress "q" or "ctrl+c" to go back/exit.\n\nPassword to generate master_key - (100+ characters long.): ', secure=True)
             if not m_gen or m_gen.lower() == 'q':
+                clear()
+            if len(m_gen) < 100:
+                clear()
+                input('Key must be 100 characters in length or more!\n\nPress "eneter" to continue...')
                 clear()
             else:
                 m_gen = bytes(m_gen, 'unicode-escape')
@@ -889,8 +893,8 @@ if __name__ == '__main__':
                     break
 
                 if sub_options[0] in sub_option: # Add passwords
-                    if os.path.isfile('pwords.gter'):
-                        if os.path.isfile('pwords.gter.oCrypted'):
+                    if os.path.isfile(f'pwords{project_ext}'):
+                        if os.path.isfile(f'pwords{project_ext}.oCrypted'):
                             clear()
                             print("Database file does not exist or is encrypted...")
                             input('\n\nPress "enter" to continue...')
@@ -941,10 +945,10 @@ if __name__ == '__main__':
                                 input('\n\nPress "enter" to continue...')
                                 clear()
                     else:
-                        print("pwords.gter not found, downloading from the repository...")
-                        wget.download("https://raw.githubusercontent.com/therealOri/Genter/main/pwords.gter")
+                        print(f"pwords{project_ext} not found, downloading from the repository...")
+                        wget.download(f"https://raw.githubusercontent.com/therealOri/Genter/main/pwords{project_ext}")
                         clear()
-                        if os.path.isfile('pwords.gter.oCrypted'):
+                        if os.path.isfile(f'pwords{project_ext}.oCrypted'):
                             clear()
                             print("Database file does not exist or is encrypted...")
                             input('\n\nPress "enter" to continue...')
@@ -997,8 +1001,8 @@ if __name__ == '__main__':
 
 
                 if sub_options[1] in sub_option: # Remove passwords
-                    if os.path.isfile('pwords.gter'):
-                        if os.path.isfile('pwords.gter.oCrypted'):
+                    if os.path.isfile(f'pwords{project_ext}'):
+                        if os.path.isfile(f'pwords{project_ext}.oCrypted'):
                             clear()
                             print("Database file does not exist or is encrypted...")
                             input('\n\nPress "enter" to continue...')
@@ -1030,8 +1034,8 @@ if __name__ == '__main__':
                                 continue
                     else:
                         clear()
-                        print("pwords.gter not found, downloading from the repository...")
-                        wget.download("https://raw.githubusercontent.com/therealOri/Genter/main/pwords.gter")
+                        print(f"pwords{project_ext} not found, downloading from the repository...")
+                        wget.download(f"https://raw.githubusercontent.com/therealOri/Genter/main/pwords{project_ext}")
                         input("\n\nDatabse is empty and won't be able to remove any passwords, maybe you should add something to the database first? ^-^.\n\nPress 'enter' to continue...")
                         clear()
                         continue
@@ -1039,8 +1043,8 @@ if __name__ == '__main__':
 
                 #Reading/show passwords
                 if sub_options[2] in sub_option:
-                    if os.path.isfile('pwords.gter'):
-                        if os.path.isfile('pwords.gter.oCrypted'):
+                    if os.path.isfile(f'pwords{project_ext}'):
+                        if os.path.isfile(f'pwords{project_ext}.oCrypted'):
                             clear()
                             print("Database file does not exist or is encrypted...")
                             input('\n\nPress "enter" to continue...')
@@ -1053,8 +1057,8 @@ if __name__ == '__main__':
                                 clear()
                     else:
                         clear()
-                        print("pwords.gter not found, downloading from the repository...")
-                        wget.download("https://raw.githubusercontent.com/therealOri/Genter/main/pwords.gter")
+                        print(f"pwords{project_ext} not found, downloading from the repository...")
+                        wget.download(f"https://raw.githubusercontent.com/therealOri/Genter/main/pwords{project_ext}")
                         input("\n\nDatabse is empty and won't be able to show any passwords, maybe you should add something to the database first? ^-^.\n\nPress 'enter' to continue...")
                         clear()
                         continue
@@ -1064,8 +1068,8 @@ if __name__ == '__main__':
 
                 #Lock Database
                 if sub_options[3] in sub_option:
-                    if os.path.isfile('pwords.gter'):
-                            if os.path.isfile('pwords.gter.oCrypted'):
+                    if os.path.isfile(f'pwords{project_ext}'):
+                            if os.path.isfile(f'pwords{project_ext}.oCrypted'):
                                 clear()
                                 print("Database file already encrypted...")
                                 input('\n\nPress "enter" to continue...')
@@ -1108,8 +1112,8 @@ if __name__ == '__main__':
                                 clear()
                     else:
                         clear()
-                        print("pwords.gter not found, downloading from the repository...")
-                        wget.download("https://raw.githubusercontent.com/therealOri/Genter/main/pwords.gter")
+                        print(f"pwords{project_ext} not found, downloading from the repository...")
+                        wget.download(f"https://raw.githubusercontent.com/therealOri/Genter/main/pwords{project_ext}")
                         input("\n\nDatabse is empty, skipping on locking the database.\n\nPress 'enter' to continue...")
                         clear()
                         continue
@@ -1117,8 +1121,8 @@ if __name__ == '__main__':
 
                 #unlock Database
                 if sub_options[4] in sub_option:
-                    if os.path.isfile('pwords.gter'):
-                        if os.path.isfile('pwords.gter.oCrypted'):
+                    if os.path.isfile(f'pwords{project_ext}'):
+                        if os.path.isfile(f'pwords{project_ext}.oCrypted'):
                             clear()
                             print('Please provide the correct credentials to unlock the database. (Do not forget them as you will NOT be able to decrypt without them.)\nPress "q" to go back/quit.\n\n')
 
@@ -1164,8 +1168,8 @@ if __name__ == '__main__':
                             continue
                     else:
                         clear()
-                        print("pwords.gter not found, downloading from the repository...")
-                        wget.download("https://raw.githubusercontent.com/therealOri/Genter/main/pwords.gter")
+                        print(f"pwords{project_ext} not found, downloading from the repository...")
+                        wget.download(f"https://raw.githubusercontent.com/therealOri/Genter/main/pwords{project_ext}")
                         input("\n\nDatabse is empty and not locked, skipping on unlocking the database.\n\nPress 'enter' to continue...")
                         clear()
                         continue
@@ -1173,8 +1177,8 @@ if __name__ == '__main__':
 
                 #change credentials
                 if sub_options[5] in sub_option:
-                    if os.path.isfile('pwords.gter'):
-                        if os.path.isfile('pwords.gter.oCrypted'):
+                    if os.path.isfile(f'pwords{project_ext}'):
+                        if os.path.isfile(f'pwords{project_ext}.oCrypted'):
                             clear()
                             print("Database file does not exist or is encrypted...")
                             input('\n\nPress "enter" to continue...')
@@ -1183,9 +1187,9 @@ if __name__ == '__main__':
                         else:
                             clear()
                             print("Making new database for passwords...")
-                            if os.path.isfile('pwords2.gter'):
+                            if os.path.isfile(f'pwords2{project_ext}'):
                                 print("Database already exists, deleting and trying again..")
-                                os.remove('pwords2.gter')
+                                os.remove(f'pwords2{project_ext}')
                                 make_db()
                             else:
                                 make_db()
@@ -1214,13 +1218,13 @@ if __name__ == '__main__':
 
                                 print("Cleaning up!...")
                                 cleanup()
-                                input('\n\nFiles have been cleaned up!\nPress "enter" to quit/reload the passgen...')
+                                input('\n\nFiles have been cleaned up!\nPress "enter" to quit/reload the genter...')
                                 clear()
                                 sys.exit("Goodbye! <3")
                     else:
                         clear()
-                        print("pwords.gter not found, downloading from the repository...")
-                        wget.download("https://raw.githubusercontent.com/therealOri/Genter/main/pwords.gter")
+                        print(f"pwords{project_ext} not found, downloading from the repository...")
+                        wget.download(f"https://raw.githubusercontent.com/therealOri/Genter/main/pwords{project_ext}")
                         input("\n\nDatabse is empty and has no data/credentials to change, skipping on changing credentials.\n\nPress 'enter' to continue...")
                         clear()
                         continue
