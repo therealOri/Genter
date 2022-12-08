@@ -8,12 +8,18 @@ __ __
 
 <br />
 
-Update | 11/29/2022:
+Update | 12/8/2022:
 # New Features.
 If you have an older version of this project, You should update to the current version now!.
 
 Added:
-- Typo fixes and convenience features.
+- New way of handling database data. It will now be based off of IDs when picking a login. (which you can copy and paste) "Passwords" will now be referred to as "logins", as the website, email, password, and notes will all be in one encrypted data package. This also means you have have a login for the same website many times.
+- General fixes and function updates.
+- "domains()" functions is now "fetch_logins()".
+- How data is stored and read is now changed.
+- Removed "secrets" library for the use of pycryptodom's Crypto.Random().
+- Added itertools for turning the .fetchall() for sqlite3 output into useable lists.
+
 
 <br />
 
@@ -25,19 +31,18 @@ __ __
 <br />
 
 # ToDo
-- [ ] A new way of storing and fetching domain names/websites. So genter can have more than 1 domain name at a time stored within the database with different notes and passwords. (Need help with this)
+- Change how the databse is locked and unlocked. Maybe using gpg/pgp. (RSA encryption)
 __ __
 
 <br />
 <br />
 
 # Screenshots
-
-![main_menu](https://user-images.githubusercontent.com/45724082/198920455-234d4600-45af-4eeb-ae6e-b2f1f8a037a7.png)
+![main_menu](https://user-images.githubusercontent.com/45724082/206585491-c3174aa2-ca54-4f32-adb6-65c23129a6eb.png)
 
 ![password_options](https://user-images.githubusercontent.com/45724082/198920472-73b5f648-1584-4df0-b05c-4210c45b7115.png)
 
-![sub_menu](https://user-images.githubusercontent.com/45724082/198920479-62971b93-efb2-4f60-a257-157242264494.png)
+![sub_menu](https://user-images.githubusercontent.com/45724082/206585506-e2d14dab-28a2-45ac-a0af-fc6e634ff11b.png)
 
 __ __
 
