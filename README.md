@@ -15,7 +15,7 @@ If you have an older version of this project, You should update to the current v
 Added:
 - New way of handling database data. It will now be based off of IDs when picking a login. (which you can copy and paste) "Passwords" will now be referred to as "logins", as the website, email, password, and notes will all be in one encrypted data package. This also means you can have a login for the same website many times.
 - General fixes and function updates.
-- "domains()" functions is now "fetch_logins()".
+- "domains()" function is now "fetch_logins()".
 - How data is stored and read is now changed.
 - Removed "secrets" library for the use of pycryptodom's Crypto.Random().
 - Added itertools for turning the .fetchall() for sqlite3 output into useable lists.
