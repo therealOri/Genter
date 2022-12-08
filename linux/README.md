@@ -13,7 +13,7 @@ __ __
 <br />
 
 # Download
-> Due to github only allowing 25mb file uploads and genter is 43.6mb. I have decided to host the file on my website instead.
+> Due to github only allowing 25mb file uploads and genter is 55mb. I have decided to host the file on my website instead.
 - [https://therealori.tk/projects/genter](https://therealori.tk/projects/genter/gen.html)
 
 Make sure the hashes in the checksums.txt file match what you have downloaded.
