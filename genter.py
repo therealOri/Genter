@@ -3,11 +3,11 @@ import base64 as b64
 import beaupy
 from hashlib import blake2b
 import json
+import itertools
 from ocryptor import oCrypt
 import os
 import sys
 import wget
-import secrets
 import sqlite3
 from string import ascii_lowercase, ascii_uppercase, digits
 from alive_progress import alive_bar
@@ -132,7 +132,6 @@ def cleanup():
 
 # Encrypting the passwords with master key and AES encryption.
 def stringME(data, key):
-    data = bytes(data, 'utf-8')
     cipher = AES.new(key, AES.MODE_GCM)
     cipher.update(header)
     ciphertext, tag = cipher.encrypt_and_digest(data)
@@ -157,66 +156,78 @@ def stringMD(b64_input, key):
         plaintext = cipher.decrypt_and_verify(jv['ciphertext'], jv['tag'])
         return plaintext.decode()
     except (ValueError, KeyError):
-        input("Incorrect data given, or Data has been tampered with. Can't decrypt.\n\nPress 'enter' to continue...")
-        clear()
+        print("Incorrect data given, or Data has been tampered with. Can't decrypt.")
         return None
 
 
-#Reading a password for selected domain/website
-def readMD(web, master_key):
-    database = sqlite3.connect(f'pwords{project_ext}')
+
+# get's data at row xyz and retruns the data
+def readMD(db_row):
+    database = sqlite3.connect('pwords.gter')
     c = database.cursor()
-    c.execute(f"SELECT passwd FROM pwd_tables WHERE website LIKE '{web}'")
 
-    if b64passwd := c.fetchone():
-        gej = b64passwd[0]
-        pwdata = stringMD(gej, master_key)
-        return pwdata
-    else:
-        print('Oof..nothing here but us foxos...\n\n')
-        input('Press "enter" to continue...')
-        return
+    c.execute("SELECT id FROM logins")
+    all_ids = c.fetchall()
+    lst_output = list(itertools.chain(*all_ids))
 
-
-
-
-# Add and remove data from database.
-def add_data(website, passwd, notes, key):
-    b64_note = b64.b64encode(notes.encode('unicode-escape'))
-    database = sqlite3.connect(f'pwords{project_ext}')
-    c = database.cursor()
-    c.execute(f"SELECT website FROM pwd_tables")
-    sites = c.fetchall()
-    ldb = str(sites).replace("(", "").replace(",)", "").replace("'", "")
-    dlist = ldb.strip('][').split(', ')
-
-    if website in dlist:
-        return print(f'[Warning] - A website entry with the name of "{website}" exists in database already.\nTo avoid breaking the "reading passwords" functionality, please change the name slightly.')
-    if not website:
-        return print('I need a domain/website to add to the database...\n[Error]: "web" can not be empty.')
-    else:
-        c.execute(f"INSERT INTO pwd_tables VALUES ('{website}', '{stringME(passwd, key)}', '{b64_note.decode('unicode-escape')}')")
+    if not all_ids:
+        input('Oof..nothing here but us foxos...\n\nPress "enter" to cotinue...')
+        clear()
         database.commit()
         database.close()
-        return print(f'"{website}" and your password has been stored/saved to the database!')
+        return None
+    else:
+        for x in lst_output:
+            if x == db_row:
+                c.execute(f"SELECT data FROM logins WHERE id LIKE '{db_row}'")
+                enc_data = c.fetchone()
+                database.commit()
+                database.close()
+                return enc_data[0]
+            else:
+                pass
 
 
 
-def rmv_data(website):
-    database = sqlite3.connect(f'pwords{project_ext}')
+def add_data(encrypted_data):
+    nums_lst = [random.randint(0, 9) for i in range(10)]
+    ID = int("".join(list(map(str, nums_lst))))
+    database = sqlite3.connect('pwords.gter')
     c = database.cursor()
-    c.execute(f"SELECT website FROM pwd_tables")
-    sites = c.fetchall()
-    ldb = str(sites).replace("(", "").replace(",)", "").replace("'", "")
-    dlist = ldb.strip('][').split(', ')
+    c.execute("SELECT id FROM logins")
+    all_ids = c.fetchall()
+    db_IDs = list(itertools.chain(*all_ids))
+    if len(db_IDs) == 9999999999: # I don't want to get to the point where I have ran out of unique 10 digit numbers to use as an ID.
+        print('Max amount of entries/IDs reached! "9999999999" logins!')
+        flag = '#wtf... O-O;'
+        return flag
 
-    if website in dlist:
-        c.execute(f"DELETE FROM pwd_tables WHERE website LIKE '{website}'")
+    if ID in db_IDs:
+        nums_lst = [random.randint(0, 9) for i in range(10)]
+        ID = int("".join(list(map(str, nums_lst))))
+    else:
+        c.execute(f"INSERT INTO logins VALUES ('{ID}', '{encrypted_data}')")
         database.commit()
         database.close()
-        return print(f'"{website}" has been removed from the database!')
+
+
+
+
+def rmv_data(db_row):
+    database = sqlite3.connect('pwords.gter')
+    c = database.cursor()
+    c.execute("SELECT id FROM logins")
+    all_ids = c.fetchall()
+    id_lst = list(itertools.chain(*all_ids))
+    if db_row in id_lst:
+        c.execute(f"DELETE FROM logins WHERE id LIKE '{db_row}'")
+        database.commit()
+        database.close()
+        return print(f'Login with ID: "{db_row}" has been removed from the database!')
     else:
-        return print(f'"{website}" is not a valid option or does not exist.')
+        database.commit()
+        database.close()
+        return print(f'Login with ID: "{db_row}" is not a valid option or does not exist.')
 ## ------------------------------------------------------------------------ ##
 
 
@@ -274,8 +285,8 @@ def hash(password: str):
 
         if options[1] in option:
             clear()
-            gen_key = ''.join(secrets.choice(alphabet) for _ in range(25))
-            salt = bytes(''.join(secrets.choice(alphabet) for _ in range(16)), 'utf-8')
+            gen_key = ''.join(random.choice(alphabet) for _ in range(25))
+            salt = bytes(''.join(random.choice(alphabet) for _ in range(16)), 'utf-8')
 
             result2 = blake2b(bytes(password, 'utf-8'), key=bytes(gen_key, 'utf-8'), salt=salt, digest_size=32).hexdigest()
             print(f'Password: {password}  |  Hash: {result2}\nSalt: {salt.decode()}  |  Key: {gen_key}\n')
@@ -293,8 +304,8 @@ def d_conv(password):
     alphabet = uppercase_letters + lowercase_letters + numbers
     clear()
 
-    default_key = ''.join(secrets.choice(alphabet) for _ in range(25)) #Can be as long as you want.
-    salt = bytes(''.join(secrets.choice(alphabet) for _ in range(16)), 'utf-8') #MUST be 16 or less.
+    default_key = ''.join(random.choice(alphabet) for _ in range(25)) #Can be as long as you want.
+    salt = bytes(''.join(random.choice(alphabet) for _ in range(16)), 'utf-8') #MUST be 16 or less.
 
     result = blake2b(bytes(password, 'utf-8'), key=bytes(default_key, 'utf-8'), salt=salt, digest_size=32).hexdigest()
     return result, salt, default_key
@@ -339,91 +350,78 @@ def clr_pass():
         f.truncate(0)
 
 
-# Reading passwords functionality.
-def domains():
-    database = sqlite3.connect(f'pwords{project_ext}')
+
+
+#This is for getting login options and the ID for the login.
+def fetch_logins(dKey):
+    database = sqlite3.connect('pwords.gter')
     c = database.cursor()
-    c.execute(f"SELECT website FROM pwd_tables")
-    sites = c.fetchall()
-    ldb = str(sites).replace("(", "").replace(",)", "").replace("'", "")
-    dlist = ldb.strip('][').split(', ')
+    c.execute("SELECT data FROM logins")
+    websites = c.fetchall()
+    enc_output = list(itertools.chain(*websites))
 
-    c.execute(f"SELECT notes FROM pwd_tables")
-    notes = c.fetchall()
+    c.execute("SELECT id FROM logins")
+    ids = c.fetchall()
+    all_ids = list(itertools.chain(*ids))
 
-    clean_list = []
-    for x in notes:
-        try:
-            cl = b64.b64decode(x[0])
-            clean_list.append(cl.decode())
-        except Exception:
-            clean_list.append(x[0])
-
-
-    if not sites:
-        input('Hmmm...Maybe you should add something to the database first. ^-^\n\nPress "enter" to continue...')
+    if not websites or not ids:
         clear()
-    else:
-        for d,n in zip(dlist, clean_list):
-            with open('.lst', 'a') as f:
-                f.writelines(f"{d}  ({n})\n")
+        print('Oof..nothing here but us foxos...')
+        return None
 
 
-def read():
-    clear()
-    domains()
-    try:
-        with open(".lst", "r+") as f:
-            data = f.read()
-            fnlst = data.strip().split('\n')
-            f.truncate(0)
-            f.close()
-
-        os.remove(".lst")
-        print(f'(Press "ctrl+c" to exit)\n-----------------------------------------------------------\n\nWebsite domain/name for password?\n')
-        domain = beaupy.select(fnlst, cursor_style="#ffa533")
-
-        clear()
-        if domain == None:
-            clear()
-            return
+    web_lst = []
+    note_lst = []
+    for x in enc_output:
+        result = stringMD(x, dKey) #decrypt encrypted json string.
+        if result == None:
+            return None
         else:
-            if j_load()[1] == True:
-                master_key = beaupy.prompt("Please provide your master key to decrypt the password: ", secure=True)
-            else:
-                master_key = beaupy.prompt("Please provide your master key to decrypt the password: ", secure=False)
-            clear()
-            try:
-                master_key = b64.b64decode(master_key)
-            except Exception as e:
-                input(f'Provided key is not base64 encoded...\n\nPress "enter" to continue...')
-                clear()
-                return
-
-            if not master_key:
-                input(f'Key can not be an empty string...\n\nPress "enter" to continue...')
-                clear()
-                return
-
-            if len(master_key) < 32 or len(master_key) > 32:
-                clear()
-                input(f'Key needs to be 32 characters/bytes long. Current key length: {len(master_key)}\n\nPress "enter" to continue...')
-                clear()
-                return
-            else:
-                domain = domain.split(' ', 1)[0] #get first word in a string.
-                pwd = readMD(domain, master_key)
-                if pwd == None:
-                    clear()
-                    return
-                else:
-                    print(f'Password for "{domain}" is: {pwd}\n\n')
-                    input('Press "enter" to continue...')
-                    clear()
-    except Exception:
-        return
+            obj_result = json.loads(result) #turns back into json object
+            website = obj_result['Domain']
+            notes = obj_result['Notes']
+            web_lst.append(website)
+            note_lst.append(notes)
 
 
+    for i,w,n in zip(all_ids, web_lst, note_lst):
+        with open('.lst', 'a') as fa:
+            fa.writelines(f"[{i}] {w}   ({n})\n")
+            fa.close()
+
+
+    with open(".lst", "r+") as fr:
+        data = fr.read()
+        fnlst = data.strip().split('\n')
+        fr.truncate(0)
+        fr.close()
+
+
+    os.remove(".lst")
+    print(f'(Press "ctrl+c" to exit)\n-----------------------------------------------------------\n\n')
+    for _ in fnlst:
+        print(_)
+
+    login_id = beaupy.prompt("\nLogin ID? - (Example: 1)")
+
+    if login_id == '':
+        clear()
+        print("Option selected can't be nothing...")
+        return None
+
+    if not login_id:
+        clear()
+        print('Keyboard Interuption detected. Stopping login removal...')
+        return None
+
+    if int(login_id) not in all_ids:
+        clear()
+        print('The option picked is not a valid ID or the option is not in the current list of IDs...')
+        return None
+    else:
+        clear()
+        login_id = int(login_id)
+        return login_id
 
 
 # Locking and unlocking files.
@@ -441,11 +439,14 @@ def unlock(file_path2, enc_key2, enc_salt2):
 def make_db():
     database = sqlite3.connect(f'pwords2{project_ext}')
     c = database.cursor()
-    c.execute('''CREATE TABLE pwd_tables(website text, passwd text, notes text)''')
+    c.execute('''CREATE TABLE logins(id integer, data text)''')
     database.commit()
     database.close()
 
 
+
+
+#update to reflect new database
 def change_creds(old_master_key, new_master_key):
     D_old_key = b64.b64decode(old_master_key)
     E_new_key = b64.b64decode(new_master_key)
@@ -455,31 +456,26 @@ def change_creds(old_master_key, new_master_key):
         clear()
         return False
     else:
-        # Get list of domains/websites from original database.
+        # Get list of IDs from original database.
         database = sqlite3.connect(f'pwords{project_ext}')
         c = database.cursor()
-        c.execute(f"SELECT website FROM pwd_tables")
-        sites = c.fetchall()
-        ldb = str(sites).replace("(", "").replace(",)", "").replace("'", "")
-        dlist = ldb.strip('][').split(', ')
+        c.execute(f"SELECT id FROM logins")
+        ids = c.fetchall()
+        ids_lst = list(itertools.chain(*ids))
 
 
-        # Get list of passwords from original database.
+        # Get list of data from original database.
         database = sqlite3.connect(f'pwords{project_ext}')
         c = database.cursor()
-        c.execute(f"SELECT passwd FROM pwd_tables")
-        words = c.fetchall()
-        lpw = str(words).replace("(", "").replace(",)", "").replace("'", "")
-        plist = lpw.strip('][').split(', ')
+        c.execute(f"SELECT data FROM logins")
+        enc_data_logins = c.fetchall()
+        plist = list(itertools.chain(*enc_data_logins))
 
+        if not enc_data_logins or not ids:
+            clear()
+            print('Oof..nothing here but us foxos...')
+            return False
 
-        # Get list of notes from original database.
-        database = sqlite3.connect(f'pwords{project_ext}')
-        c = database.cursor()
-        c.execute(f"SELECT notes FROM pwd_tables")
-        notes = c.fetchall()
-        ndb = str(notes).replace("(", "").replace(",)", "").replace("'", "")
-        nlist = ndb.strip('][').split(', ')
 
         # Get all of the passwords in plist above and decrypt them, then append
         lst = []
@@ -497,18 +493,19 @@ def change_creds(old_master_key, new_master_key):
             if not z:
                 pass
             else:
+                load_z = json.loads(z)
+                z = json.dumps(load_z, ensure_ascii=False).encode('utf-8')
                 new_pwords = stringME(z, E_new_key)
                 lst2.append(new_pwords)
 
 
         # Get all of the websites and all of the newly encrypted passwords and iterate through them both and then write to a new database file.
-        for a,b,d in zip(dlist, lst2, nlist):
+        for a,b in zip(ids_lst, lst2):
             database = sqlite3.connect(f'pwords2{project_ext}')
             c = database.cursor()
-            c.execute(f"INSERT INTO pwd_tables VALUES ('{a}', '{b}', '{d}')")
+            c.execute(f"INSERT INTO logins VALUES ('{a}', '{b}')")
             database.commit()
             database.close()
-
         return True
 
 ## ------------------------------------------------------------------------ ##
@@ -709,7 +706,8 @@ def main():
     if os.path.isfile('pass.txt'):
         with open('pass.txt', 'w') as f:
             for _ in range(amount):
-                password = ''.join(secrets.choice(all) for _ in range(length))
+                # random.choice() is pycryptodome's "from Crypto.Random import random" and NOT the bad predictable "random" library.
+                password = ''.join(random.choice(all) for _ in range(length))
                 print(f'Pass: {password}  |  Hash: {d_conv(password)[0]}\nSalt: {d_conv(password)[1].decode()}  |  Key: {d_conv(password)[2]}\n', file=f)
             print('Your newly generated random password(s) and hash info has been saved to "pass.txt".\n\n')
             input('Press "enter" to continue...')
@@ -721,7 +719,7 @@ def main():
         clear()
         with open('pass.txt', 'w') as f:
             for _ in range(amount):
-                password = ''.join(secrets.choice(all) for _ in range(length))
+                password = ''.join(random.choice(all) for _ in range(length))
                 print(f'Pass: {password}  |  Hash: {d_conv(password)[0]}\nSalt: {d_conv(password)[1].decode()}  |  Key: {d_conv(password)[2]}\n', file=f)
             print('Your newly generated random password(s) and hash info has been saved to "pass.txt".\n\n')
             input('Press "enter" to continue...')
@@ -845,7 +843,7 @@ def phrzgn():
 if __name__ == '__main__':
     while True:
         clear()
-        options = ['Make a password?', 'Make a phrase?', 'Generate a key?', 'Manage passwords?', 'Get hash for a password?', 'Show pass.txt?', 'Clear pass.txt?', 'Quit?']
+        options = ['Make a password?', 'Make a phrase?', 'Generate a key?', 'Manage logins?', 'Get hash for a password?', 'Show pass.txt?', 'Clear pass.txt?', 'Quit?']
         print(f'{banner()}\n\nWhat would you like to do?\n-----------------------------------------------------------\n')
         option = beaupy.select(options, cursor_style="#ffa533")
 
@@ -889,7 +887,7 @@ if __name__ == '__main__':
         if options[3] in option:
             clear()
             while True:
-                sub_options = ['Add password?', 'Remove password?', 'Show saved websites?', 'Lock database?', 'Unlock database?', 'Change encryption?', 'Back?']
+                sub_options = ['Add login?', 'Remove login?', 'Show saved logins?', 'Lock database?', 'Unlock database?', 'Change encryption?', 'Back?']
                 print(f'{banner()}\n\nWhat would you like to manage?\n-----------------------------------------------------------\n')
                 sub_option = beaupy.select(sub_options, cursor_style="#ffa533")
 
@@ -898,7 +896,8 @@ if __name__ == '__main__':
                     clear()
                     break
 
-                if sub_options[0] in sub_option: # Add passwords
+                # Add passwords
+                if sub_options[0] in sub_option:
                     if os.path.isfile(f'pwords{project_ext}'):
                         if os.path.isfile(f'pwords{project_ext}.oCrypted'):
                             clear()
@@ -910,6 +909,14 @@ if __name__ == '__main__':
                             clear()
                             web = beaupy.prompt('Press "q" to go back/quit.\n\nWhat is the website/domain name you would like to store in the Database?: ')
                             if not web or web.lower() == 'q':
+                                clear()
+                                continue
+
+                            if j_load()[1] == True:
+                                email = beaupy.prompt(f'Email/Login to save for "{web.lower()}"?: ', secure=True)
+                            else:
+                                email = beaupy.prompt(f'Email/Login to save for "{web.lower()}"?: ', secure=False)
+                            if email.lower() == 'q':
                                 clear()
                                 continue
 
@@ -947,8 +954,22 @@ if __name__ == '__main__':
                                 clear()
                                 continue
                             else:
-                                add_data(web.lower(), passwd, notes, master)
-                                input('\n\nPress "enter" to continue...')
+                                json_data = {
+                                    'Domain': web,
+                                    'Email': email,
+                                    'Password': passwd,
+                                    'Notes': notes
+                                    }
+
+                                json_data = json.dumps(json_data, ensure_ascii=False).encode('utf-8')
+                                enc_json_data = stringME(json_data, master)
+                                max_limit_check = add_data(enc_json_data)
+                                if max_limit_check == '#wtf... O-O;':
+                                    input('You have reached the limit of logins available.\n\nPress "enter" to continue...')
+                                    clear()
+                                    continue
+                                clear()
+                                input('Login saved!\n\nPress "enter" to continue...')
                                 clear()
                     else:
                         print(f"pwords{project_ext} not found, downloading from the repository...")
@@ -968,6 +989,14 @@ if __name__ == '__main__':
                                 continue
 
                             if j_load()[1] == True:
+                                email = beaupy.prompt(f'Email/Login to save for "{web.lower()}"?: ', secure=True)
+                            else:
+                                email = beaupy.prompt(f'Email/Login to save for "{web.lower()}"?: ', secure=False)
+                            if email.lower() == 'q':
+                                clear()
+                                continue
+
+                            if j_load()[1] == True:
                                 passwd = beaupy.prompt(f'Password to save for "{web.lower()}"?: ', secure=True)
                             else:
                                 passwd = beaupy.prompt(f'Password to save for "{web.lower()}"?: ', secure=False)
@@ -1001,12 +1030,23 @@ if __name__ == '__main__':
                                 clear()
                                 continue
                             else:
-                                add_data(web.lower(), passwd, notes, master)
-                                input('\n\nPress "enter" to continue...')
+                                json_data = {
+                                    'Domain': web,
+                                    'Email': email,
+                                    'Password': passwd,
+                                    'Notes': notes
+                                    }
+
+                                json_data = json.dumps(json_data, ensure_ascii=False).encode('utf-8')
+                                enc_json_data = stringME(json_data, master)
+                                add_data(enc_json_data)
+                                clear()
+                                input('Login saved!\n\nPress "enter" to continue...')
                                 clear()
 
 
-                if sub_options[1] in sub_option: # Remove passwords
+                # Remove passwords
+                if sub_options[1] in sub_option:
                     if os.path.isfile(f'pwords{project_ext}'):
                         if os.path.isfile(f'pwords{project_ext}.oCrypted'):
                             clear()
@@ -1016,28 +1056,33 @@ if __name__ == '__main__':
                             continue
                         else:
                             clear()
-                            domains()
-                            if os.path.isfile('.lst'):
-                                with open(".lst", "r+") as f:
-                                    data = f.read()
-                                    print(data)
-                                    f.truncate(0)
-                                    f.close()
-                                os.remove(".lst")
-
-                                web_to_rmv = beaupy.prompt('-----------------------------------------------------\n(This will remove notes and passwords for the website/domain as well)\nPress "q" to go back/quit.\n\nWhat is the website/domain name you would like to remove from the Database?: ')
-                                clear()
-
-                                if not web_to_rmv or web_to_rmv.lower() == 'q':
-                                    clear()
-                                    continue
-                                else:
-                                    rmv_data(web_to_rmv.lower())
-                                    input('\n\nPress "enter" to continue...')
-                                    clear()
+                            if j_load()[1] == True:
+                                rmv_key = beaupy.prompt("Encryption key: ", secure=True)
                             else:
+                                rmv_key = beaupy.prompt("Encryption key: ", secure=False)
+
+                            if rmv_key.lower() == 'q' or not rmv_key:
                                 clear()
                                 continue
+
+                            try:
+                                rmv_dKey = b64.b64decode(rmv_key)
+                            except:
+                                clear()
+                                input('Could not base64 decode given key...\n\nPress "enter" to continue...')
+                                clear()
+                                continue
+
+                            clear()
+                            id_to_remove = fetch_logins(rmv_dKey)
+                            if not id_to_remove:
+                                input('Unable to get login ID, an error has occured..\n\nPress "enter" to continue...')
+                                clear()
+                                continue
+                            else:
+                                rmv_data(id_to_remove)
+                                input('\nPress "enter" to continue...')
+                                clear()
                     else:
                         clear()
                         print(f"pwords{project_ext} not found, downloading from the repository...")
@@ -1047,7 +1092,7 @@ if __name__ == '__main__':
                         continue
 
 
-                #Reading/show passwords
+                #Reading/show logins
                 if sub_options[2] in sub_option:
                     if os.path.isfile(f'pwords{project_ext}'):
                         if os.path.isfile(f'pwords{project_ext}.oCrypted'):
@@ -1058,8 +1103,47 @@ if __name__ == '__main__':
                             continue
                         else:
                             clear()
-                            data = read()
-                            if data == None:
+                            if j_load()[1] == True:
+                                show_logins_key = beaupy.prompt("Encryption key: ", secure=True)
+                            else:
+                                show_logins_key = beaupy.prompt("Encryption key: ", secure=False)
+
+                            if show_logins_key.lower() == 'q' or not show_logins_key:
+                                clear()
+                                continue
+
+                            try:
+                                show_logins_dKey = b64.b64decode(show_logins_key)
+                            except:
+                                clear()
+                                input('Could not base64 decode given key...\n\nPress "enter" to continue...')
+                                clear()
+                                continue
+
+                            clear()
+                            login_id = fetch_logins(show_logins_dKey)
+                            if login_id == None:
+                                input('Unable to get login ID, an error has occured..\n\nPress "enter" to continue...')
+                                clear()
+                                continue
+                            else:
+                                pwd = readMD(login_id)
+                                if pwd == None:
+                                    clear()
+                                    input('Had an error while reading logins..\n\nPress "enter" to continue...')
+                                    clear()
+                                    continue
+
+                                result = stringMD(pwd, show_logins_dKey)
+                                obj_result = json.loads(result)
+
+                                website = obj_result['Domain']
+                                email = obj_result['Email']
+                                password = obj_result['Password']
+                                notes = obj_result['Notes']
+                                clear()
+                                print(f'Login for "{website}" is: \n\nEmail: {email}\nPass: {password}\nNotes: {notes}')
+                                input('\n\nPress "enter" to continue..')
                                 clear()
                     else:
                         clear()
@@ -1210,12 +1294,15 @@ if __name__ == '__main__':
 
                             if not old_master_key or not new_master_key:
                                 clear()
+                                os.remove(f'pwords2{project_ext}')
                                 continue
                             else:
                                 crds = change_creds(old_master_key, new_master_key)
 
                             if crds == False:
+                                input('Unable to change credentials, No IDs or No Data can be foud in the database..\n\nPress "enter" to continue...')
                                 clear()
+                                os.remove(f'pwords2{project_ext}')
                                 continue
                             else:
                                 clear()
@@ -1224,7 +1311,7 @@ if __name__ == '__main__':
 
                                 print("Cleaning up!...")
                                 cleanup()
-                                input('\n\nFiles have been cleaned up!\nPress "enter" to quit/reload the genter...')
+                                input('\n\nFiles have been cleaned up!\nPress "enter" to quit/reload genter...')
                                 clear()
                                 sys.exit("Goodbye! <3")
                     else:
