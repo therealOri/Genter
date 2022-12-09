@@ -31,7 +31,8 @@ __ __
 <br />
 
 # ToDo
-- Change how the databse is locked and unlocked. Maybe using gpg/pgp. (RSA encryption)
+- Change how the databse is locked and unlocked. Maybe using gpg/pgp. (RSA encryption)? idk yet.
+- Add a new table in the database and new feature for just normal/unrelated notes that you'd write down on a notepad.
 __ __
 
 <br />
