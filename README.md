@@ -30,9 +30,9 @@ __ __
 <br />
 <br />
 
-# ToDo
+# ToDo/To-Add
 - [] Change how the databse is locked and unlocked. Maybe using gpg/pgp. (RSA encryption)? idk yet.
-- [] Add a new table in the database and new feature for just normal/unrelated notes that you'd write down on a notepad.
+- [x] Add a new table in the database and new feature for just normal/unrelated notes that you'd write down on a notepad.
 __ __
 
 <br />
