@@ -38,7 +38,7 @@ __ __
 <br />
 
 # ToDo/To-Add
-> [] - Update preview images/screenshots below to reflect the new menu changes.
+> [] - Update preview images/screenshots below to reflect the new menu changes. (I may just record a video and go from there)
 __ __
 
 <br />
