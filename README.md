@@ -3,7 +3,7 @@ Genter will allow you to create a very crazy & strong randomized password.
 You can manually pick and choose what languages and symbols are used. You can also change the length of the password and how many you want to generate. Also, In addition to the password generator, Genter has a built in password manager that you can use! Passwords are encrypted using AES and a "Password Based Key Derivation" master Key.
 > Feel free to contribute! 
 
-> Also, If you are good at auditing code and password encryption then please feel free to do so here and let me know what could be fixed and improved!
+> ❗ Also, If you are good at auditing code and password encryption then please feel free to audit my code and let me know what could be fixed and improved! I can only know so much and I may miss something so please take note of this before using Genter for its password & note manager. ❗
 __ __
 
 <br />
