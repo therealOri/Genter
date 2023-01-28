@@ -1,0 +1,16 @@
+about-time==4.2.1
+alive-progress==3.0.1
+argon2-cffi==21.3.0
+argon2-cffi-bindings==21.2.0
+beaupy==3.3.0
+cffi==1.15.1
+commonmark==0.9.1
+emoji==2.2.0
+grapheme==0.6.0
+pycparser==2.21
+pycryptodome==3.17
+Pygments==2.14.0
+pystyle==2.9
+python-yakh==0.3.0
+rich==12.6.0
+wget==3.2
