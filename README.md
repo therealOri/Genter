@@ -23,7 +23,7 @@ Added:
 - [x] Updated lock and unlock functions. They now use AES GCM like everything else. (Use a different key to lock and unlock database)
 - [x] The "Change credentials" function now accommodates the new "secure notes" feature.
 - [x] Linux and windows executable was compiled using Nuitka instead of pyinstaller. (Size of exe should be smaller now)
-> Windows .exe will be worked on after this release.
+> Windows .exe will be worked on after this release. Comming soon!
 - [x] Changed how passwords are shown in pass.txt. (Removed all of the hash, salt, and key information)
 - [x] Updated "change credentials" function to reflect changes.
 
