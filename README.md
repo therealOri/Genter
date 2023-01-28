@@ -38,7 +38,7 @@ __ __
 <br />
 
 # ToDo/To-Add
-> None
+> [] - Update preview images/screenshots below to reflect the new menu changes.
 __ __
 
 <br />
