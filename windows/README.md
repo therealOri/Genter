@@ -17,7 +17,7 @@ If you have python versions less than 3.11 then you can run the following comman
 
 To install - `pip install Nuitka`
 
-Install requirements - `pip install requirements.txt`
+Install requirements - `pip install -r requirements.txt`
 
 To compile - `nuitka --follow-imports windows_source_genter.py` (This file can be renamed if you want.)
 __ __
