@@ -8,17 +8,24 @@ __ __
 
 <br />
 
-Update | 12/8/2022:
+Update | 1/28/2023:
 # New Features.
 If you have an older version of this project, You should update to the current version now!.
 
 Added:
-- New way of handling database data. It will now be based off of IDs when picking a login. (which you can copy and paste) "Passwords" will now be referred to as "logins", as the website, email, password, and notes will all be in one encrypted data package. This also means you can have a login for the same website many times.
-- General fixes and function updates.
-- "domains()" function is now "fetch_logins()".
-- How data is stored and read is now changed.
-- Removed "secrets" library for the use of pycryptodom's Crypto.Random().
-- Added itertools for turning the .fetchall() for sqlite3 output into useable lists.
+- [x] Replaced Scrypt with Argon2di (kdf).
+- [x] Added Secure Notes manager menu and allows you to store secure/encrypted notes in the database. (The note names are not encrypted but the note data is.)
+- [x] Updated menus with numbers to look a bit better.
+- [x] Changed how the "get hash" function works and allows you to chose from different hashing options and returns the hash of the string of text you have typed.. (using hashlib).
+- [x] New colorful banner/logo.
+- [x] Squahed some boogs.
+- [x] Changed up the menu, hopefully it looks better now and not to crowded.
+- [x] Updated lock and unlock functions. They now use AES GCM like everything else. (Use a different key to lock and unlock database)
+- [x] The "Change credentials" function now accommodates the new "secure notes" feature.
+- [x] Linux and windows executable was compiled using Nuitka instead of pyinstaller. (Size of exe should be smaller now)
+> Windows .exe will be worked on after this release.
+- [x] Changed how passwords are shown in pass.txt. (Removed all of the hash, salt, and key information)
+- [x] Updated "change credentials" function to reflect changes.
 
 
 <br />
@@ -31,8 +38,7 @@ __ __
 <br />
 
 # ToDo/To-Add
-- [] Change how the databse is locked and unlocked. Maybe using gpg/pgp. (RSA encryption)? idk yet.
-- [x] Add a new table in the database and new feature for just normal/unrelated notes that you'd write down on a notepad.
+> None
 __ __
 
 <br />
