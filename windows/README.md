@@ -7,4 +7,4 @@ I have not tested with like 4GB of ram/memory but a virtual machine with 2GB of 
 <br />
 
 # Download
-[https://therealori.tk/projects/genter/](https://therealori.tk/projects/genter/gen.html)
+Comming Soon
