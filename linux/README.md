@@ -3,17 +3,11 @@ They new Keygen function being used called Scrypt relys on system resources. It 
 
 I have not tested with like 4GB of ram/memory but a virtual machine with 2GB of ram will not work. If you have a system with 4GB or memmory/ram, please try it out and then get back to me in the [discussions](https://github.com/therealOri/Genter/discussions/14) area.
 
-# Links/Info
-- [Scrypt](https://cryptography.io/en/latest/hazmat/primitives/key-derivation-functions/#scrypt)
-- [More info on what Scrypt does](https://stackoverflow.com/a/30308723/1170681)
-- [Scrypt paper](https://www.tarsnap.com/scrypt/scrypt.pdf)
-__ __
-
 <br />
 <br />
 
 # Download
-> Due to github only allowing 25mb file uploads and genter is 44mb. I have decided to host the file on my website instead.
+> Download is available on my website too.
 - [https://therealori.tk/projects/genter](https://therealori.tk/projects/genter/gen.html)
 
 Make sure the hashes in the checksums.txt file match what you have downloaded.
