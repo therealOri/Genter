@@ -38,18 +38,14 @@ __ __
 <br />
 
 # ToDo/To-Add
-> [] - Update preview images/screenshots below to reflect the new menu changes. (I may just record a video and go from there)
+> [x] - Update preview images/screenshots below to reflect the new menu changes. (I may just record a video and go from there)
 __ __
 
 <br />
 <br />
 
-# Screenshots
-![main_menu](https://user-images.githubusercontent.com/45724082/206585491-c3174aa2-ca54-4f32-adb6-65c23129a6eb.png)
-
-![password_options](https://user-images.githubusercontent.com/45724082/198920472-73b5f648-1584-4df0-b05c-4210c45b7115.png)
-
-![sub_menu](https://user-images.githubusercontent.com/45724082/206585506-e2d14dab-28a2-45ac-a0af-fc6e634ff11b.png)
+# Preview
+[![asciicast](https://asciinema.org/a/HP4MaofMJIQpfTwohaweVX9Ak.svg)](https://asciinema.org/a/HP4MaofMJIQpfTwohaweVX9Ak)
 
 __ __
 
