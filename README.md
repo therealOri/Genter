@@ -38,7 +38,7 @@ __ __
 <br />
 
 # ToDo/To-Add
-> [x] - Update preview images/screenshots below to reflect the new menu changes. (I may just record a video and go from there)
+> Nothing right now...
 __ __
 
 <br />
@@ -46,6 +46,7 @@ __ __
 
 # Preview
 [![asciicast](https://asciinema.org/a/HP4MaofMJIQpfTwohaweVX9Ak.svg)](https://asciinema.org/a/HP4MaofMJIQpfTwohaweVX9Ak)
+> Note: The colored "Genter" Logo doesn't show on github for some reason.
 
 __ __
 
