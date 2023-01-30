@@ -18,14 +18,14 @@ __ __
 
 
 # How to run if double clicking doesn't work.
-- Open terminal and type ./Genter_v2.1.14_Linux
+- Open terminal and type ./Genter_Linux_v2.1.14
 
 <br />
 <br />
 
 # If above fails try the following
-- chmod +x Genter_v2.1.14_Linux
-- ./Genter_v2.1.14_Linux
+- chmod +x Genter_Linux_v2.1.14
+- ./Genter_Linux_v2.1.14
 
 <br />
 <br />
