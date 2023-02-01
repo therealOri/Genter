@@ -77,7 +77,7 @@ python3 genter.py
 <br />
 
 - [Git Download](https://git-scm.com/downloads)
-- [Database Browser for pwords.pgen](https://sqlitebrowser.org/dl/)
+- [Database Browser for pwords.gter](https://sqlitebrowser.org/dl/)
 - [Blake2 Documentation](https://www.blake2.net)
 - [Hashlib Documentation](https://docs.python.org/3/library/hashlib.html)
 __ __
