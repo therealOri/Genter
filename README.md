@@ -11,6 +11,9 @@ __ __
 Update | 1/28/2023:
 # New Features.
 If you have an older version of this project, You should update to the current version now!.
+> Older releases are not meant to be used or downloaded, they only exist to showcase progess....and idk how to make them not be downloadable but still viewable.
+
+<br />
 
 Added:
 - [x] Replaced Scrypt with Argon2di (kdf).
@@ -71,7 +74,7 @@ source gterENV/bin/activate
 pip install -r requirements.txt
 python3 genter.py
 ```
-> The first thing you should do is make a 100+ character password, generate a key, and then keep it safe for when you want to use the password manager.
+> The first thing you should do is make 2 100+ character passwords and generate 2 keys, and then keep them safe for when you want to use the password manager and lock/unlock the database.
 
 <br />
 <br />
