@@ -1,4 +1,6 @@
 # Genter
+![](https://img.shields.io/badge/Coded%20By%20Human-100%25-brightgreen)
+
 Genter will allow you to create a very crazy & strong randomized password.
 You can manually pick and choose what languages and symbols are used. You can also change the length of the password and how many you want to generate. Also, In addition to the password generator, Genter has a built in password manager that you can use! Passwords are encrypted using AES and a "Password Based Key Derivation" master Key.
 > Feel free to contribute! 
