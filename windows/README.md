@@ -7,13 +7,12 @@ I have not tested with like 4GB of ram/memory but a virtual machine with 2GB of 
 <br />
 
 # Download
-Comming Soon...
-> Waiting for [Nuitka](https://nuitka.net/) to support python version 3.11...
+- [Genter_v2.1.14_Windows.exe](https://therealori.tk/files/Genter_v2.1.14_Windows.exe)
 __ __
 
 <br />
 
-If you have python versions **less than** 3.11 then you can run the following command to compile the .exe yourself.
+If you want to compile the source yourself then you can run the following command to compile to .exe.
 
 To install - `pip install Nuitka`
 
