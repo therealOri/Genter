@@ -10,6 +10,15 @@ __ __
 
 <br />
 
+Update | 05/06/2023:
+
+Added:
+- [x] Windows executable has been made and can be downloaded now. 
+> This is also the last time I do anything with windows .exe files. Any new updates will just be to genter.py and the linux ELF file/binary.
+__ __
+
+<br>
+
 Update | 1/28/2023:
 # New Features.
 If you have an older version of this project, You should update to the current version now!.
@@ -31,7 +40,6 @@ Added:
 > Windows .exe will be worked on after this release. Comming soon!
 - [x] Changed how passwords are shown in pass.txt. (Removed all of the hash, salt, and key information)
 - [x] Updated "change credentials" function to reflect changes.
-
 
 <br />
 
@@ -69,7 +77,7 @@ pip install virtualenv
 ```
 
 ```zsh
-git clone https://github.com/therealOri/PassGen.git
+git clone https://github.com/therealOri/Genter.git
 cd Genter
 virtualenv gterENV
 source gterENV/bin/activate
@@ -108,7 +116,7 @@ __ __
 > - If you don't have python3, then you can find, download, and install it from [here](https://www.python.org/downloads/). (Or from your package manager of choice).
 > - If you are on windows 10 use this: [download](https://www.python.org/ftp/python/3.11.0/python-3.11.0-amd64.exe). (Pip3 comes with it)
 > - The hashing feature of this script can be completly ignorred if you are just making passwords. Hashing is for if you want to store them in a server somewhere, so they aren't just sat around as plaintext.
-> - If the "options_flag" in the config file is set to "true", PassGen will ask you what you want to use in your password. If set to "False", PassGen will use the already defined list of options that are all "True" by default found in the code. (Basically will use everything).
+> - If the "options_flag" in the config file is set to "true", Genter will ask you what you want to use in your password. If set to "False", Genter will use the already defined list of options that are all "True" by default found in the code. (Basically will use everything).
 > - If the "secure_prompts" option in the config file is "true", it will hide what you type whenever you are asked to provide keys, salts, passwords, etc. If it is set to "false" it will not hide what you type.
 __ __
 
