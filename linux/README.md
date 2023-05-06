@@ -7,8 +7,7 @@ I have not tested with like 4GB of ram/memory but a virtual machine with 2GB of 
 <br />
 
 # Download
-> Download is available on my website too.
-- [https://therealori.tk/projects/genter](https://therealori.tk/projects/genter/gen.html)
+- [Genter_v2.1.14_Linux](https://therealori.tk/projects/genter/gen.html)
 
 Always make sure the hashes in the checksums.txt file match what you have downloaded. No matter what you download on the interent. It never hurts to be sure.
 __ __
