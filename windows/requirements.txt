@@ -1,6 +1,0 @@
-alive-progress
-argon2-cffi
-beaupy
-pycryptodome
-pystyle
-wget
