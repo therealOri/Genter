@@ -7,7 +7,7 @@ I have not tested with like 4GB of ram/memory but a virtual machine with 2GB of 
 <br />
 
 # Download
-- [Genter_v2.1.14_Windows.exe](https://therealori.tk/files/Genter_v2.1.14_Windows.exe)
+- [Genter_v2.1.14_Windows.exe](https://therealori.tk/projects/genter/gen.html)
 __ __
 
 <br />
