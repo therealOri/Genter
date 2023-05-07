@@ -25,7 +25,7 @@ __ __
 <br>
 
 # Verification
-If you download the .exe from my website, make sure to verify the file doing the following.
+If you download the .exe from my website, make sure to verify the file by doing the following tasks.
 
 - Make sure you have "[Signify](https://github.com/aperezdc/signify)" installed on your system.
 - Git clone "[Signipy](https://github.com/therealOri/Signipy)" and use it to verify.
