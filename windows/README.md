@@ -20,3 +20,27 @@ Install requirements - `pip install -r requirements.txt`
 
 To compile - `nuitka --follow-imports windows_source_genter.py` (This file can be renamed if you want.)
 __ __
+
+<br>
+<br>
+
+# Verification
+If you download the .exe from my website, make sure to verify the file doing the following.
+
+- Make sure you have "[Signify](https://github.com/aperezdc/signify)" installed on your system.
+- Git clone "[Signipy](https://github.com/therealOri/Signipy)" and use it to verify.
+__ __
+Here are the file's you'll need to verify the .exe file.
+- "genter_windows_pub_key.pub"
+- "Genter_v2.1.14_Windows.exe.sig"
+
+If you can't do these steps then make sure to take a look at the "checksum.txt" file and make sure the hashes match what you have downloaded.
+__ __
+
+
+<br>
+<br>
+<br>
+
+
+
