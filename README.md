@@ -2,7 +2,7 @@
 ![](https://img.shields.io/badge/Coded%20By%20Human-100%25-brightgreen)
 
 Genter will allow you to create a very crazy & strong randomized password.
-You can manually pick and choose what languages and symbols are used. You can also change the length of the password and how many you want to generate. Also, In addition to the password generator, Genter has a built in password manager that you can use! Passwords are encrypted using AES and a "Password Based Key Derivation" master Key.
+You can manually pick and choose what languages and symbols are used. You can also change the length of the password and how many you want to generate. Also, In addition to the password generator, Genter has a built in password manager that you can use! Passwords are encrypted using AES-GCM mode and a "KDF" known as "Argon2id" for a master Key.
 > Feel free to contribute! 
 
 > ❗ Also, If you are good at auditing code and password encryption then please feel free to audit my code and let me know what could be fixed and improved! I can only know so much and I may miss something so please take note of this before using Genter for its password & note manager. ❗
@@ -14,7 +14,7 @@ Update | 05/06/2023:
 
 Added:
 - [x] Windows executable has been made and can be downloaded now. 
-> This is also (for now) the last time I do anything with windows .exe files. Any new updates will just be to genter.py and the linux ELF file/binary.
+> This is also (for now) the last time I do anything with windows .exe files. Any new updates will just be to genter.py and the linux ELF file/binary. If anyone would like to, they are more than welcome to contibute to the vindows version and help keep it maintained.
 __ __
 
 <br>
