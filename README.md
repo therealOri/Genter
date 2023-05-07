@@ -14,7 +14,7 @@ Update | 05/06/2023:
 
 Added:
 - [x] Windows executable has been made and can be downloaded now. 
-> This is also the last time I do anything with windows .exe files. Any new updates will just be to genter.py and the linux ELF file/binary.
+> This is also (for now) the last time I do anything with windows .exe files. Any new updates will just be to genter.py and the linux ELF file/binary.
 __ __
 
 <br>
