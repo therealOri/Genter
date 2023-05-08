@@ -14,7 +14,7 @@ Update | 05/06/2023:
 
 Added:
 - [x] Windows executable has been made and can be downloaded now. 
-> This is also (for now) the last time I do anything with windows .exe files. Any new updates will just be to genter.py and the linux ELF file/binary. If anyone would like to, they are more than welcome to contibute to the vindows version and help keep it maintained.
+> This is also (for now) the last time I do anything with windows .exe files. Any new updates will just be to genter.py and the linux ELF file/binary. If anyone would like to, they are more than welcome to contibute to the windows version and help keep it maintained.
 __ __
 
 <br>
@@ -37,7 +37,6 @@ Added:
 - [x] Updated lock and unlock functions. They now use AES GCM like everything else. (Use a different key to lock and unlock database)
 - [x] The "Change credentials" function now accommodates the new "secure notes" feature.
 - [x] Linux and windows executable was compiled using Nuitka instead of pyinstaller. (Size of exe should be smaller now)
-> Windows .exe will be worked on after this release. Comming soon!
 - [x] Changed how passwords are shown in pass.txt. (Removed all of the hash, salt, and key information)
 - [x] Updated "change credentials" function to reflect changes.
 
