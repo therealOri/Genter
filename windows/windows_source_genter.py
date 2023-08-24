@@ -1312,7 +1312,7 @@ if __name__ == '__main__':
                         wget.download(f"https://raw.githubusercontent.com/therealOri/Genter/main/pwords{project_ext}")
                         input(f'\n\n"pwords{project_ext}" has been downloaded. Press "enter" to continue.')
                         clear()
-                        pprint(f'{banner()}\n\nPress "ctrl+c" to go back/exit.\n-----------------------------------------------------------\n')
+                        print(f'{banner()}\n\nPress "ctrl+c" to go back/exit.\n-----------------------------------------------------------\n')
                         note_name = beaupy.prompt("Name of the note you are wanting to make/save?")
                         if not note_name:
                             clear()
