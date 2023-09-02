@@ -50,7 +50,7 @@ __ __
 <br />
 
 # ToDo/To-Add
-> Nothing right now...
+> Potentially a revert back into just being a password generator instead of having a password manager/notes manager as well. 
 __ __
 
 <br />
