@@ -2,25 +2,34 @@
 ![](https://img.shields.io/badge/Coded%20By%20Human-100%25-brightgreen)
 
 Genter will allow you to create a very crazy & strong randomized password.
-You can manually pick and choose what languages and symbols are used. You can also change the length of the password and how many you want to generate. Also, In addition to the password generator, Genter has a built in password manager that you can use! Passwords are encrypted using AES-GCM mode and a "KDF" known as "Argon2id" for a master Key.
-> Feel free to contribute! 
-
-> ❗ Also, If you are good at auditing code and password encryption then please feel free to audit my code and let me know what could be fixed and improved! I can only know so much and I may miss something so please take note of this before using Genter for its password & note manager. ❗
+You can manually pick and choose what languages and symbols are used. You can also change the length of the password and how many you want to generate. 
+> Feel free to contribute! Anything helps more than you'd think!
 __ __
 
 <br />
+<br>
+
+(Latest) - Update | 09/09/23:
+# Features revert
+- Reverted "Genter" to be mainly a password generator. It was starting to become to much to handle with all of the password and note manager stuff.
+- Passwords and phrases are generated using atmospheric noise instead of math, time, etc. (Thanks to [random.org](https://random.org/))
+- If you are going to generate many passwords, it will try to generate in chunks of 5 at a time as to not go over or close to random.org's api limits, while still being pretty fast.
+  > Because "`concurrent.futures`" is being used, each chunk of "5" will be generated mostly at the same time.
+__ __
+
+<br>
 
 Update | 05/06/2023:
 
 Added:
 - [x] Windows executable has been made and can be downloaded now. 
-> This is also (for now) the last time I do anything with windows .exe files. Any new updates will just be to genter.py and the linux ELF file/binary. If anyone would like to, they are more than welcome to contibute to the windows version and help keep it maintained.
+> This is also (for now) the last time I do anything with windows .exe files. Any new updates will just be to genter.py and the linux ELF file/binary. If anyone would like to, they are more than welcome to contribute to the windows version and help keep it maintained.
 __ __
 
 <br>
 
 Update | 1/28/2023:
-# New Features.
+
 If you have an older version of this project, You should update to the current version now!.
 > Older releases are not meant to be used or downloaded, they only exist to showcase progess....and idk how to make them not be downloadable but still viewable.
 
@@ -43,22 +52,24 @@ Added:
 <br />
 
 If you come across ANY issues or bugs, please report it by making an [issue](https://github.com/therealOri/Genter/issues). It helps out a lot!
-> This is my first time making and managing an .exe file so I would love any feedback on what could be done better or changed. <3
+> I am still fairly new to making and managing an .exe file so I would love any feedback on what could be done better or changed. <3
 __ __
 
 <br />
 <br />
 
 # ToDo/To-Add
-> Potentially a revert back into just being a password generator instead of having a password manager/notes manager as well. 
+> [] - Make Linux executable binary.
+> 
+> [] - Make Windoes .exe file.
 __ __
 
 <br />
 <br />
 
 # Preview
-[![asciicast](https://asciinema.org/a/HP4MaofMJIQpfTwohaweVX9Ak.svg)](https://asciinema.org/a/HP4MaofMJIQpfTwohaweVX9Ak)
-> Note: The colored "Genter" Logo doesn't show on github for some reason.
+(WiP)
+> Note: WiP
 
 __ __
 
@@ -83,29 +94,16 @@ source gterENV/bin/activate
 pip install -r requirements.txt
 python3 genter.py
 ```
-> The first thing you should do is make 2 100+ character passwords and generate 2 keys, and then keep them safe for when you want to use the password manager and lock/unlock the database.
 
 <br />
 <br />
 
 - [Git Download](https://git-scm.com/downloads)
-- [Database Browser for pwords.gter](https://sqlitebrowser.org/dl/)
 - [Blake2 Documentation](https://www.blake2.net)
+  > For learning more about the blake2b option in the str_hash() function.
 - [Hashlib Documentation](https://docs.python.org/3/library/hashlib.html)
 __ __
 
-<br />
-<br />
-
-# Notice! 💢
-- It is very important to keep backups of your keys and data as without it you CAN NOT decrypt your passwords or recover anything. It is advised that you keep a backup of your master key and password database file as well on a USB or external SSD. If in the event of anything getting compromized and you need to change your key and encrypted data/your passwords that used your key, you can change your key and encryption automatically using genter.
-
-> By using Genter you understand the risk of data encryption and the always possible risk of losing data. I am hereby not liable or responisble for any loss of data and or if you lose your key and are unable to decrypt your passwords/data. Everything lies in your hands in terms of how well you keep your master key safe and your data backed up. (It is reccomended that you make keys using genter).
-
-- Because Genter is only being worked on by me currently, security may not be the best it could be and I may not be aware of better methods. I am still learning more everyday. If you know of better methods of password encryption or of better ways of doing anything, PLEASE!! bring it to my attention and or make a pull request and fix the issue! Don't be like the people on r/Python and just tell me there's an issue and not provide any ways of fixing the problem or providing no resources to look into to help make genter better and or fix the issue. Help out if you find any issues, I will always be very appreciative of any help! <3
-
-> By using the genter password manager feature, you ackowledge that you are aware of the above information and accpet what has been said and are using it at your own risk.
-__ __
 
 <br />
 <br />
@@ -113,10 +111,10 @@ __ __
 
 # Extra/Notes
 > - If you don't have python3, then you can find, download, and install it from [here](https://www.python.org/downloads/). (Or from your package manager of choice).
-> - If you are on windows 10 use this: [download](https://www.python.org/ftp/python/3.11.0/python-3.11.0-amd64.exe). (Pip3 comes with it)
-> - The hashing feature of this script can be completly ignorred if you are just making passwords. Hashing is for if you want to store them in a server somewhere, so they aren't just sat around as plaintext.
-> - If the "options_flag" in the config file is set to "true", Genter will ask you what you want to use in your password. If set to "False", Genter will use the already defined list of options that are all "True" by default found in the code. (Basically will use everything).
-> - If the "secure_prompts" option in the config file is "true", it will hide what you type whenever you are asked to provide keys, salts, passwords, etc. If it is set to "false" it will not hide what you type.
+> - If you are on windows 10 use this: [download](https://www.python.org/ftp/python/3.11.5/python-3.11.5-amd64.exe). (Pip3 comes with it)
+> - If the "`options_flag`" in the config file is set to "true", Genter will ask you what you want to use in your password. If set to "False", Genter will use the already defined list of options that are all "True" by default found in the code. (Basically will use everything).
+> - If the "`secure_prompts`" option in the config file is "true", it will hide what you type for certain prompts, etc. If it is set to "false" it will not hide what you type.
+> - If "`wordlst_update`" option is set to true, it will update the wordlist to the current list found here in this repository each time you want to generate phrases. (I don't update the word list frequently enough to have this option be "true" but it's still neat to have just in case someone wants to update all of the time.)
 __ __
 
 
