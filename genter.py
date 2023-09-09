@@ -1,4 +1,4 @@
-#v2.15.0
+#v3.0.0
 #Imports
 import beaupy
 from beaupy.spinners import *
