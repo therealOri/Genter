@@ -35,9 +35,7 @@ __ __
 <br />
 
 # Preview
-(WiP)
-> Note: WiP
-
+[![asciicast](https://asciinema.org/a/609257.svg)](https://asciinema.org/a/609257)
 __ __
 
 
