@@ -1,5 +1,7 @@
 alive-progress
-atmos-rng
 beaupy
 pystyle
 wget
+pycryptodome
+argon2-cffi
+requests
