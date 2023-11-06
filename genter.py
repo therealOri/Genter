@@ -1,4 +1,4 @@
-#v3.0.0
+#v4.0.0
 #Imports
 import beaupy
 from beaupy.spinners import *
@@ -9,11 +9,10 @@ import sys
 import wget
 from string import ascii_lowercase, ascii_uppercase, digits
 from pystyle import Colors, Colorate
-import atmos
-import concurrent.futures
 import time
 from alive_progress import alive_bar
-
+from libs import rnd, kdf
+import requests
 
 
 
@@ -69,24 +68,72 @@ def clear():
 
 
 
-def str_hash(password: str):
-    hash_lst = ['Blake2b', 'Sha256', 'Sha512']
+
+
+
+
+def str_hash(password, salt):
+    print(f'Press "ctrl+c" to go back/quit.\n{"-"*60}\n')
+    hash_lst = ['Argon2id - (recommended)', 'PBkdf2', 'Scrypt']
     hash_type = beaupy.select(hash_lst, cursor_style="#ffa533")
+
+    if not hash_type:
+        return None
+
+
+    if hash_lst[2] in hash_type:
+        password = bytes(password, 'utf-8')
+        if len(password) > 72:
+            pass_len = len(password)
+            return 404, pass_len
+
+        for byte in password:
+            if byte == 0:
+                pass_len = len(password)
+                return 404, pass_len
+
+
+        pass_salt = bytes(salt, 'utf-8')
+        if len(pass_salt) > 16:
+            salt_len = len(pass_salt)
+            return 404_2, salt_len
+
+
 
     if hash_lst[0] in hash_type:
         clear()
-        result1 = hashlib.blake2b(bytes(password, 'utf-8')).hexdigest()
-        return result1, hash_type
+        password = bytes(password, 'utf-8')
+        try:
+            salt = bytes(salt, 'utf-8')
+        except:
+            salt = os.urandom(64)
+
+        result1 = kdf.argon_hash(password, salt)
+        return result1[0], result1[1], hash_type
+
 
     if hash_lst[1] in hash_type:
         clear()
-        result2 = hashlib.sha256(bytes(password, 'utf-8')).hexdigest()
-        return result2, hash_type
+        password = bytes(password, 'utf-8')
+        try:
+            salt = bytes(salt, 'utf-8')
+        except:
+            salt = os.urandom(64)
+
+        result1 = kdf.pbkdf2_hash(password, salt)
+        return result1[0], result1[1], hash_type
+
 
     if hash_lst[2] in hash_type:
         clear()
-        result3 = hashlib.sha512(bytes(password, 'utf-8')).hexdigest()
-        return result3, hash_type
+        password = bytes(password, 'utf-8')
+        try:
+            salt = bytes(salt, 'utf-8')
+        except:
+            salt = os.urandom(64)
+
+        result1 = kdf.scrypt_hash(password, salt)
+        return result1[0], result1[1], hash_type
 
 
 
@@ -95,18 +142,25 @@ def j_load():
     if os.path.isfile('config.json'):
         with open('config.json') as f:
             data = json.load(f)
-            options_flag = data['options_flag']
+            options_flag = data['password_options_flag']
             secure_prompts = data['secure_prompts']
             wordlst = data['wordlst_update']
         return options_flag, secure_prompts, wordlst
 
     else:
-        print("config.json file not found, downloading it from the repository...")
-        wget.download("https://raw.githubusercontent.com/therealOri/Genter/main/config.json")
+        input('config.json file not found, press "enter" to create default config and continue...')
+        json_config = {
+            "password_options_flag": True,
+            "secure_prompts": False,
+            "wordlst_update": False
+        }
+        with open('config.json', 'w') as jwf:
+            json.dump(json_config, jwf, ensure_ascii=False, indent=4)
+
         clear()
         with open('config.json') as f:
             data = json.load(f)
-            options_flag = data['options_flag']
+            options_flag = data['password_options_flag']
             secure_prompts = data['secure_prompts']
             wordlst = data['wordlst_update']
         return options_flag, secure_prompts, wordlst
@@ -136,25 +190,61 @@ def clr_pass():
 
 
 
+
+
+def update_words():
+    github_url = "https://raw.githubusercontent.com/therealOri/Genter/main/words.txt"
+    hash_url = "https://raw.githubusercontent.com/therealOri/Genter/main/words_hash.txt"
+
+    local_file = "words.txt"
+
+    response = requests.get(hash_url)
+    remote_hash = response.content.decode().strip()
+
+    with open(local_file, "rb") as f:
+        local_hash = hashlib.sha256(f.read()).hexdigest()
+
+    if remote_hash == local_hash:
+        clear()
+        print(f"Note: {local_file} is up-to-date.")
+        return
+    else:
+        clear()
+        print(f"Note: There is an update for {local_file}. Updating words...")
+        response = requests.get(github_url)
+        if response.status_code == 200:
+            with open(local_file, "wb") as f:
+                f.write(response.content)
+            input(f'{local_file} has been successfully updated!\n\nPress "enter" to continue...')
+            clear()
+            return 200
+        else:
+            clear()
+            input(f'Error: could not get {local_file} contents from GitHub. Please contact therealOri:https://github.com/therealOri/ on github if this continues...\n\nPress "enter" to continue..."')
+            clear()
+            return 404
+
+
+
+
 #Generate Phrases (Like Bitwarden)
 def phrzgn():
-    #download words.txt from repo
+    dash=60
     if os.path.isfile('words.txt'):
         if j_load()[2] == True:
-            os.remove('words.txt')
-            print("Updating wordlist..")
-            wget.download("https://raw.githubusercontent.com/therealOri/Genter/main/words.txt")
-            clear()
+            check = update_words()
+            if check == 404:
+                return
         else:
-            pass #updates set to false
+            pass #updates set to false. Continue.
     else:
-        print("words.txt doesn't exist...Downloading words.txt from repo.")
+        print("words.txt doesn't exist and is to big to create...Downloading words.txt from repo.")
         wget.download("https://raw.githubusercontent.com/therealOri/Genter/main/words.txt")
         clear()
 
     while True:
         try:
-            number = beaupy.prompt(f'(Press "ctrl+c" to exit)\n-----------------------------------------------------------\n\nHow many words?: ')
+            number = beaupy.prompt(f'(Press "ctrl+c" to exit)\n{"-"*dash}\n\nHow many words?: ')
             if number == None:
                 clear()
                 return
@@ -181,7 +271,7 @@ def phrzgn():
     word_list = words.splitlines() #list of words
 
 
-    sep = beaupy.prompt('(Press "ctrl+c" to exit)\n-----------------------------------------------------------\n\nLine separator? (leave empty for default "-"): ')
+    sep = beaupy.prompt(f'(Press "ctrl+c" to exit)\n{"-"*dash}\n\nLine separator? (leave empty for default "-"): ')
     if sep == None:
         clear()
         return
@@ -194,13 +284,11 @@ def phrzgn():
     #Returns True or False. Basically Yes or No?
     capital_words = ''
     default_words = ''
-    capitalize = beaupy.confirm('(Press "ctrl+c" to exit)\n-----------------------------------------------------------\n\nCapitalize?')
+    capitalize = beaupy.confirm(f'(Press "ctrl+c" to exit)\n{"-"*dash}\n\nCapitalize?')
     if capitalize == None:
         clear()
         return
     else:
-        prz_spinner = Spinner(ARC, "Picking words for the phrase...")
-        prz_spinner.start()
         if capitalize:
             """Make list of words with the first letter capitalized."""
             c_lst = []
@@ -211,33 +299,21 @@ def phrzgn():
                     c_lst.append(i.title())
 
             cap = True
-            nums = atmos.randint(0, len(c_lst)-1, number)
-            stuff = []
-            for _ in nums:
-                stuff.append(c_lst[_])
-            capital_words = f'{sep}'.join(stuff)
-            prz_spinner.stop()
+            capital_words = f'{sep}'.join(rnd.choice(c_lst) for _ in range(number))
         else:
             cap = False
-            nums_l = atmos.randint(0, len(word_list)-1, number)
-            stuff_l = []
-            for _ in nums_l:
-                stuff_l.append(word_list[_])
-            default_words = f'{sep}'.join(stuff_l)
-            prz_spinner.stop()
+            default_words = f'{sep}'.join(rnd.choice(word_list) for _ in range(number))
 
 
-    numbers = beaupy.confirm('(Press "ctrl+c" to exit)\n-----------------------------------------------------------\n\nNumber?')
+    numbers = beaupy.confirm(f'(Press "ctrl+c" to exit)\n{"-"*dash}\n\nNumber?')
     if numbers == None:
         clear()
         return
     else:
-        przn_spinner = Spinner(ARC, "Hamsters deployed...Building/Generating Phrase...")
-        przn_spinner.start()
         if numbers:
             num = True
-            rn_num = atmos.randint(0, 9) # <-- Get a random number to be used with only 1 of the words defined in capital_words or default_words below.
-            word_index = atmos.randint(0, number-1) # Get random index that is in the word list
+            rn_num = rnd.randint(0, 9) # <-- Get a random number to be used with only 1 of the words defined in capital_words or default_words below.
+            word_index = rnd.randint(0, number-1) # Get random index that is in the word list
 
             if default_words != '':
                 word_with_number = default_words.split(sep)
@@ -246,10 +322,8 @@ def phrzgn():
 
             word_with_number[word_index] = word_with_number[word_index] + str(rn_num)
             word_with_number = sep.join(word_with_number)
-            przn_spinner.stop()
         else:
             num = False
-            przn_spinner.stop()
 
 
     if cap == True and num == False:
@@ -403,7 +477,7 @@ def main():
 
 
     clear()
-    print('Note: Please make sure to write your password(s) down or save the password(s) into a new text file before running this script again.\nPress "q" or "ctrl+c" to go back. \n\n')
+    print('WARNING!!: Password(s) WILL be overwritten when generating passwords again.\nPress "q" or "ctrl+c" to go back. \n\n')
     try:
         length = beaupy.prompt('How long do you want your password(s)?: ')
         if not length:
@@ -439,30 +513,17 @@ def main():
 
 
 
-    def generate_password(all_text, length):
-        nums = atmos.randint(0, len(all_text)-1, length)
-        password = ''.join(all_text[_] for _ in nums)
-        return password
-
-
-    all_text = atmos.shuffle(all)
-    batch_size = 5
+    all_text = rnd.shuffle(all)
     print(f"Army of hamsters deployed...generating password(s)...\n{'-'*100}")
-    with alive_bar(amount//batch_size) as bar:
+    with alive_bar(amount) as bar:
         with open('pass.txt', 'w') as wf:
             c=0
-            with concurrent.futures.ThreadPoolExecutor() as executor:
-                for i in range(0, amount, batch_size):
-                    futures = [executor.submit(generate_password, all_text, length) for _ in range(batch_size)]
-                    for future in concurrent.futures.as_completed(futures):
-                        if c == amount:
-                            break
-                        else:
-                            result = future.result()
-                            c+=1
-                            print(f'Pass {c}: {result}', file=wf)
-                    time.sleep(1)
-                    bar()
+            for _ in range(amount):
+                c+=1
+                password = ''.join(rnd.choice(all) for _ in range(length))
+                passwprd = rnd.shuffle(password)
+                print(f'Pass {c}: {password}', file=wf)
+                bar()
     clear()
     print('Your newly generated password(s) has been saved to "pass.txt".\n\n')
     input('Press "enter" to continue...')
@@ -477,6 +538,7 @@ def main():
 
 
 if __name__ == '__main__':
+    dash=60
     while True:
         clear()
         #NOTE - This format will leave room for expansion of features.
@@ -487,7 +549,7 @@ if __name__ == '__main__':
         main_options = ['[1] - Passwords?', '[2] - Get Hashes', '[3] - Exit?']
 
 
-        print(f'{banner()}\n\nWhat would you like to do?\n-----------------------------------------------------------\n')
+        print(f'{banner()}\n\nWhat would you like to do?\n{"-"*dash}\n')
         main_option = beaupy.select(main_options, cursor_style="#ffa533")
 
         if not main_option:
@@ -499,7 +561,7 @@ if __name__ == '__main__':
             while True:
                 clear()
                 password_options = ['[1] - Make Password?', '[2] - Make phrase?', '[3] - Show pass.txt', '[4] - Clear pass.txt', '[5] - Back?']
-                print(f'{banner()}\n\nWhat would you like to do?\n-----------------------------------------------------------\n')
+                print(f'{banner()}\n\nWhat would you like to do?\n{"-"*dash}\n')
                 pass_option = beaupy.select(password_options, cursor_style="#ffa533")
 
                 if not pass_option:
@@ -527,6 +589,7 @@ if __name__ == '__main__':
                 if password_options[2] in pass_option:
                     """Show pass.txt"""
                     if os.path.isfile('pass.txt'):
+                        clear()
                         passwords = show_pass()
                         if not passwords:
                             print('No passwords found in "pass.txt"\n\n')
@@ -538,9 +601,10 @@ if __name__ == '__main__':
                             clear()
                     else:
                         clear()
-                        print("pass.txt not found, downloading from the repository...")
-                        wget.download("https://raw.githubusercontent.com/therealOri/Genter/main/pass.txt")
-                        input("\n\npass.txt is empty, no passwords found.\n\nPress 'enter' to continue...")
+                        with open('pass.txt', 'w') as fm:
+                            fm.write('\n')
+                        clr_pass()
+                        input("pass.txt was not found and has been created successfully!.\n\nPress 'enter' to continue...")
                         clear()
                         continue
 
@@ -557,9 +621,10 @@ if __name__ == '__main__':
                             clear()
                     else:
                         clear()
-                        print("pass.txt not found, downloading from the repository...")
-                        wget.download("https://raw.githubusercontent.com/therealOri/Genter/main/pass.txt")
-                        input("\n\npass.txt is empty already.\n\nPress 'enter' to continue...")
+                        with open('pass.txt', 'w') as fm:
+                            fm.write('\n')
+                        clr_pass()
+                        input("pass.txt was not found and has been created successfully!.\n\nPress 'enter' to continue...")
                         clear()
                         continue
 
@@ -574,19 +639,45 @@ if __name__ == '__main__':
         if main_options[1] in main_option:
             clear()
             if j_load()[1] == True:
-                pword = beaupy.prompt('Press "q" to go back/quit.\n-----------------------------------------------------------\nWhat would you like to hash?: ', secure=True)
+                pword = beaupy.prompt(f'Press "q" to go back/quit.\n{"-"*dash}\nWhat would you like to hash?: ', secure=True)
+                if not pword or pword.lower() == 'q':
+                    clear()
+                    continue
+
+                salt = beaupy.prompt(f'Press "q" to go back/quit.\n{"-"*dash}\nWhat would you like to have as the salt?', secure=True)
+                if not salt or salt.lower() == 'q':
+                    clear()
+                    continue
             else:
-                pword = beaupy.prompt('Press "q" to go back/quit.\n-----------------------------------------------------------\nWhat would you like to hash?: ', secure=False)
+                pword = beaupy.prompt(f'Press "q" to go back/quit.\n{"-"*dash}\nWhat would you like to hash?: ', secure=False)
+                if not pword or pword.lower() == 'q':
+                    clear()
+                    continue
+
+                salt = beaupy.prompt(f'Press "q" to go back/quit.\n{"-"*dash}\nWhat would you like to have as the salt?', secure=False)
+                if not salt or salt.lower() == 'q':
+                    clear()
+                    continue
 
 
-            if not pword or pword.lower() == 'q':
+
+            clear()
+            final_hash = str_hash(pword, salt)
+            if not final_hash:
                 clear()
+                continue
+
+            if final_hash[0] == 404:
+                input(f'Unable to generate hash as lengh of "pword" is "{final_hash[1]}" and is more than 72 bytes long.\n\nPress "enter" to continue...')
+                clear()
+                continue
+            if final_hash[0] == 404_2:
+                input(f'Unable to generate hash as lengh of "salt" is "{final_hash[1]}" and is more than 16 bytes long.\n\nPress "enter" to continue...')
+                clear()
+                continue
             else:
-                clear()
-                final_hash = str_hash(pword)
-
-                # "final_hash[1]" is name of hash that was used. And "[0]" is the actual hash value.
-                print(f'{final_hash[1]} hash for "{pword}" - {final_hash[0]}\n\n')
+                # "final_hash[2]" is name of hash that was used. "[1]" is the salt and "[0]" is the actual hash value.
+                print(f'{final_hash[2]} hash & salt for "{pword}"  |  Hash: {final_hash[0]}  |  Salt - {final_hash[1]}\n\n')
                 input('Press "enter" to continue...')
                 clear()
 
