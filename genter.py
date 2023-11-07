@@ -81,25 +81,6 @@ def str_hash(password, salt):
         return None
 
 
-    if hash_lst[2] in hash_type:
-        password = bytes(password, 'utf-8')
-        if len(password) > 72:
-            pass_len = len(password)
-            return 404, pass_len
-
-        for byte in password:
-            if byte == 0:
-                pass_len = len(password)
-                return 404, pass_len
-
-
-        pass_salt = bytes(salt, 'utf-8')
-        if len(pass_salt) > 16:
-            salt_len = len(pass_salt)
-            return 404_2, salt_len
-
-
-
     if hash_lst[0] in hash_type:
         clear()
         password = bytes(password, 'utf-8')
@@ -110,6 +91,7 @@ def str_hash(password, salt):
 
         result1 = kdf.argon_hash(password, salt)
         return result1[0], result1[1], hash_type
+
 
 
     if hash_lst[1] in hash_type:
@@ -124,6 +106,7 @@ def str_hash(password, salt):
         return result1[0], result1[1], hash_type
 
 
+
     if hash_lst[2] in hash_type:
         clear()
         password = bytes(password, 'utf-8')
@@ -134,6 +117,7 @@ def str_hash(password, salt):
 
         result1 = kdf.scrypt_hash(password, salt)
         return result1[0], result1[1], hash_type
+
 
 
 
@@ -667,19 +651,10 @@ if __name__ == '__main__':
                 clear()
                 continue
 
-            if final_hash[0] == 404:
-                input(f'Unable to generate hash as lengh of "pword" is "{final_hash[1]}" and is more than 72 bytes long.\n\nPress "enter" to continue...')
-                clear()
-                continue
-            if final_hash[0] == 404_2:
-                input(f'Unable to generate hash as lengh of "salt" is "{final_hash[1]}" and is more than 16 bytes long.\n\nPress "enter" to continue...')
-                clear()
-                continue
-            else:
-                # "final_hash[2]" is name of hash that was used. "[1]" is the salt and "[0]" is the actual hash value.
-                print(f'{final_hash[2]} hash & salt for "{pword}"  |  Hash: {final_hash[0]}  |  Salt - {final_hash[1]}\n\n')
-                input('Press "enter" to continue...')
-                clear()
+            # "final_hash[2]" is name of hash that was used. "[1]" is the salt and "[0]" is the actual hash value.
+            print(f'{final_hash[2]} hash & salt for "{pword}"  |  Hash: {final_hash[0]}  |  Salt - {final_hash[1]}\n\n')
+            input('Press "enter" to continue...')
+            clear()
 
 
 
