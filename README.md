@@ -18,7 +18,7 @@ __ __
 <br>
 <br>
 
-If you come across ANY issues or bugs, please report it by making an [issue](https://github.com/therealOri/Genter/issues). It helps out a lot!
+If you come across ANY issues or bugs, please report it by making an [issue](https://github.com/therealOri/Genter/issues). It helps out a lot! And if you happen to like what I have made, make sure to leave a :star:.
 __ __
 
 <br>
