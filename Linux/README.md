@@ -16,8 +16,8 @@ __ __
 <br />
 
 # If above fails try the following
-- `chmod +x Genter`
-- `./Genter`
+- `chmod +x genter_v4.0.0`
+- `./genter_v4.0.0`
 
 <br />
 <br />
