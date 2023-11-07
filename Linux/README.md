@@ -1,5 +1,5 @@
 # Download
-> Download is available on my website. Github doesn't allow files larger than 25MB.
+> Download is available on my website. Github doesn't allow files larger than 25MB. You can also find it in the Releases.
 - [https://therealori.tk/projects/genter](https://therealori.tk/projects/genter/gen.html)
 
 Always make sure the hashes in the genter_v4.0.0_checksum.txt file found here match what you have downloaded. No matter what you download on the interent or from where. It never hurts to be sure.
