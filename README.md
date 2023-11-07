@@ -25,9 +25,6 @@ __ __
 <br>
 
 # ToDo/To-Add
-> [] - Update preview/demo
-> 
-> [x] - Make Linux executable binary.
 > 
 > [] - Make Windoes .exe file.
 __ __
@@ -36,7 +33,7 @@ __ __
 <br />
 
 # Preview
-TODO...
+[![asciicast](https://asciinema.org/a/619800.svg)](https://asciinema.org/a/619800)
 __ __
 
 
