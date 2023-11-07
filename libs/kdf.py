@@ -1,8 +1,7 @@
 import os
 import binascii
 import argon2
-from base64 import b64encode
-from Crypto.Protocol.KDF import PBKDF2, scrypt, bcrypt
+from Crypto.Protocol.KDF import PBKDF2, scrypt
 from Crypto.Hash import SHA512
 from alive_progress import alive_bar
 
@@ -62,25 +61,6 @@ def scrypt_hash(password: bytes, pass_salt: bytes):
     clear()
     hex_string = binascii.hexlify(key)
     return hex_string.decode(), pass_salt
-
-
-
-
-def bcrypt_hash(password: bytes, pass_salt: bytes):
-    print("Generating key...")
-    b64pwd = b64encode(SHA256.new(password).digest())
-
-    with alive_bar(0) as bar:
-        key = bcrypt(password=b64pwd, cost=31, salt=pass_salt)
-        bar()
-    clear()
-    hex_string = binascii.hexlify(key)
-    return hex_string.decode(), pass_salt
-
-
-
-
-
 
 
 
