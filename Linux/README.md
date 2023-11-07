@@ -9,8 +9,8 @@ __ __
 <br />
 
 
-# How to run if double clicking doesn't work.
-- Open terminal and type: `./Genter`
+# How to run.
+- Open terminal and type: `./genter_v4.0.0`
 
 <br />
 <br />
