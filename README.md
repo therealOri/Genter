@@ -62,7 +62,7 @@ python3 genter.py
 <br />
 
 - [Git Download](https://git-scm.com/downloads)
-- [Python](https://www.python.org/downloads/)
+- [Python3](https://www.python.org/downloads/)
 - [Python3 - [Windows]](https://www.python.org/ftp/python/3.11.5/python-3.11.5-amd64.exe)
 __ __
 
