@@ -1,4 +1,4 @@
-#v4.0.0
+#v4.0.1
 #Imports
 import beaupy
 from beaupy.spinners import *
@@ -21,7 +21,7 @@ import requests
 #Languages
 uppercase_letters = ascii_uppercase
 lowercase_letters = ascii_lowercase
-symbols = "!=<>'@#$%^&*()[\],.;:-_/+?{|}`~"
+symbols = "!=<>'@#$%^&*()[\\],.;:-_/+?{|}`~"
 unicode = "¡¢£¤¥¦§¨©ª«¬®™️¯°±²³´µ¶·¸¹º»¼½¾¿×Ø÷øÞßƒðÐıæᔕ€≡‗"
 emojis = "⚔☣️⚛️〰️🗝️🔒⛓️✨🫠🫧🫥💢🪬"
 uni_boxes = "░▒▓█▄▀■"
@@ -213,6 +213,7 @@ def update_words():
 
 #Generate Phrases (Like Bitwarden)
 def phrzgn():
+    clear()
     dash=60
     if os.path.isfile('words.txt'):
         if j_load()[2] == True:
@@ -222,12 +223,15 @@ def phrzgn():
         else:
             pass #updates set to false. Continue.
     else:
+        clear()
         print("words.txt doesn't exist and is to big to create...Downloading words.txt from repo.")
         wget.download("https://raw.githubusercontent.com/therealOri/Genter/main/words.txt")
         clear()
 
     while True:
         try:
+            clear()
+            print(banner())
             number = beaupy.prompt(f'(Press "ctrl+c" to exit)\n{"-"*dash}\n\nHow many words?: ')
             if number == None:
                 clear()
@@ -235,12 +239,14 @@ def phrzgn():
             else:
                 number = int(number)
         except ValueError as e:
+            clear()
             print(f'Oops! Something went wrong.\nError: {e}\n\n')
             input('Press "enter" to continue...')
             clear()
             continue
 
         if number > 20 or number < 3:
+            clear()
             print("20 words is the maximum number of words you can use. And 5 words is the minimum.\n\n")
             input('Press "enter" to continue...')
             clear()
@@ -255,6 +261,8 @@ def phrzgn():
     word_list = words.splitlines() #list of words
 
 
+    clear()
+    print(banner())
     sep = beaupy.prompt(f'(Press "ctrl+c" to exit)\n{"-"*dash}\n\nLine separator? (leave empty for default "-"): ')
     if sep == None:
         clear()
@@ -268,6 +276,8 @@ def phrzgn():
     #Returns True or False. Basically Yes or No?
     capital_words = ''
     default_words = ''
+    clear()
+    print(banner())
     capitalize = beaupy.confirm(f'(Press "ctrl+c" to exit)\n{"-"*dash}\n\nCapitalize?')
     if capitalize == None:
         clear()
@@ -289,6 +299,8 @@ def phrzgn():
             default_words = f'{sep}'.join(rnd.choice(word_list) for _ in range(number))
 
 
+    clear()
+    print(banner())
     numbers = beaupy.confirm(f'(Press "ctrl+c" to exit)\n{"-"*dash}\n\nNumber?')
     if numbers == None:
         clear()
@@ -328,7 +340,8 @@ def main():
 
             # Choose multiple options from a list
             clear()
-            print('Chose your options! (If no options are selected you will be returned back to the main menu.)\nPress "CTRL+C" to exit this menu.\n\n')
+            print(banner())
+            print('\n\n\nChose your options! (If no options are selected you will be returned back to the main menu.)\nPress "CTRL+C" to exit this menu.\n\n')
             langs_config = beaupy.select_multiple(langs, ticked_indices=[0,1,2,3], tick_style="#ed1dd3", cursor_style="#ffa533", tick_character="x")
 
             all = ""
@@ -461,6 +474,7 @@ def main():
 
 
     clear()
+    print(banner())
     print('WARNING!!: Password(s) WILL be overwritten when generating passwords again.\nPress "q" or "ctrl+c" to go back. \n\n')
     try:
         length = beaupy.prompt('How long do you want your password(s)?: ')
@@ -480,6 +494,8 @@ def main():
 
 
     try:
+        clear()
+        print(banner())
         amount = beaupy.prompt('How many do you want generated?: ')
         if not amount:
             clear()
@@ -496,7 +512,7 @@ def main():
         return None
 
 
-
+    clear()
     all_text = rnd.shuffle(all)
     print(f"Army of hamsters deployed...generating password(s)...\n{'-'*100}")
     with alive_bar(amount) as bar:
@@ -509,7 +525,8 @@ def main():
                 print(f'Pass {c}: {password}', file=wf)
                 bar()
     clear()
-    print('Your newly generated password(s) has been saved to "pass.txt".\n\n')
+    print(banner())
+    print('\n\n\nYour newly generated password(s) has been saved to "pass.txt".\n\n')
     input('Press "enter" to continue...')
     clear()
 
@@ -565,7 +582,8 @@ if __name__ == '__main__':
                     if phrase == None:
                         clear()
                     else:
-                        print(phrase)
+                        clear()
+                        print(f'{banner()}\n{"-"*dash}\n\nPhrase: {phrase}')
                         input('\n\nPress "enter" to continue...')
                         clear()
 
@@ -597,6 +615,8 @@ if __name__ == '__main__':
                     """Clear pass.txt"""
                     if os.path.isfile('pass.txt'):
                         check = clr_pass()
+                        clear()
+                        print(banner())
                         if check == 200:
                             input('Success: pass.txt has been wiped clean.\n\nPress "enter" to continue...')
                             clear()
@@ -623,36 +643,51 @@ if __name__ == '__main__':
         if main_options[1] in main_option:
             clear()
             if j_load()[1] == True:
+                clear()
+                print(banner())
                 pword = beaupy.prompt(f'Press "q" to go back/quit.\n{"-"*dash}\nWhat would you like to hash?: ', secure=True)
                 if not pword or pword.lower() == 'q':
                     clear()
                     continue
 
+                clear()
+                print(banner())
                 salt = beaupy.prompt(f'Press "q" to go back/quit.\n{"-"*dash}\nWhat would you like to have as the salt?', secure=True)
                 if not salt or salt.lower() == 'q':
                     clear()
                     continue
             else:
+                clear()
+                print(banner())
                 pword = beaupy.prompt(f'Press "q" to go back/quit.\n{"-"*dash}\nWhat would you like to hash?: ', secure=False)
                 if not pword or pword.lower() == 'q':
                     clear()
                     continue
 
+                clear()
+                print(banner())
                 salt = beaupy.prompt(f'Press "q" to go back/quit.\n{"-"*dash}\nWhat would you like to have as the salt?', secure=False)
                 if not salt or salt.lower() == 'q':
                     clear()
                     continue
 
 
-
             clear()
+            print(banner())
             final_hash = str_hash(pword, salt)
             if not final_hash:
                 clear()
                 continue
 
             # "final_hash[2]" is name of hash that was used. "[1]" is the salt and "[0]" is the actual hash value.
-            print(f'{final_hash[2]} hash & salt for "{pword}"  |  Hash: {final_hash[0]}  |  Salt - {final_hash[1]}\n\n')
+            if len(final_hash[2]) > 6:
+                final_hash_o = final_hash[2][0:-16]
+            else:
+                final_hash_o = final_hash[2]
+
+            clear()
+            print(banner())
+            print(f'\n\n\nSelected Option: {final_hash_o}\n{"-"*dash}\nMessage: "{pword}"\nDerived Hash: {final_hash[0]}\nSalt - {final_hash[1]}\n\n')
             input('Press "enter" to continue...')
             clear()
 
