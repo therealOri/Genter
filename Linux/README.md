@@ -10,14 +10,14 @@ __ __
 
 
 # How to run.
-- Open terminal and type: `./genter_v4.0.0`
+- Open terminal and type: `./genter_v4.0.1`
 
 <br />
 <br />
 
 # If above fails try the following
-- `chmod +x genter_v4.0.0`
-- `./genter_v4.0.0`
+- `chmod +x genter_v4.0.1`
+- `./genter_v4.0.1`
 
 <br />
 <br />
