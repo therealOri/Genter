@@ -39,7 +39,7 @@ sinhala = "්‍රඤචදසමහඒරැඅුටොි්යවනක
 hieroglyphs = "𓀨𓁢𓂀𓂁𓂄𓂉𓃣𓄯𓉢𓊇𓊆𓊉𓊈𓊎𓊕𓊔𓊖𓊗𓋹𓋸𓏲𓌬𓋨"
 
 
-#Example |  new_list = "WHATERVER YOU WANT HERE"  | This can be named whatever you can think of, doesn't have to be "new_list". It's just what I am using for this example.
+#Example |  new_list = "WHATEVER YOU WANT HERE"  | This can be named whatever you can think of, doesn't have to be "new_list". It's just what I am using for this example.
 #You can add more and make it even more complex. Just make sure to update the rest of the code below.
 
 
@@ -450,7 +450,7 @@ def main():
                 all += unicode
             if block:
                 all += uni_boxes
-            if a_box:
+            if pipes:
                 all += uni_pipes
             if hin:
                 all += hindi
@@ -521,7 +521,7 @@ def main():
             for _ in range(amount):
                 c+=1
                 password = ''.join(rnd.choice(all) for _ in range(length))
-                passwprd = rnd.shuffle(password)
+                password = rnd.shuffle(password)
                 print(f'Pass {c}: {password}', file=wf)
                 bar()
     clear()
@@ -555,7 +555,7 @@ if __name__ == '__main__':
 
         if not main_option:
             clear()
-            sys.exit("Keyboard Interuption Detected!\nGoodbye <3")
+            sys.exit("Keyboard Interruption Detected!\nGoodbye <3")
 
 
         if main_options[0] in main_option:
