@@ -53,7 +53,8 @@ pip install virtualenv
 git clone https://github.com/therealOri/Genter.git
 cd Genter
 virtualenv gterENV
-source gterENV/bin/activate
+source gterENV/bin/activate # if using Linux
+.\gterENV\Scripts\activate # if using Windows
 pip install -r requirements.txt
 python3 genter.py
 ```
