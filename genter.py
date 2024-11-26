@@ -233,7 +233,7 @@ def phrzgn():
             clear()
             print(banner())
             number = beaupy.prompt(f'(Press "ctrl+c" to exit)\n{"-"*dash}\n\nHow many words?: ')
-            if number == None:
+            if number is None:
                 clear()
                 return
             else:
@@ -264,7 +264,7 @@ def phrzgn():
     clear()
     print(banner())
     sep = beaupy.prompt(f'(Press "ctrl+c" to exit)\n{"-"*dash}\n\nLine separator? (leave empty for default "-"): ')
-    if sep == None:
+    if sep is None:
         clear()
         return
     else:
@@ -279,7 +279,7 @@ def phrzgn():
     clear()
     print(banner())
     capitalize = beaupy.confirm(f'(Press "ctrl+c" to exit)\n{"-"*dash}\n\nCapitalize?')
-    if capitalize == None:
+    if capitalize is None:
         clear()
         return
     else:
@@ -302,7 +302,7 @@ def phrzgn():
     clear()
     print(banner())
     numbers = beaupy.confirm(f'(Press "ctrl+c" to exit)\n{"-"*dash}\n\nNumber?')
-    if numbers == None:
+    if numbers is None:
         clear()
         return
     else:
@@ -579,7 +579,7 @@ if __name__ == '__main__':
                     """Make Phrases"""
                     clear()
                     phrase = phrzgn()
-                    if phrase == None:
+                    if phrase is None:
                         clear()
                     else:
                         clear()
