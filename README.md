@@ -11,9 +11,9 @@ __ __
 
 (Latest) - Update | 11/06/23:
 # Kernel RNG Updates
-- Changed randomness from using atmos to genter's own local libs "rnd" library.
+- Changed randomness from using atmos to Genter's own local libs "rnd" library.
 - Hashing now uses KDF's instead of normal hashing. The KDFs being used are [Argon2id, PBKdf2,  Scrypt]
-- Instead of downloading files from the github repo, genter will now make them locally instead of downloading them if they aren't found. The only exception is the "words.txt" file. As that is to large and has to many words and stuff to just create if not found. So that will still be downloaded, but it now has a new way of checking to see if a new version of words.txt exists/if there is a new update.
+- Instead of downloading files from the GitHub repo, Genter will now make them locally instead of downloading them if they aren't found. The only exception is the "words.txt" file. As that is to large and has to many words and stuff to just create if not found. So that will still be downloaded, but it now has a new way of checking to see if a new version of words.txt exists/if there is a new update.
 
 <br>
 <br>
@@ -24,9 +24,9 @@ __ __
 <br>
 <br>
 
-# ToDo/To-Add
+# To-Do/To-Add
 > 
-> [] - Make Windoes .exe file.
+> Make Windows .exe file.
 __ __
 
 <br />
@@ -74,7 +74,7 @@ __ __
 
 # Extra/Notes
 > - If the "`options_flag`" in the config file is set to "true", Genter will ask you what you want to use in your password. If set to "False", Genter will use the already defined list of options that are all "True" by default found in the code. (Basically will use everything).
-> - If the "`secure_prompts`" option in the config file is "true", it will hide what you type for certain prompts, etc. If it is set to "false" it will not hide what you type. (Will allow for expansion or more features If I want to add more to genter.
+> - If the "`secure_prompts`" option in the config file is "true", it will hide what you type for certain prompts, etc. If it is set to "false" it will not hide what you type. (Will allow for expansion or more features if I want to add more to Genter).
 > - If "`wordlst_update`" option is set to true, It will do a check to see if there is an update for words.txt and if an update is found, it will download the new words.txt file in this repo.
 
 
@@ -86,6 +86,6 @@ __ __
 (God knows I need one xD)
 
 Donate to me here:
-> - Don't have Cashapp? [Sign Up](https://cash.app/app/TKWGCRT)
+> - Don't have Cash App? [Sign Up](https://cash.app/app/TKWGCRT)
 
 ![image](https://user-images.githubusercontent.com/45724082/158000721-33c00c3e-68bb-4ee3-a2ae-aefa549cfb33.png)
