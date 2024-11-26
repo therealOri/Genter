@@ -153,7 +153,7 @@ def j_load():
 
 # Showing contents of pass.txt and clearing it.
 def show_pass():
-    with open('pass.txt', 'r') as f:
+    with open('pass.txt', 'r', encoding = 'utf-8') as f:
         result = f.read()
         if not result:
             return None
@@ -516,7 +516,7 @@ def main():
     all_text = rnd.shuffle(all)
     print(f"Army of hamsters deployed...generating password(s)...\n{'-'*100}")
     with alive_bar(amount) as bar:
-        with open('pass.txt', 'w') as wf:
+        with open('pass.txt', 'w', encoding = 'utf-8') as wf:
             c=0
             for _ in range(amount):
                 c+=1
