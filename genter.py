@@ -216,7 +216,7 @@ def phrzgn():
     clear()
     dash=60
     if os.path.isfile('words.txt'):
-        if j_load()[2] == True:
+        if j_load()[2]:
             check = update_words()
             if check == 404:
                 return
@@ -322,12 +322,12 @@ def phrzgn():
             num = False
 
 
-    if cap == True and num == False:
-        return capital_words
-    if cap == False and num == False:
-        return default_words
-    if num == True:
+    if num:
         return word_with_number
+    elif cap:
+        return capital_words
+    else:
+        return default_words
 
 
 
@@ -335,7 +335,7 @@ def phrzgn():
 def main():
     try:
         #You can configure what you want to do in the config.json file.
-        if j_load()[0] == True:
+        if j_load()[0]:
             langs = ['uppercase', 'lowercase', 'numbers', 'symbols', 'korean', 'russian', 'chinese', 'greek', 'portu', 'unicode', 'uni_boxes', 'uni_pipes', 'hindi', 'arabic', 'emojis', 'amharic', 'sinhala', 'hieroglyphs']
 
             # Choose multiple options from a list
@@ -642,7 +642,7 @@ if __name__ == '__main__':
         #hashing
         if main_options[1] in main_option:
             clear()
-            if j_load()[1] == True:
+            if j_load()[1]:
                 clear()
                 print(banner())
                 pword = beaupy.prompt(f'Press "q" to go back/quit.\n{"-"*dash}\nWhat would you like to hash?: ', secure=True)
