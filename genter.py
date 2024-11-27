@@ -1,15 +1,13 @@
 #v4.0.1
 #Imports
 import beaupy
-from beaupy.spinners import *
 import hashlib
 import json
 import os
 import sys
 import wget
-from string import ascii_lowercase, ascii_uppercase, digits
+from string import ascii_lowercase, ascii_uppercase
 from pystyle import Colors, Colorate
-import time
 from alive_progress import alive_bar
 from libs import rnd, kdf
 import requests
