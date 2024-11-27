@@ -64,7 +64,7 @@ python3 genter.py
 
 - [Git Download](https://git-scm.com/downloads)
 - [Python3](https://www.python.org/downloads/)
-- [Python3 - [Windows]](https://www.python.org/ftp/python/3.11.5/python-3.11.5-amd64.exe)
+- [Python3 - [Windows]](https://www.python.org/ftp/python/3.13.0/python-3.13.0-embed-amd64.zip)
 __ __
 
 
