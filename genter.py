@@ -518,7 +518,7 @@ def main():
             c=0
             for _ in range(amount):
                 c+=1
-                password = ''.join(rnd.choice(all) for _ in range(length))
+                password = ''.join(rnd.choice(all_text) for _ in range(length))
                 password = rnd.shuffle(password)
                 print(f'Pass {c}: {password}', file=wf)
                 bar()
