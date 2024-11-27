@@ -39,7 +39,7 @@ sinhala = "්‍රඤචදසමහඒරැඅුටොි්යවනක
 hieroglyphs = "𓀨𓁢𓂀𓂁𓂄𓂉𓃣𓄯𓉢𓊇𓊆𓊉𓊈𓊎𓊕𓊔𓊖𓊗𓋹𓋸𓏲𓌬𓋨"
 
 
-#Example |  new_list = "WHATERVER YOU WANT HERE"  | This can be named whatever you can think of, doesn't have to be "new_list". It's just what I am using for this example.
+#Example |  new_list = "WHATEVER YOU WANT HERE"  | This can be named whatever you can think of, doesn't have to be "new_list". It's just what I am using for this example.
 #You can add more and make it even more complex. Just make sure to update the rest of the code below.
 
 
@@ -153,7 +153,7 @@ def j_load():
 
 # Showing contents of pass.txt and clearing it.
 def show_pass():
-    with open('pass.txt', 'r') as f:
+    with open('pass.txt', 'r', encoding = 'utf-8') as f:
         result = f.read()
         if not result:
             return None
@@ -216,7 +216,7 @@ def phrzgn():
     clear()
     dash=60
     if os.path.isfile('words.txt'):
-        if j_load()[2] == True:
+        if j_load()[2]:
             check = update_words()
             if check == 404:
                 return
@@ -233,7 +233,7 @@ def phrzgn():
             clear()
             print(banner())
             number = beaupy.prompt(f'(Press "ctrl+c" to exit)\n{"-"*dash}\n\nHow many words?: ')
-            if number == None:
+            if number is None:
                 clear()
                 return
             else:
@@ -264,7 +264,7 @@ def phrzgn():
     clear()
     print(banner())
     sep = beaupy.prompt(f'(Press "ctrl+c" to exit)\n{"-"*dash}\n\nLine separator? (leave empty for default "-"): ')
-    if sep == None:
+    if sep is None:
         clear()
         return
     else:
@@ -279,7 +279,7 @@ def phrzgn():
     clear()
     print(banner())
     capitalize = beaupy.confirm(f'(Press "ctrl+c" to exit)\n{"-"*dash}\n\nCapitalize?')
-    if capitalize == None:
+    if capitalize is None:
         clear()
         return
     else:
@@ -302,7 +302,7 @@ def phrzgn():
     clear()
     print(banner())
     numbers = beaupy.confirm(f'(Press "ctrl+c" to exit)\n{"-"*dash}\n\nNumber?')
-    if numbers == None:
+    if numbers is None:
         clear()
         return
     else:
@@ -322,12 +322,12 @@ def phrzgn():
             num = False
 
 
-    if cap == True and num == False:
-        return capital_words
-    if cap == False and num == False:
-        return default_words
-    if num == True:
+    if num:
         return word_with_number
+    elif cap:
+        return capital_words
+    else:
+        return default_words
 
 
 
@@ -335,7 +335,7 @@ def phrzgn():
 def main():
     try:
         #You can configure what you want to do in the config.json file.
-        if j_load()[0] == True:
+        if j_load()[0]:
             langs = ['uppercase', 'lowercase', 'numbers', 'symbols', 'korean', 'russian', 'chinese', 'greek', 'portu', 'unicode', 'uni_boxes', 'uni_pipes', 'hindi', 'arabic', 'emojis', 'amharic', 'sinhala', 'hieroglyphs']
 
             # Choose multiple options from a list
@@ -450,7 +450,7 @@ def main():
                 all += unicode
             if block:
                 all += uni_boxes
-            if a_box:
+            if pipes:
                 all += uni_pipes
             if hin:
                 all += hindi
@@ -516,12 +516,12 @@ def main():
     all_text = rnd.shuffle(all)
     print(f"Army of hamsters deployed...generating password(s)...\n{'-'*100}")
     with alive_bar(amount) as bar:
-        with open('pass.txt', 'w') as wf:
+        with open('pass.txt', 'w', encoding = 'utf-8') as wf:
             c=0
             for _ in range(amount):
                 c+=1
                 password = ''.join(rnd.choice(all) for _ in range(length))
-                passwprd = rnd.shuffle(password)
+                password = rnd.shuffle(password)
                 print(f'Pass {c}: {password}', file=wf)
                 bar()
     clear()
@@ -555,7 +555,7 @@ if __name__ == '__main__':
 
         if not main_option:
             clear()
-            sys.exit("Keyboard Interuption Detected!\nGoodbye <3")
+            sys.exit("Keyboard Interruption Detected!\nGoodbye <3")
 
 
         if main_options[0] in main_option:
@@ -579,7 +579,7 @@ if __name__ == '__main__':
                     """Make Phrases"""
                     clear()
                     phrase = phrzgn()
-                    if phrase == None:
+                    if phrase is None:
                         clear()
                     else:
                         clear()
@@ -642,7 +642,7 @@ if __name__ == '__main__':
         #hashing
         if main_options[1] in main_option:
             clear()
-            if j_load()[1] == True:
+            if j_load()[1]:
                 clear()
                 print(banner())
                 pword = beaupy.prompt(f'Press "q" to go back/quit.\n{"-"*dash}\nWhat would you like to hash?: ', secure=True)
